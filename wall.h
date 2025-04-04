@@ -1,11 +1,12 @@
-#include "location.h";
-class wall
+#ifndef WALL_H
+#define WALL_H
+#include "unmovingObject.h";
+class wall : unmovingObject
 {
-    location loc;
     int hitsLeft;
 
 public:
-    wall(int x, int y) : loc(x, y), hitsLeft(2)
-    {
-    }
+    wall(int x, int y);
 };
+
+#endif // WALL_H

@@ -1,13 +1,11 @@
-#include "location.h";
+#ifndef BULLET_H
+#define BULLET_H
+#include "movingObject.h";
 
-class bullet
+class bullet : movingObject
 {
-    location bulletLocation;
-    const int orientation;
-
 public:
-    bullet(int x, int y, int orientation) : bulletLocation(x, y), orientation(orientation)
-    {
-        // constructor
-    }
+    bullet(int x, int y, int orientation);
 };
+
+#endif // BULLET_H

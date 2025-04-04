@@ -2,6 +2,7 @@
 #define MATRIXOBJECT_H
 class matrixObject
 {
+protected:
     int location[2]; // Initialize location to (0, 0)
     // The location array holds the x and y coordinates of the object.
     bool isAlive = true; // Initialize isAlive to true
@@ -15,4 +16,4 @@ public:
     bool getIsAlive() const; // Returns the isAlive status
     bool getCanMove() const; // Returns the canMove status
 };
-#endif MATRIXOBJECT_H
+#endif  // MATRIXOBJECT_H

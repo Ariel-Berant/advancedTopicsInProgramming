@@ -1,7 +1,11 @@
+#ifndef GAME_MANAGER_H
+#define GAME_MANAGER_H
+
 #include <stdlib.h>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 class gameManager
 {
@@ -21,3 +25,5 @@ gameManager::gameManager(/* args */)
 gameManager::~gameManager()
 {
 }
+
+#endif // GAME_MANAGER_H
