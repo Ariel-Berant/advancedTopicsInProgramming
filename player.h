@@ -8,6 +8,7 @@
 #include <fstream>
 
 #include "tank.h"
+#include "move.h"
 
 class player{
     // The player class represents a player in the game, which can be either player1 or player2.

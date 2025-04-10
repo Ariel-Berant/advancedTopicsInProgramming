@@ -7,6 +7,7 @@ class mine : unmovingObject
 
 public:
     mine(int x, int y);
+    ~mine();
 };
 
 #endif // MINE_h

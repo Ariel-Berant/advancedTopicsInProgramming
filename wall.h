@@ -7,6 +7,7 @@ class wall : unmovingObject
 
 public:
     wall(int x, int y);
+    ~wall();
 };
 
 #endif // WALL_H

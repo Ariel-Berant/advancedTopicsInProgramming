@@ -1,7 +1,7 @@
 #ifndef TANK_H
 #define TANK_H
 
-#include "movingObject.h";
+#include "movingObject.h"
 
 class tank : public movingObject
 {
@@ -16,10 +16,9 @@ class tank : public movingObject
 
     int shotsLeft;
     int inBackwords;
-    const size_t tank_size;
 
 public:
-    tank(int x, int y, float orientation, size_t tank_size);
+    tank(int x, int y, orientation orient);
 };
 
 

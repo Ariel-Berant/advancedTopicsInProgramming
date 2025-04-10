@@ -1,16 +1,27 @@
 #ifndef GAME_MANAGER_H
 #define GAME_MANAGER_H
 #include "matrixObject.h"
-#include <stdlib.h>
+#include "movingObject.h"
+#include "unmovingObject.h"
+#include "bullet.h"
+#include "move.h"
+#include "tank.h"
+#include "mine.h"
+#include "wall.h"
+#include "player.h"
+#include "orientation.h"
+#include <string>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
 
 class gameManager
 {
 private:
-
+    int numOfRows;
+    int numOfCols;
     int turns;
     int noBulletsCnt;
     bool isEvenTurn;
@@ -18,9 +29,11 @@ private:
     std::vector<movingObject> bullets; // Vector to store bullets in the air
     std::vector<movingObject> tanks; // Vector to store tanks on the board
 
-public:
+
+    public:
     gameManager(/* args */);
     ~gameManager();
+    std::vector<std::vector<matrixObject>> createMap(const string& filename);
 };
 
 gameManager::gameManager(/* args */)

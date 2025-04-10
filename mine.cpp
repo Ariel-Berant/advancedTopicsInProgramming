@@ -5,7 +5,4 @@ mine::mine(int x, int y) : unmovingObject(x, y), hitsLeft(2) {
     // The member initializer list initializes the base class unmovingObject with x and y values.
     // It also initializes hitsLeft to 2.
 }
-mine::~mine() {
-    // Destructor implementation
-    // No specific cleanup is needed for this class, but the destructor is defined for completeness.
-}
+mine::~mine() = default;
