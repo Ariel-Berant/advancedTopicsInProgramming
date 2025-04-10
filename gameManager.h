@@ -1,6 +1,6 @@
 #ifndef GAME_MANAGER_H
 #define GAME_MANAGER_H
-
+#include "matrixObject.h"
 #include <stdlib.h>
 #include <iostream>
 #include <string>
@@ -10,8 +10,13 @@
 class gameManager
 {
 private:
+
     int turns;
     int noBulletsCnt;
+    bool isEvenTurn;
+    std::vector<std::vector<matrixObject>> gameBoard; // 2D vector to represent the game board
+    std::vector<movingObject> bullets; // Vector to store bullets in the air
+    std::vector<movingObject> tanks; // Vector to store tanks on the board
 
 public:
     gameManager(/* args */);
