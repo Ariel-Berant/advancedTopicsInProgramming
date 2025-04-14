@@ -16,6 +16,27 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <array>
+
+using namespace std;
+
+// A function used for writing to files(e.g., error logs) without necessarily opening them beforehand.
+// The function return true if the file was opened successfully and the message was written to it.
+inline bool writeToFile(const string &message, const string &filename)
+{
+    ofstream errorFile(filename, ios::app);
+    if (errorFile.is_open())
+    {
+        errorFile << message << endl;
+        errorFile.close();
+        return true;
+    }
+    else
+    {
+        cerr << "Error: Could not open the error file." << endl;
+        return false;
+    }
+}
 
 class gameManager
 {
@@ -30,19 +51,11 @@ private:
     std::vector<movingObject> tanks; // Vector to store tanks on the board
 
 
-    public:
-    gameManager(/* args */);
+public:
+    gameManager(const string &filename);
     ~gameManager();
     std::vector<std::vector<matrixObject>> createMap(const string& filename);
 };
-
-gameManager::gameManager(/* args */)
-{
-}
-
-gameManager::~gameManager()
-{
-}
 
 #endif // GAME_MANAGER_H
 

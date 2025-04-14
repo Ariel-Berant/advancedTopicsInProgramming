@@ -1,7 +1,7 @@
 #ifndef MINE_h
 #define MINE_h
-#include "unmovingObject.h";
-class mine : unmovingObject
+#include "unmovingObject.h"
+class mine : public unmovingObject
 {
     int hitsLeft;
 

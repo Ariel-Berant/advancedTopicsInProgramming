@@ -3,7 +3,7 @@
 #include "matrixObject.h"
 #include "orientation.h"
 
-class movingObject : matrixObject
+class movingObject : public matrixObject
 {
 protected:
     orientation orient; // The orientation of the moving object in degrees.

@@ -1,5 +1,12 @@
 #include "matrixObject.h"
 
+matrixObject::matrixObject() : location{0, 0}
+{
+    // Default constructor initializes location to (0, 0)
+    // The member initializer list initializes the location array with default values.
+    // No additional code is needed here since the initialization is done in the initializer list.
+}
+
 matrixObject::matrixObject(int x, int y) : location{x, y}
 {
     // Constructor implementation
