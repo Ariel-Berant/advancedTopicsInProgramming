@@ -45,16 +45,18 @@ private:
     int numOfCols;
     int turns;
     int noBulletsCnt;
-    bool isEvenTurn;
-    std::vector<std::vector<matrixObject>> gameBoard; // 2D vector to represent the game board
-    std::vector<movingObject> bullets; // Vector to store bullets in the air
-    std::vector<movingObject> tanks; // Vector to store tanks on the board
+    bool isOddTurn;
+    vector<vector<array<matrixObject*, 2>>> *gameBoard;
+    vector<movingObject> bullets; // Vector to store bullets in the air
+    array<tank*, 2> tanks; // Vector to store tanks on the board
+
 
 
 public:
     gameManager(const string &filename);
     ~gameManager();
-    std::vector<std::vector<matrixObject>> createMap(const string& filename);
+    bool createMap(const string &filename);
+    void playGame();
 };
 
 #endif // GAME_MANAGER_H
