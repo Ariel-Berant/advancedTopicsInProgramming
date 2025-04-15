@@ -1,3 +1,0 @@
-C:/Users/ariel/OneDrive - mail.tau.ac.il/compuSci/thirdYear/advancedTopicsInProgramming/advancedTopicsInProgramming/cmake-build-debug/CMakeFiles/advancedTopicsInProgramming.dir
-C:/Users/ariel/OneDrive - mail.tau.ac.il/compuSci/thirdYear/advancedTopicsInProgramming/advancedTopicsInProgramming/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/ariel/OneDrive - mail.tau.ac.il/compuSci/thirdYear/advancedTopicsInProgramming/advancedTopicsInProgramming/cmake-build-debug/CMakeFiles/rebuild_cache.dir
