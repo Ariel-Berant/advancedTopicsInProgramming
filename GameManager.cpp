@@ -120,8 +120,8 @@ void gameManager::playGame(){
     bool gameOver = false;
     move p1Move, p2Move;
     while(!gameOver && noBulletsCnt > 0){
-//        moveBullets();
 //        checkBulletsCollisions();
+//        moveBullets();
         if(isOddTurn){
 //            p1Move = tanks[0].play();
 //            p2Move = tanks[1].play();
@@ -131,12 +131,22 @@ void gameManager::playGame(){
 //            makeMove(tanks[0], p1Move, canP1MakeMove);
 //            makeMove(tanks[1], p2Move, canP2MakeMove);
         }
-//        makeAllMoves();
 //        checkAllCollisions();
+//        makeAllMoves();
 //        TODO: Create an array of moves to be made, and execute them all at end of iteration.
 //        TODO: Implement above functions
     }
 }
+
+
+
+/*
+ *
+ * ##b
+ * ###
+ * 12# , b.orientation = LD, 1.orientation = UR, 2.orientation = UL
+ *
+ */
 
 
 void gameManager::moveBullets() {
@@ -144,6 +154,7 @@ void gameManager::moveBullets() {
     for(bullet b : bullets) {
         newLoc = b.newLocation(numOfCols, numOfRows);
         if((*gameBoard)[newLoc[0]][newLoc[1]][2] == nullptr) {
+            // b is an object, we need a pointer to an object, so we take its address
             (*gameBoard)[newLoc[0]][newLoc[1]][2] = &b;
         }
         else {
@@ -153,6 +164,9 @@ void gameManager::moveBullets() {
     }
 
 }
+
+1 #      #  #
+# 1      11 #
 
 gameManager::gameManager(const std::string &filename) {
     createMap(filename);
