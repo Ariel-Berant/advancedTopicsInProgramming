@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BackendCodeEditorMiscSettings">
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
   </component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
   <component name="CMakeProjectFlavorService">
     <option name="flavorId" value="CMakePlainProjectFlavor" />
   </component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated />
+  </component>
+  <component name="CMakeSettings">
+    <configurations />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="23f225e1-b01a-40bc-837e-6627693ff18f" name="Changes" comment="" />
+    <list default="true" id="682679e1-6519-499e-9840-6bca19821629" name="Changes" comment="GameManager.cpp updates">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,6 +35,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -27,12 +45,12 @@
     &quot;assignee&quot;: &quot;Ido-Zacharia&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Ariel-Berant/advancedTopicsInProgramming.git&quot;,
-    &quot;accountId&quot;: &quot;9a8bbc3a-376b-4c76-8eeb-102ee12ec1d0&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Ariel-Berant/advancedTopicsInProgramming.git",
+    "accountId": "2c06f5e6-fcd3-4965-8d01-53720eb8ccc7"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -41,35 +59,87 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/idoza/OneDrive/שולחן העבודה/לימודים/שנה ג'/סמסטר ב'/נושאים מתקדמים בתכנות/advancedTopicsInProgramming&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.west.config.association.type.startup.service": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/idoza/OneDrive/שולחן העבודה/לימודים/שנה ג'/סמסטר ב'/נושאים מתקדמים בתכנות/advancedTopicsInProgramming",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="23f225e1-b01a-40bc-837e-6627693ff18f" name="Changes" comment="" />
-      <created>1744313423401</created>
+      <changelist id="682679e1-6519-499e-9840-6bca19821629" name="Changes" comment="" />
+      <created>1744314067101</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1744313423401</updated>
-      <workItem from="1744313424445" duration="109000" />
-      <workItem from="1744649255232" duration="286000" />
-      <workItem from="1744710316431" duration="156000" />
-      <workItem from="1744710480925" duration="71000" />
+      <updated>1744314067101</updated>
+      <workItem from="1744314068926" duration="112000" />
+      <workItem from="1744314490298" duration="7272000" />
+      <workItem from="1744649398381" duration="79000" />
+      <workItem from="1744649491002" duration="16702000" />
+      <workItem from="1744710966926" duration="229000" />
+      <workItem from="1744711245983" duration="6000" />
     </task>
+    <task id="LOCAL-00001" summary="Added files, more work to project framework">
+      <option name="closed" value="true" />
+      <created>1744329313709</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1744329313709</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Finished createMap draft - Ariel's changes">
+      <option name="closed" value="true" />
+      <created>1744669000799</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1744669000799</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Finished createMap draft - Ido's changes">
+      <option name="closed" value="true" />
+      <created>1744669028353</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1744669028353</updated>
+    </task>
+    <task id="LOCAL-00004" summary="GameManager.cpp updates">
+      <option name="closed" value="true" />
+      <created>1744711042640</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744711042640</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added files, more work to project framework" />
+    <MESSAGE value="Finished createMap draft - Ariel's changes" />
+    <MESSAGE value="Finished createMap draft - Ido's changes" />
+    <MESSAGE value="GameManager.cpp updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="GameManager.cpp updates" />
   </component>
 </project>
