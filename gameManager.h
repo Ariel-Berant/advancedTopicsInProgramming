@@ -1,35 +1,63 @@
 #ifndef GAME_MANAGER_H
 #define GAME_MANAGER_H
 #include "matrixObject.h"
-#include <stdlib.h>
+#include "movingObject.h"
+#include "unmovingObject.h"
+#include "bullet.h"
+#include "move.h"
+#include "tank.h"
+#include "mine.h"
+#include "wall.h"
+#include "player.h"
+#include "orientation.h"
+#include <string>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
+#include <sstream>
+#include <array>
+
+using namespace std;
+
+// A function used for writing to files(e.g., error logs) without necessarily opening them beforehand.
+// The function return true if the file was opened successfully and the message was written to it.
+inline bool writeToFile(const string &message, const string &filename)
+{
+    ofstream errorFile(filename, ios::app);
+    if (errorFile.is_open())
+    {
+        errorFile << message << endl;
+        errorFile.close();
+        return true;
+    }
+    else
+    {
+        cerr << "Error: Could not open the error file." << endl;
+        return false;
+    }
+}
 
 class gameManager
 {
 private:
-
+    int numOfRows;
+    int numOfCols;
     int turns;
     int noBulletsCnt;
-    bool isEvenTurn;
-    std::vector<std::vector<matrixObject>> gameBoard; // 2D vector to represent the game board
-    std::vector<movingObject> bullets; // Vector to store bullets in the air
-    std::vector<movingObject> tanks; // Vector to store tanks on the board
+    bool isOddTurn;
+    vector<vector<array<matrixObject*, 2>>> *gameBoard;
+    vector<movingObject> bullets; // Vector to store bullets in the air
+    array<tank*, 2> tanks; // Vector to store tanks on the board
+
+
 
 public:
-    gameManager(/* args */);
+    gameManager(const string &filename);
     ~gameManager();
+    bool createMap(const string &filename);
+    void playGame();
 };
-
-gameManager::gameManager(/* args */)
-{
-}
-
-gameManager::~gameManager()
-{
-}
 
 #endif // GAME_MANAGER_H
 

@@ -1,5 +1,12 @@
 #include "matrixObject.h"
 
+matrixObject::matrixObject() : location{0, 0}
+{
+    // Default constructor initializes location to (0, 0)
+    // The member initializer list initializes the location array with default values.
+    // No additional code is needed here since the initialization is done in the initializer list.
+}
+
 matrixObject::matrixObject(int x, int y) : location{x, y}
 {
     // Constructor implementation
@@ -7,14 +14,25 @@ matrixObject::matrixObject(int x, int y) : location{x, y}
     // No additional code is needed here since the initialization is done in the initializer list.
 }
 
-matrixObject::~matrixObject()
-{
-    // Destructor implementation
-    // No specific cleanup is needed for this class, but the destructor is defined for completeness.
-}
+matrixObject::~matrixObject() = default;
 
-int *const matrixObject::getLocation()
+const int* matrixObject::getLocation() const
 {
     // Returns a pointer to the location array
-    return location; // Use const_cast to remove constness for returning the pointer
+    return location;
+}
+
+void matrixObject::setLocation(int x, int y)
+{
+    // Sets the location of the object
+    location[0] = x;
+    location[1] = y;
+}
+
+bool matrixObject::getIsAlive() const {
+    return isAlive;
+}
+
+bool matrixObject::getCanMove() const {
+    return canMove;
 }

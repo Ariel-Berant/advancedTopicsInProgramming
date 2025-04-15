@@ -10,8 +10,10 @@ protected:
     bool canMove = false; // Initialize canMove to false
     // The canMove variable indicates whether the object can move or not.
 public:
+    matrixObject();
     matrixObject(int x, int y);
-    int *const getLocation();       // Returns a pointer to the location array
+    ~matrixObject();
+    const int *getLocation() const;       // Returns a pointer to the location array
     void setLocation(int x, int y); // Sets the location of the object
     bool getIsAlive() const;        // Returns the isAlive status
     bool getCanMove() const;        // Returns the canMove status
