@@ -40,7 +40,7 @@ bool gameManager::createMap(const string &filename) {
 
     }
 
-    gameBoard = new vector<vector<array<matrixObject *, 2>>>(rows, vector<array<matrixObject *, 2>>(cols));
+    gameBoard = new vector<vector<array<matrixObject *, 3>>>(rows, vector<array<matrixObject *, 3>>(cols));
     tanks[0] = nullptr;
     tanks[1] = nullptr;
 
@@ -138,13 +138,21 @@ void gameManager::playGame(){
     }
 }
 
-/*
- *
- * ##       21
- * 12 --->  ##
- *
- *
- */
+
+void gameManager::moveBullets() {
+    int *newLoc;
+    for(bullet b : bullets) {
+        newLoc = b.newLocation(numOfCols, numOfRows);
+        if((*gameBoard)[newLoc[0]][newLoc[1]][2] == nullptr) {
+            (*gameBoard)[newLoc[0]][newLoc[1]][2] = &b;
+        }
+        else {
+
+        }
+
+    }
+
+}
 
 gameManager::gameManager(const std::string &filename) {
     createMap(filename);

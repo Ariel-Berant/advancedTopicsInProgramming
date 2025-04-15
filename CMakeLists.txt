@@ -25,4 +25,6 @@ add_executable(advancedTopicsInProgramming
         wall.cpp
         wall.h
         orientation.h
-        gameManager.cpp)
+        gameManager.cpp
+        gameManager.h
+        gameManager.h)

@@ -46,8 +46,8 @@ private:
     int turns;
     int noBulletsCnt;
     bool isOddTurn;
-    vector<vector<array<matrixObject*, 2>>> *gameBoard;
-    vector<movingObject> bullets; // Vector to store bullets in the air
+    vector<vector<array<matrixObject*, 3>>> *gameBoard;
+    vector<bullet> bullets; // Vector to store bullets in the air
     array<tank*, 2> tanks; // Vector to store tanks on the board
 
 
@@ -57,6 +57,7 @@ public:
     ~gameManager();
     bool createMap(const string &filename);
     void playGame();
+    void moveBullets();
 };
 
 #endif // GAME_MANAGER_H

@@ -2,6 +2,9 @@
 #define MOVINGOBJECT_H
 #include "matrixObject.h"
 #include "orientation.h"
+#include <array>
+using namespace std;
+
 
 class movingObject : public matrixObject
 {
@@ -12,6 +15,9 @@ protected:
 public:
     movingObject(int x, int y, orientation orient);
     ~movingObject();
+
+    int *newLocation(int numOfCols, int numOfRows) const;
+    void setLocation(int newX, int newY);
 };
 
 #endif // MOVINGOBJECT_H

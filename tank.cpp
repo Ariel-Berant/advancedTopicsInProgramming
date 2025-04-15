@@ -9,3 +9,7 @@ tank::~tank() {
     // Destructor implementation
     // No specific cleanup is needed for this class, but the destructor is defined for completeness.
 }
+
+void tank::setOrientation(const orientation newOrient) {
+    orient = newOrient;
+}
