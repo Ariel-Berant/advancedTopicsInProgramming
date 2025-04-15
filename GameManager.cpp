@@ -3,7 +3,7 @@
 #define INP_ERR_FILE "input_errors.txt"
 #define GAME_LOG_FILE "log_file.txt"
 #define isCritErr(bool) { \
-if(!bool){return false}                 \
+if(!bool){return false;}                 \
 \
 }
 
@@ -25,7 +25,7 @@ bool gameManager::createMap(const string &filename) {
     int rows, cols, currRow = 0, currCol = 0;
     string line;
 
-    if (getline(file, line)) {
+    if (getline(file1, line)) {
         istringstream iss(line);
         if (iss >> cols >> rows) {
             numOfCols = cols;
@@ -44,7 +44,7 @@ bool gameManager::createMap(const string &filename) {
     tanks[0] = nullptr;
     tanks[1] = nullptr;
 
-    while (std::getline(file, line) && !criticalErr) {
+    while (getline(file1, line)) {
         if (currRow == numOfRows) {
             isCritErr(writeToFile("Error: Too many rows in the map file.\n", INP_ERR_FILE));
             break;
@@ -85,7 +85,7 @@ bool gameManager::createMap(const string &filename) {
                     (*gameBoard)[currRow][currCol][0] = nullptr;
                     break;
                 default:
-                    isCritErr(writeToFile("Error: unrecognized character '"+ch+"' in the map file.", INP_ERR_FILE));
+                    isCritErr(writeToFile("Error: unrecognized character, ASCII #'"+to_string(ch)+"' in the map file.\n", INP_ERR_FILE));
                     (*gameBoard)[currRow][currCol][0] = nullptr;
             }
             currCol++;
@@ -109,7 +109,7 @@ bool gameManager::createMap(const string &filename) {
         currRow++;
     }
 
-    file.close();
+    file1.close();
     return true;
 
 }
@@ -160,11 +160,7 @@ gameManager::~gameManager() {
                     (*gameBoard)[i][j][k] = nullptr;
                 }
             }
-            delete (*gameBoard)[i][j];
-            (*gameBoard)[i][j] = nullptr;
         }
-        delete (*gameBoard)[i];
-        (*gameBoard)[i] = nullptr;
     }
     delete gameBoard;
 }
