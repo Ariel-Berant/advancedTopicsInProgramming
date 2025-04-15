@@ -9,6 +9,8 @@ if(!bool){return false}                 \
 
 using namespace std;
 
+//wtf is wrong here
+
 
 // Function creates map from a given pathname.
 // If some critical error occurs(criticalErr==true), function fails and returns false(i.e return !criticalErr).
