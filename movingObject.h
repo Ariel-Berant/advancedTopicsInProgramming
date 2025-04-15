@@ -10,6 +10,8 @@ class movingObject : public matrixObject
 {
 protected:
     orientation orient; // The orientation of the moving object in degrees.
+    int oldLocation[2];
+
     // The movingObject class inherits from matrixObject, allowing it to use the properties and methods of matrixObject.
     // This class represents an object that can move in a 2D space.
 public:
@@ -17,6 +19,7 @@ public:
     ~movingObject();
 
     int *newLocation(int numOfCols, int numOfRows) const;
+    const int *getOldLocation() const;
     void setLocation(int newX, int newY);
 };
 

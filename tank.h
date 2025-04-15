@@ -20,6 +20,7 @@ class tank : public movingObject
 public:
     tank(int x, int y, orientation orient);
     void setOrientation(orientation newOrient);
+    bool canShot();
 };
 
 

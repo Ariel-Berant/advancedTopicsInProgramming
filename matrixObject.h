@@ -17,5 +17,6 @@ public:
     void setLocation(int x, int y); // Sets the location of the object
     bool getIsAlive() const;        // Returns the isAlive status
     bool getCanMove() const;        // Returns the canMove status
+    void setIsAlive();
 };
 #endif // MATRIXOBJECT_H

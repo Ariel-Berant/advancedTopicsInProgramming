@@ -49,6 +49,9 @@ private:
     vector<vector<array<matrixObject*, 3>>> *gameBoard;
     vector<bullet> bullets; // Vector to store bullets in the air
     array<tank*, 2> tanks; // Vector to store tanks on the board
+    vector<movingObject> &currMovingObjects;
+
+    string gameManager::makeAllMoves(vector<movingObject>& objects);
 
 
 

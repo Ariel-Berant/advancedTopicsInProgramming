@@ -1,7 +1,7 @@
 #include "movingObject.h"
 
 
-movingObject::movingObject(int x, int y, orientation orient) : matrixObject(x, y), orient(orient) {
+movingObject::movingObject(int x, int y, orientation orient) : matrixObject(x, y), orient(orient), oldLocation{x, y} {
     // Constructor implementation
     canMove = true; // Initialize canMove to true
 }
@@ -40,7 +40,13 @@ int *movingObject::newLocation(const int numOfCols, const int numOfRows) const {
     return newLoc;
 }
 void movingObject::setLocation(const int newX, const int newY) {
+    oldLocation[0] = location[0];
+    oldLocation[1] = location[1];
     location[0] = newX;
     location[1] = newY;
+}
+const int* movingObject::getOldLocation() const{
+    // Returns a pointer to the location array
+    return oldLocation;
 }
 

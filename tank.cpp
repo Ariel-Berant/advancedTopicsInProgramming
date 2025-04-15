@@ -13,3 +13,6 @@ tank::~tank() {
 void tank::setOrientation(const orientation newOrient) {
     orient = newOrient;
 }
+bool tank::canShot() {
+    return shotsLeft > 0;
+}

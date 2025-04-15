@@ -32,6 +32,9 @@ void matrixObject::setLocation(int x, int y)
 bool matrixObject::getIsAlive() const {
     return isAlive;
 }
+void matrixObject::setIsAlive() {
+    isAlive = false;
+}
 
 bool matrixObject::getCanMove() const {
     return canMove;
