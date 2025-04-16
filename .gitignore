@@ -33,3 +33,9 @@
 
 # VSCode settings
 .vscode
+
+# CMake files
+build
+
+# for CLion IDE
+.idea

@@ -11,7 +11,6 @@ if(!bool){return false;}                 \
 
 using namespace std;
 
-//wtf is wrong here
 
 
 // Function creates map from a given pathname.
@@ -142,6 +141,9 @@ bool isSamePoint(const int* a, const int* b) {
     return a[0] == b[0] && a[1] == b[1];
 }
 
+
+// The next two functions were written with the help of ChatGPT
+
 // Helper: Check if three points are collinear
 bool areCollinear(const int* p, const int* q, const int* r) {
     return (q[1] - p[1]) * (r[0] - q[0]) == (q[0] - p[0]) * (r[1] - q[1]);
@@ -181,39 +183,40 @@ bool doLinesIntersect(const int* p1, const int* q1, const int* p2, const int* q2
 bool printCollisionsToLog(movingObject& object1, movingObject& object2) {
     if(object1.getIsAlive() && object2.getIsAlive()) {
         if((object1.getType() == P1T && object2.getType() == B) || (object1.getType() == B && object2.getType() == P1T)) {
-            return writeToFile("A tank of player number 1 got hit by a bullet./n", GAME_LOG_FILE);
+            return writeToFile("A tank of player number 1 got hit by a bullet.\n", GAME_LOG_FILE);
         }
         else if((object1.getType() == P2T && object2.getType() == B) || (object1.getType() == B && object2.getType() == P2T)) {
-            return writeToFile("A tank of player number 2 got hit by a bullet./n", GAME_LOG_FILE);
+            return writeToFile("A tank of player number 2 got hit by a bullet.\n", GAME_LOG_FILE);
         }
         else if((object1.getType() == P1T && object2.getType() == P2T) || (object1.getType() == P2T && object2.getType() == P1T)) {
-            return writeToFile("A tank of player number 1 collided with a tank of player number 2./n", GAME_LOG_FILE);
+            return writeToFile("A tank of player number 1 collided with a tank of player number 2.\n", GAME_LOG_FILE);
         }
         else if (object1.getType() == B && object2.getType() == B) {
-            return writeToFile("Two bullets have collided, destroying each other./n", GAME_LOG_FILE);
+            return writeToFile("Two bullets have collided, destroying each other.\n", GAME_LOG_FILE);
         }
     }
     else if(!object1.getIsAlive() && !object2.getIsAlive()){}
     else if (object2.getIsAlive()) {
         if (object2.getType() == B) {
-            return writeToFile("A bullet has been destroyed by collision./n", GAME_LOG_FILE);
+            return writeToFile("A bullet has been destroyed by collision.\n", GAME_LOG_FILE);
         } else if ((object1.getType() == P2T && object2.getType() == P1T) || (object1.getType() == P1T && object2.getType() == P2T) ) {
-            return writeToFile("A tank of player number 1 collided with a tank of player number 2./n",
+            return writeToFile("A tank of player number 1 collided with a tank of player number 2.\n",
                         GAME_LOG_FILE);
         }
     }
     else {
         if (object1.getType() == B) {
-            return writeToFile("A bullet has been destroyed by collision./n", GAME_LOG_FILE);
+            return writeToFile("A bullet has been destroyed by collision.\n", GAME_LOG_FILE);
         } else if ((object1.getType() == P2T && object2.getType() == P1T) || (object1.getType() == P1T && object2.getType() == P2T) ) {
-            return writeToFile("A tank of player number 1 collided with a tank of player number 2./n",
+            return writeToFile("A tank of player number 1 collided with a tank of player number 2.\n",
                         GAME_LOG_FILE);
         }
     }
 }
 
 
-// // Function to check for collisions between moving object1
+
+// Function to check for collisions between moving object1
 bool checkCollisions(vector<movingObject>& objects) {
     for (size_t i = 0; i < objects.size(); ++i) {
         for (size_t j = i + 1; j < objects.size(); ++j) {
@@ -268,11 +271,11 @@ bool gameManager::makeAllMoves(vector<movingObject>& movingObjects) {
             if(movingObjects[i].getIsAlive()){
                 writeToFile("A tank of player number " + to_string(tanksPlayer)
                             + " stepped on a mine at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
-                            ") ./n", GAME_LOG_FILE);
+                            ") .\n", GAME_LOG_FILE);
             }
             else{
                 writeToFile("The mine at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
-                            ") has been expload./n", GAME_LOG_FILE);
+                            ") has been expload.\n", GAME_LOG_FILE);
             }
         }
 
@@ -280,15 +283,15 @@ bool gameManager::makeAllMoves(vector<movingObject>& movingObjects) {
             // if a bullet hit a wall - the bullet is destroyed and the wall takes a hit
 
             writeToFile("A bullet hit a wall at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
-                ") ./n", GAME_LOG_FILE);
+                ") .\n", GAME_LOG_FILE);
 
             if(movingObjects[i].getIsAlive()){
                 writeToFile("A bullet hit a wall at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
-                            ") ./n", GAME_LOG_FILE);
+                            ") .\n", GAME_LOG_FILE);
             }
             else{
                 writeToFile("The wall at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
-                            ") has been hit by a bullet./n", GAME_LOG_FILE);
+                            ") has been hit by a bullet.\n", GAME_LOG_FILE);
             }
 
             movingObjects[i].takeAHit();
@@ -300,7 +303,7 @@ bool gameManager::makeAllMoves(vector<movingObject>& movingObjects) {
                 (*gameBoard)[objectNewX][objectNewY][0] = nullptr;
 
                 writeToFile("The wall at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
-                    ") has been destroyed./n", GAME_LOG_FILE);
+                    ") has been destroyed.\n", GAME_LOG_FILE);
 
             }
 

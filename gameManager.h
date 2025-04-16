@@ -49,7 +49,7 @@ private:
     vector<vector<array<matrixObject*, 3>>> *gameBoard;
     vector<bullet> bullets; // Vector to store bullets in the air
     array<tank*, 2> tanks; // Vector to store tanks on the board
-    vector<movingObject> &currMovingObjects;
+    vector<movingObject> currMovingObjects;
 
     bool makeAllMoves(vector<movingObject>& objects);
     bool canMakeMove(tank& tankChoseTheMove, enum move moveChosen);
