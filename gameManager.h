@@ -52,7 +52,7 @@ private:
     vector<movingObject> &currMovingObjects;
 
     bool makeAllMoves(vector<movingObject>& objects);
-    bool canMakeMove(const tank& tankChoseTheMove, move moveChosen);
+    bool canMakeMove(tank& tankChoseTheMove, enum move moveChosen);
 
 
 

@@ -10,6 +10,7 @@ enum move
     rotateQuarterLeft = 5,
     rotateQuarterRight = 6,
     shoot = 7,
+    noAction = 8
 };
 // This enum class defines the possible move for the tank object.
 // It includes options for moving forward, backward, rotating left or right, and shooting.
