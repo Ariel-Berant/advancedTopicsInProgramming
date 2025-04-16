@@ -1,7 +1,7 @@
 #include "movingObject.h"
 
 
-movingObject::movingObject(int x, int y, orientation orient) : matrixObject(x, y), orient(orient), oldLocation{x, y} {
+movingObject::movingObject(int x, int y, objectType oType, orientation orient) : matrixObject(x, y, oType), orient(orient), oldLocation{x, y} {
     // Constructor implementation
     canMove = true; // Initialize canMove to true
 }

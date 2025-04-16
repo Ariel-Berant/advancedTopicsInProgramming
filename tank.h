@@ -17,10 +17,12 @@ class tank : public movingObject
     int shotsLeft;
     int inBackwords;
 
+
 public:
-    tank(int x, int y, orientation orient);
+    tank(int x, int y, orientation orient, objectType oType);
     void setOrientation(orientation newOrient);
     bool canShot();
+    int newLocationAtReverse(const int numOfCols, const int numOfRows) const;
 };
 
 

@@ -24,11 +24,11 @@ using namespace std;
 // The function return true if the file was opened successfully and the message was written to it.
 inline bool writeToFile(const string &message, const string &filename)
 {
-    ofstream errorFile(filename, ios::app);
-    if (errorFile.is_open())
+    ofstream fileToWrite(filename, ios::app);
+    if (fileToWrite.is_open())
     {
-        errorFile << message << endl;
-        errorFile.close();
+        fileToWrite << message << endl;
+        fileToWrite.close();
         return true;
     }
     else
@@ -51,7 +51,8 @@ private:
     array<tank*, 2> tanks; // Vector to store tanks on the board
     vector<movingObject> &currMovingObjects;
 
-    string gameManager::makeAllMoves(vector<movingObject>& objects);
+    bool makeAllMoves(vector<movingObject>& objects);
+    bool canMakeMove(const tank& tankChoseTheMove, move moveChosen);
 
 
 

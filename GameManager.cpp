@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "gameManager.h"
 
 #define INP_ERR_FILE "input_errors.txt"
@@ -56,11 +58,11 @@ bool gameManager::createMap(const string &filename) {
             }
             switch (ch) {
                 case '#':
-                    (*gameBoard)[currRow][currCol][0] = new wall(currRow, currCol);
+                    (*gameBoard)[currRow][currCol][0] = new wall(currRow, currCol, W);
                     break;
                 case '1':
                     if (!tanks[0]) {
-                        tanks[0] = new tank(currRow, currCol, L);
+                        tanks[0] = new tank(currRow, currCol, L, P1T);
                         (*gameBoard)[currRow][currCol][0] = tanks[0];
                     }
                     else{
@@ -70,7 +72,7 @@ bool gameManager::createMap(const string &filename) {
                     break;
                 case '2':
                     if (!tanks[1]) {
-                        tanks[1] = new tank(currRow, currCol, R);
+                        tanks[1] = new tank(currRow, currCol, R , P2T);
                         (*gameBoard)[currRow][currCol][0] = tanks[1];
                     }
                     else{
@@ -79,7 +81,7 @@ bool gameManager::createMap(const string &filename) {
                     }
                     break;
                 case '@':
-                    (*gameBoard)[currRow][currCol][0] = new mine(currRow, currCol);
+                    (*gameBoard)[currRow][currCol][0] = new mine(currRow, currCol, M);
                     break;
                 case ' ':
                     (*gameBoard)[currRow][currCol][0] = nullptr;
@@ -164,6 +166,7 @@ bool doLinesIntersect(const int* p1, const int* q1, const int* p2, const int* q2
     return false;
 }
 
+
 // // Function to check for collisions between moving objects
 void checkCollisions(vector<movingObject>& objects) {
     for (size_t i = 0; i < objects.size(); ++i) {
@@ -190,76 +193,135 @@ void checkCollisions(vector<movingObject>& objects) {
                 }
 
                 // Otherwise, it's a collision
-                objects[i].setIsAlive();
-                objects[j].setIsAlive();
+                objects[i].takeAHit();
+                objects[j].takeAHit();
+
+
+                if((objects[i].getType() == P1T && objects[i].getType() == B) || (objects[i].getType() == B && objects[i].getType() == P1T)) {
+                    writeToFile("A tank of player number 2 hit by a bullet./n", GAME_LOG_FILE);
+                }
+                else if((objects[i].getType() == P2T && objects[i].getType() == B) || (objects[i].getType() == B && objects[i].getType() == P2T)) {
+                    writeToFile("A tank of player number 2 hit by a bullet./n", GAME_LOG_FILE);
+                }
+                else if((objects[i].getType() == P1T && objects[i].getType() == P2T) || (objects[i].getType() == P2T && objects[i].getType() == P1T)) {
+                    writeToFile("A tank of player number 1 collide with tank of player number 2./n", GAME_LOG_FILE);
+                }
             }
         }
     }
 }
 
-string gameManager::makeAllMoves(vector<movingObject>& objects) {
-    for (size_t i = 0; i < objects.size(); ++i) {
-        (*gameBoard)[objects[i].getOldLocation()[0]][objects[i].getOldLocation()[1]][1] = nullptr;
-        if(!objects[i].getIsAlive()) {
-            objects.erase(objects.begin() + i);
+bool gameManager::makeAllMoves(vector<movingObject>& movingObjects) {
+    for (size_t i = 0; i < movingObjects.size(); ++i) {
+
+        const int objectNewX = movingObjects[i].getLocation()[0];
+        const int objectNewY = movingObjects[i].getLocation()[1];
+
+        (*gameBoard)[movingObjects[i].getOldLocation()[0]][movingObjects[i].getOldLocation()[1]][1] = nullptr;
+        (*gameBoard)[objectNewX][objectNewY][2] = &movingObjects[i];
+
+        if((movingObjects[i].getType() == P1T || movingObjects[i].getType() == P2T) && (*gameBoard)[objectNewX][objectNewY][0]->getType() == M) {
+            // if a tank stepped on a mine - they both destroyed
+
+            movingObjects[i].takeAHit();
+            matrixObject *explodedMine =  (*gameBoard)[objectNewX][objectNewY][0];
+            (*gameBoard)[objectNewX][objectNewY][0] = nullptr; // remove the mine from the board
+            delete explodedMine;
+
+            int tanksPlayer =movingObjects[i].getType() == P1T ? 1:2;
+
+            writeToFile("A tank of player number " + to_string(tanksPlayer)
+                + " stepped on a mine at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
+                ") ./n", GAME_LOG_FILE);
+
+        }
+
+        else if(movingObjects[i].getType() == B && (*gameBoard)[objectNewX][objectNewY][0]->getType() == W) {
+            // if a bullet hit a wall - the bullet is destroyed and the wall takes a hit
+
+            writeToFile("A bullet hit a wall at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
+                ") ./n", GAME_LOG_FILE);
+
+            movingObjects[i].takeAHit();
+            matrixObject *damagedWall =  (*gameBoard)[objectNewX][objectNewY][0];
+            damagedWall->takeAHit();
+
+            if(!damagedWall->getIsAlive()) { // if the wall destroyed - remove from the board
+                (*gameBoard)[objectNewX][objectNewY][0] = nullptr;
+                delete damagedWall;
+
+                writeToFile("The wall at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
+                    ") has been destroyed./n", GAME_LOG_FILE);
+
+            }
+
+        }
+
+        if(!movingObjects[i].getIsAlive()) {
+            // Check if the moving object has been destroyed, happened if at least one of the following occur:
+            //          - The moving object collide other moving object
+            //          - The moving object is a tank, and it stepped on a mine
+            //          - The moving object is a bullet, and it hit a wall
+
+            matrixObject *destroyedObject = (*gameBoard)[objectNewX][objectNewY][2];
+            (*gameBoard)[objectNewX][objectNewY][2] = nullptr; // remove the object from the board
+            movingObjects.erase(movingObjects.begin() + i);// remove the object from the moving objects vector
             --i;
-            if(typeid(objects[i]) == typeid(bullet)){
 
-
-
-                // TODO: erase the bullet from bullets in the air and currMovingObjects and use distractor
-
-
-
-
-
+            if(movingObjects[i].getType() == B) {
+                bullets.erase(
+                    std::remove_if(bullets.begin(), bullets.end(),
+                                   [&](const bullet& item) {
+                                       return &item == &movingObjects[i]; // Compare references
+                                   }),
+                    bullets.end()
+                ); // delete the destroyed bullet from the bullets in the air vector
+                delete destroyedObject;
             }
         }
-        else {
-            (*gameBoard)[objects[i].getLocation()[0]][objects[i].getLocation()[1]][1] = &objects[i];
-            if(typeid(objects[i]) == typeid(tank) && typeid((*gameBoard)[objects[i].getLocation()[0]][objects[i].getLocation()[1]]) == typeid(mine)) {
-                objects[i].setIsAlive();
-                (*gameBoard)[objects[i].getOldLocation()[0]][objects[i].getOldLocation()[1]][1] = nullptr;
-                (*gameBoard)[objects[i].getOldLocation()[0]][objects[i].getOldLocation()[1]][0] = nullptr;
-                objects.erase(objects.begin() + i);
-                --i;
+    }
+    if(!tanks[0]->getIsAlive() || !tanks[1]->getIsAlive()) { // if at least one of the tank has been destroyed - the game over
+        return true;
+    }
+    for (size_t i = 0; i < movingObjects.size(); ++i) { // do the actual move to all the objects that didn't destroyed
+        int objectNewX = movingObjects[i].getLocation()[0];
+        int objectNewY = movingObjects[i].getLocation()[1];
 
+        (*gameBoard)[objectNewX][objectNewY][2] = nullptr;
+        (*gameBoard)[objectNewX][objectNewY][1] = &movingObjects[i];
+    }
+    return false;
+}
 
-                // TODO: use distractor on the mine
-
-
-
-
-            }
-            if(typeid(objects[i]) == typeid(bullet) && typeid((*gameBoard)[objects[i].getLocation()[0]][objects[i].getLocation()[1]]) == typeid(wall)) {
-                objects[i].setIsAlive();
-                (*gameBoard)[objects[i].getOldLocation()[0]][objects[i].getOldLocation()[1]][1] = nullptr;
-                objects.erase(objects.begin() + i);
-                --i;
-
-
-
-                // TODO: check if the wall still exist and if not use distractor on it and delete from gameboard
-
-
-
-
-            }
-
+bool gameManager::canMakeMove(const tank& tankChoseTheMove, move moveChosen) {
+    if(moveChosen == moveForward) {
+        int* newLoc = tankChoseTheMove.newLocation(numOfCols, numOfRows);
+        if((*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W) {
+            return false;
         }
+        return true;
+    }
+    else if (moveChosen == moveBackwards) {
+        int *newLoc = tankChoseTheMove.newLocation(numOfCols, numOfRows);
+        if ((*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W) {
+            return false;
+        }
+        return true;
     }
 }
 
 void gameManager::playGame(){
+    writeToFile("Starting game\n", GAME_LOG_FILE);
     bool gameOver = false;
     move p1Move, p2Move;
     currMovingObjects.push_back(*tanks[0]);
     currMovingObjects.push_back(*tanks[1]);
+
     while(!gameOver && noBulletsCnt > 0){
         if(!(tanks[0]->canShot()) && !(tanks[1]->canShot())) {
             noBulletsCnt--;
         }
-        moveBullets();
+        moveBullets(); // only calculate the bullets new location
         if(isOddTurn){
 //            p1Move = tanks[0].play();
 //            p2Move = tanks[1].play();
@@ -267,31 +329,25 @@ void gameManager::playGame(){
 //            bool canP2MakeMove = canMakeMove(tanks[1], p2Move);
         }
         checkCollisions(currMovingObjects);
-        makeAllMoves(currMovingObjects);
-
-        if(!(tanks[0]->getIsAlive()) || !(tanks[1]->getIsAlive())) {
-            gameOver = true;
-        }
+        gameOver = makeAllMoves(currMovingObjects);
     }
     if(  tanks[0]->getIsAlive()  &&  tanks[1]->getIsAlive()  && (noBulletsCnt == 0)) {
-        // it's a tie
+        writeToFile("Game result: A tie\n", GAME_LOG_FILE);
     }
 
-    if(!(tanks[0]->getIsAlive()) && !(tanks[1]->getIsAlive())) {
-        // it's a tie
+    else if(!(tanks[0]->getIsAlive()) && !(tanks[1]->getIsAlive())) {
+        writeToFile("Game result: A tie\n", GAME_LOG_FILE);
     }
     else if(!(tanks[0]->getIsAlive())) {
-        // player 2 won
+        int winnerPlayerNum =tanks[0]->getType() == P1T ? 2:1;
+        writeToFile("Game result: Player number " + to_string(winnerPlayerNum) +" won\n", GAME_LOG_FILE);
     }
-    else if{
-        // player 1 won
-    }
+    //destroyBoardAndObjects();
 
 }
 
 //        TODO: Make a log file.
 //        TODO: Implement above functions
-//        TODO: use distractor where needed
 
 
 

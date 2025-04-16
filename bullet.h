@@ -5,7 +5,7 @@
 class bullet : public movingObject
 {
 public:
-    bullet(int x, int y, orientation orient);
+    bullet(int x, int y, orientation orient, objectType oType);
     ~bullet();
 };
 

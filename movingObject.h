@@ -15,7 +15,7 @@ protected:
     // The movingObject class inherits from matrixObject, allowing it to use the properties and methods of matrixObject.
     // This class represents an object that can move in a 2D space.
 public:
-    movingObject(int x, int y, orientation orient);
+    movingObject(int x, int y,objectType oType, orientation orient);
     ~movingObject();
 
     int *newLocation(int numOfCols, int numOfRows) const;
