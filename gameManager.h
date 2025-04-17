@@ -53,6 +53,8 @@ private:
 
     bool makeAllMoves(vector<movingObject>& objects);
     bool canMakeMove(tank& tankChoseTheMove, enum move moveChosen);
+    bool makeTankMoves(vector<tank>& tanks);
+    bool checkCollisions(vector<movingObject>& objects);
 
 
 

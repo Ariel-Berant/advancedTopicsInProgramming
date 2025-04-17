@@ -20,7 +20,7 @@ public:
 
     int *newLocation(int numOfCols, int numOfRows) const;
     const int *getOldLocation() const;
-    void setLocation(int newX, int newY);
+    void setNewLocation(int newX, int newY);
 };
 
 #endif // MOVINGOBJECT_H

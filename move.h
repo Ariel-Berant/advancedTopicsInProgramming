@@ -5,15 +5,15 @@ enum move
 {
     moveForward = 1,
     moveBackwards = 2,
-    rotateEighthLeft = 3,
-    rotateEighthRight = 4,
-    rotateQuarterLeft = 5,
-    rotateQuarterRight = 6,
-    shoot = 7,
-    noAction = 8
+    rotateQuarterLeft = 3,
+    rotateEighthLeft = 4,
+    noAction = 5,
+    rotateEighthRight = 6,
+    rotateQuarterRight = 7,
+    shoot = 8
 };
 // This enum class defines the possible move for the tank object.
 // It includes options for moving forward, backward, rotating left or right, and shooting.
 
-typedef enum move move;
+typedef enum move objMove;
 #endif // MOVE_H

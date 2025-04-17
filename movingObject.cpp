@@ -39,7 +39,7 @@ int *movingObject::newLocation(const int numOfCols, const int numOfRows) const {
     }
     return newLoc;
 }
-void movingObject::setLocation(const int newX, const int newY) {
+void movingObject::setNewLocation(const int newX, const int newY) {
     oldLocation[0] = location[0];
     oldLocation[1] = location[1];
     location[0] = newX;

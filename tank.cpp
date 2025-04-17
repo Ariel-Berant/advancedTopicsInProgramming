@@ -1,27 +1,44 @@
 #include "tank.h"
 
-tank::tank(int x, int y, orientation orient, objectType oType) : movingObject(x, y,oType , orient), shotsLeft(16), inBackwords(0), turnsUnillNextShot(0) {
+tank::tank(int x, int y, orientation orient, objectType oType) : movingObject(x, y,oType , orient), shotsLeft(16), inBackwards(0), turnsUntilNextShot(0) {
     // Constructor implementation
     // The member initializer list initializes the base class movingObject with x, y, and orientation.
-    // It also initializes the tank_size, shotsLeft, and inBackwords members.
+    // It also initializes the tank_size, shotsLeft, and inBackwards members.
 }
 tank::~tank() {
     // Destructor implementation
     // No specific cleanup is needed for this class, but the destructor is defined for completeness.
 }
 
+int tank::getInBack() const {
+    return inBackwards;
+}
+
+void tank::setInBackwards(int inBack) {
+    inBackwards = inBack;
+}
+
 void tank::setOrientation(const orientation newOrient) {
     orient = newOrient;
 }
-bool tank::canShot() {
-    return shotsLeft > 0 && turnsUnillNextShot == 0;
+
+// Constant since it doesn't modify the object
+orientation tank::getOrientation() const {
+    return orient;
 }
+
+bool tank::canShoot() {
+    return shotsLeft > 0 && turnsUntilNextShot == 0;
+}
+
 void tank::useShot() {
-    turnsUnillNextShot == 4;
+    turnsUntilNextShot == 4;
+    shotsLeft--;
 }
-void tank::setTurnsUnillNextShot() {
-    if(turnsUnillNextShot > 0){
-        turnsUnillNextShot--;
+
+void tank::updateTurnsUntilNextShot() {
+    if(turnsUntilNextShot > 0){
+        turnsUntilNextShot--;
     }
 }
 
