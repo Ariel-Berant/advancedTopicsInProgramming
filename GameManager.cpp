@@ -154,6 +154,7 @@ void gameManager::moveBullets()
     {
         newLoc = b.newLocation(numOfCols, numOfRows);
         b.setNewLocation(newLoc[0], newLoc[1]);
+        delete newLoc;
     }
 }
 
@@ -303,7 +304,6 @@ bool gameManager::checkCollisions(vector<movingObject> &objects)
     return true;
 }
 
-// TODO: Add logging, specifically for "bad steps"(anything other than a forward move in backwards mode)
 bool gameManager::makeTankMoves(vector<tank> &tanks)
 {
     orientation ornt;
@@ -313,38 +313,37 @@ bool gameManager::makeTankMoves(vector<tank> &tanks)
     {
         tanks[i].updateTurnsUntilNextShot();
         // tanksmove = tanks[i].play();
-        if (tanks[i].getInBack() > 1)
+        if (tanks[i].getInBack() > 0 && tanks[i].getInBack() < 3)
         {
-            if (tanksMove == moveForward)
-            {
+            if(tanksMove == moveForward) {
                 tanks[i].setInBackwards(0);
-                writeToFile("The tank at " + (to_string(tanks[i].getOldLocation()[0]) + "," + to_string(tanks[i].getOldLocation()[1]))
-                + " stayed in place.\n", GAME_LOG_FILE);
+                writeToFile("The tank at " + (to_string(tanks[i].getLocation()[0]) + "," +
+                                              to_string(tanks[i].getLocation()[1]))
+                            + " stayed in place.\n", GAME_LOG_FILE);
             }
-            else
-            {
-                if (tanks[i].getInBack() == 2) // if we got a request to move backwards two turns ago
-                {
-                    newLocation = tanks[i].newLocationAtReverse(numOfCols, numOfRows);
-                    tanks[i].setNewLocation(newLocation[0], newLocation[1]);
+            else {
+                if (tanksMove != noAction) {
+                    writeToFile("The tank at " + (to_string(tanks[i].getLocation()[0]) + "," +
+                                                  to_string(tanks[i].getLocation()[1]))
+                                + " tried to make a move while in backwards mode.\n", GAME_LOG_FILE);
                 }
-                else
-                {// To avoid the else statement(at 430) from being executed when the tank is in backwards mode
-                    newLocation = new int[2];
-                    newLocation[0] = 0;
+                else {
+                    tanks[i].setInBackwards(tanks[i].getInBack() + 1);
+                    if(tanks[i].getInBack() == 3){
+                        newLocation = tanks[i].newLocationAtReverse(numOfCols, numOfRows);
+                        tanks[i].setNewLocation(newLocation[0], newLocation[1]);
+                        writeToFile("The tank at  " + (to_string(tanks[i].getLocation()[0]) + "," + to_string(tanks[i].getLocation()[1]))
+                                    + " moved backwards.\n", GAME_LOG_FILE);
+                    }
+                    else{
+                        writeToFile("The tank at " + (to_string(tanks[i].getLocation()[0]) + "," +
+                                                      to_string(tanks[i].getLocation()[1]))
+                                    + " stayed in place waiting until he can move backwards.\n", GAME_LOG_FILE);
+                    }
                 }
-                if (tanksMove != noAction) // if we got a request to move forward or rotate
-                {
-                    writeToFile("The tank at " + (to_string(tanks[i].getOldLocation()[0]) + "," + to_string(tanks[i].getOldLocation()[1]))
-                    + " tried to move while in backwards mode, so it stayed in place.\n", GAME_LOG_FILE);
-                }
-                else{
-                    writeToFile("The tank at " + (to_string(tanks[i].getOldLocation()[0]) + "," + to_string(tanks[i].getOldLocation()[1]))
-                    + " stayed in place.\n", GAME_LOG_FILE);
-                }
-
             }
         }
+
         else
         {
             switch (tanksMove)
@@ -355,15 +354,18 @@ bool gameManager::makeTankMoves(vector<tank> &tanks)
             case rotateQuarterRight:
                 ornt = tanks[i].getOrientation();
                 tanks[i].setOrientation(orientation((8 + tanks[i].getOrientation() - 5 + tanksMove) % 8));
-                writeToFile("The tank at " + (to_string(tanks[i].getOldLocation()[0]) + "," + to_string(tanks[i].getOldLocation()[1]))
+                writeToFile("The tank at " + (to_string(tanks[i].getLocation()[0]) + "," + to_string(tanks[i].getLocation()[1]))
                 + " turned" + to_string(45 * abs(ornt - tanks[i].getOrientation())) + " degrees" 
                 + (tanksMove<5 ? " clockwise.\n":" counter-clockwise.\n"), GAME_LOG_FILE);
+                tanks[i].setInBackwards(0);
                 break;
             case noAction:
-                writeToFile("The tank at " + (to_string(tanks[i].getOldLocation()[0]) + "," + to_string(tanks[i].getOldLocation()[1]))
+                writeToFile("The tank at " + (to_string(tanks[i].getLocation()[0]) + "," + to_string(tanks[i].getLocation()[1]))
                 + " stayed in place.\n", GAME_LOG_FILE);
+                tanks[i].setInBackwards(0);
                 break;
             case moveForward:
+                tanks[i].setInBackwards(0);
                 if (canMakeMove(tanks[i], tanksMove))
                 {
                     newLocation = tanks[i].newLocation(numOfCols, numOfRows);
@@ -373,48 +375,50 @@ bool gameManager::makeTankMoves(vector<tank> &tanks)
                 }
                 else
                 {
-                    writeToFile("The tank at (" + (to_string(tanks[i].getOldLocation()[0]) + "," + to_string(tanks[i].getOldLocation()[1]))
-                    + ") tried to move forwards when he couldn't(unstoppable force met an immovable object).\n", GAME_LOG_FILE);
+                    writeToFile("The tank at (" + (to_string(tanks[i].getLocation()[0]) + "," + to_string(tanks[i].getLocation()[1]))
+                    + ") tried to move forwards when he couldn't (unstoppable force met an immovable object).\n", GAME_LOG_FILE);
                 }
                 break;
             case moveBackwards:
                 if (canMakeMove(tanks[i], tanksMove))
                 {
-                    if (tanks[i].getInBack() == 1) // if we have moved backwards last turn and want to move
+                    if (tanks[i].getInBack() >= 3) // if we have moved backwards last turn and want to move
                     {
-                        tanks[i].setInBackwards(2);
+                        tanks[i].setInBackwards(tanks[i].getInBack() + 1);
                         newLocation = tanks[i].newLocationAtReverse(numOfCols, numOfRows);
                         tanks[i].setNewLocation(newLocation[0], newLocation[1]);
-                        writeToFile("The tank at  " + to_string(tanks[i].getType() == P1T ? 1 : 2)
+                        writeToFile("The tank at  " + (to_string(tanks[i].getLocation()[0]) + "," + to_string(tanks[i].getLocation()[1]))
                         + " moved backwards.\n", GAME_LOG_FILE);
                     }
                     else
                     {
-                        tanks[i].setInBackwards(3);
-                        writeToFile("The tank at " + (to_string(tanks[i].getOldLocation()[0]) + "," + to_string(tanks[i].getOldLocation()[1]))
-                        + " stayed in place.\n", GAME_LOG_FILE);
+                        tanks[i].setInBackwards(1);
+                        writeToFile("The tank at " + (to_string(tanks[i].getLocation()[0]) + "," + to_string(tanks[i].getLocation()[1]))
+                        + " stayed in place waiting until he can move backwards.\n", GAME_LOG_FILE);
                     }
                 }
                 else
                 {
-                    writeToFile("A tank of player number " + to_string(tanks[i].getType() == P1T ? 1 : 2) 
-                    + " tried to move backwards when he couldn't(unstoppable force met an immovable object).\n", GAME_LOG_FILE);
+                    writeToFile("The tank at " + (to_string(tanks[i].getLocation()[0]) + "," + to_string(tanks[i].getLocation()[1]))
+                    + " tried to move backwards when he couldn't (unstoppable force met an immovable object).\n", GAME_LOG_FILE);
+                    tanks[i].setInBackwards(0);
                 }
                 break;
             case shoot:
-                if (canMakeMove(tanks[i], tanksMove)) // TODO: check if can happen when other tank is where the bullet will spawn
+                if (canMakeMove(tanks[i], tanksMove))
                 {
                     newLocation = tanks[i].newLocation(numOfCols, numOfRows);               // Get bullet location
                     bullet b(newLocation[0], newLocation[1], tanks[i].getOrientation(), B); // Create bullet
                     b.setNewLocation(newLocation[0], newLocation[1]);                       // Set both bullet locations to be the same
-                    (*gameBoard)[newLocation[0]][newLocation[1]][2] = &b;                   // Add bullet to the game board
-                    bullets.push_back(b);
+                    currMovingObjects.emplace_back(b);
+                    bullets.emplace_back(b);
                     tanks[i].useShot();
+                    delete[] newLocation;
                     newLocation = nullptr; // Set to nullptr to enter the else statement(at 430)
                 }
                 else
                 {
-                    writeToFile("A tank of player number " + to_string(tanks[i].getType() == P1T ? 1 : 2) + " shot a blank(no ammo left).\n", GAME_LOG_FILE);
+                    writeToFile("A tank of player number " + to_string(tanks[i].getType() == P1T ? 1 : 2) + " shot a blank.\n", GAME_LOG_FILE);
                 }
 
             default:
@@ -429,22 +433,11 @@ bool gameManager::makeTankMoves(vector<tank> &tanks)
         }
         else
         {
-            tanks[i].setNewLocation(tanks[i].getOldLocation()[0], tanks[i].getOldLocation()[1]);
+            tanks[i].setNewLocation(tanks[i].getLocation()[0], tanks[i].getLocation()[1]);
         }
-        
-
-        // Check if the tank is in backwards mode and update its status
-        // Wrote here since I had already finished the function, and moving to top of the function would give me a headache
-        if (tanks[i].getInBack() > 0)
-        {
-            tanks[i].setInBackwards(tanks[i].getInBack() - 1);
-        }
-        
     }
-} // get the tanks array
-// for every tank tank.play()
-// check if the move is valid
-// if the move is valid - make the move
+}
+
 
 bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)
 {
