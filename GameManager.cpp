@@ -651,6 +651,7 @@ gameManager::~gameManager()
         }
     }
     delete gameBoard;
+    gameBoard = nullptr;
 }
 
 /*
