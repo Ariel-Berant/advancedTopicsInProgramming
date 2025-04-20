@@ -1,7 +1,6 @@
 #ifndef MINE_h
 #define MINE_h
 #include "unmovingObject.h"
-#include "matrixObject.h"
 class mine : public unmovingObject
 {
 

@@ -8,15 +8,25 @@
 #include "tank.h"
 #include "mine.h"
 #include "wall.h"
-#include "player.h"
 #include "orientation.h"
-#include <string>
+#include "playerTank.h"
 #include <iostream>
-#include <string>
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include <array>
+#include <algorithm>
+
+/*
+ * Includes in matrixObject.h:
+ *
+ * #include <vector>
+ * #include <array>
+ * #include <queue>
+ * #include <unordered_set>
+ * #include <string>
+ * #include <cmath>
+ *
+ */
 
 using namespace std;
 
@@ -53,7 +63,7 @@ private:
 
     bool makeAllMoves(vector<movingObject>& objects);
     bool canMakeMove(tank& tankChoseTheMove, enum move moveChosen);
-    bool makeTankMoves(vector<tank>& tanks);
+    bool makeTankMoves(array<tank*, 2>& tanks);
     bool checkCollisions(vector<movingObject>& objects);
 
 

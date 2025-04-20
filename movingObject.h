@@ -2,7 +2,6 @@
 #define MOVINGOBJECT_H
 #include "matrixObject.h"
 #include "orientation.h"
-#include <array>
 using namespace std;
 
 
@@ -16,11 +15,12 @@ protected:
     // This class represents an object that can move in a 2D space.
 public:
     movingObject(int x, int y,objectType oType, orientation orient);
-    ~movingObject();
+    virtual ~movingObject();
 
     int *newLocation(int numOfCols, int numOfRows) const;
     const int *getOldLocation() const;
     void setNewLocation(int newX, int newY);
+    orientation getOrientation() const;
 };
 
 #endif // MOVINGOBJECT_H

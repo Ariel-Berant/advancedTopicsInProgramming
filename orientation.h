@@ -14,3 +14,4 @@ enum orientation {
 
 typedef enum orientation orientation;
 #endif //ORIENTATION_H
+

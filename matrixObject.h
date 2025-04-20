@@ -1,6 +1,12 @@
 #ifndef MATRIXOBJECT_H
 #define MATRIXOBJECT_H
 #include "objectType.h"
+#include <vector>
+#include <array>
+#include <queue>
+#include <unordered_set>
+#include <string>
+#include <cmath>
 class matrixObject
 {
 protected:
@@ -16,7 +22,7 @@ protected:
 public:
     matrixObject();
     matrixObject(int x, int y, objectType objectType);
-    ~matrixObject();
+    virtual ~matrixObject(); // Destructor
     const int *getLocation() const;       // Returns a pointer to the location array
     void setLocation(int x, int y); // Sets the location of the object
     bool getIsAlive() const;        // Returns whether the object has been destroyed or not

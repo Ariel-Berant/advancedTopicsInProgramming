@@ -17,7 +17,6 @@ add_executable(advancedTopicsInProgramming
         move.h
         movingObject.cpp
         movingObject.h
-        player.h
         tank.cpp
         tank.h
         unmovingObject.cpp
@@ -27,4 +26,7 @@ add_executable(advancedTopicsInProgramming
         orientation.h
         gameManager.cpp
         gameManager.h
-        gameManager.h)
+        gameManager.h
+        player1Tank.cpp
+        player2Tank.cpp
+        playerTank.h)
