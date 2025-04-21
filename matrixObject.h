@@ -1,12 +1,13 @@
 #ifndef MATRIXOBJECT_H
 #define MATRIXOBJECT_H
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include "objectType.h"
 #include <vector>
 #include <array>
 #include <queue>
 #include <unordered_set>
 #include <string>
-#include <cmath>
 class matrixObject
 {
 protected:

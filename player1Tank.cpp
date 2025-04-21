@@ -15,7 +15,6 @@ objMove p1Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
 
 vector<objMove> p1Tank::playCalc(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc,
                                  int numOfRows, int numOfCols) {
-    objMove currAction = noAction;
 
     vector<vector<bool>> visited(numOfRows, vector<bool>(numOfCols, false));
     queue<pair<pair<int,int>, vector<array<int, 3>>>> q;
@@ -52,14 +51,13 @@ vector<objMove> p1Tank::playCalc(const vector<vector<array<matrixObject *, 3>>> 
                         sinceShot--;
                     }
                 }
-                moves.emplace_back(moveForward);
             }
             return moves;
         }
 
         // Explore neighbors
-        vector<array<int, 3>> directions = {{-1, 0, U}, {1, 0, D}, {0, -1, L}, {0, 1, R},
-                                             {-1, -1, UL}, {-1, 1, UR}, {1, -1, DL}, {1, 1, DR}};
+        vector<array<int, 3>> directions = {{0, -1, U}, {0, 1, D}, {-1, 0, L}, {1, 0, R},
+                                             {-1, -1, UL}, {1, -1, UR}, {-1, 1, DL}, {1, 1, DR}};
         for (array<int, 3> coords: directions) {
             int nx = (x + coords[0] + numOfCols) % numOfCols; // Wrap around rows
             int ny = (y + coords[1] + numOfRows) % numOfRows; // Wrap around cols

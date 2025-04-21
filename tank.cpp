@@ -88,21 +88,21 @@ bool tank::isSafe(const int x, const int y, const vector<vector<array<matrixObje
     bool bulletFound = false;
 
     vector<array<int, 3>> possibleLocs = {
-        {(numOfCols + x - 2 * movesAhead) % numOfCols,       y,                                                D},
-        {(numOfCols + x + 2 * movesAhead) % numOfCols,       y,                                                U},
-        {x,                                                  (numOfRows + y - 2 * movesAhead) % numOfRows,     R},
-        {x,                                                  (numOfRows + y + 2 * movesAhead) % numOfRows,     L},
+        {(numOfCols + x - 2 * movesAhead) % numOfCols,       y,                                                R},
+        {(numOfCols + x + 2 * movesAhead) % numOfCols,       y,                                                L},
+        {x,                                                  (numOfRows + y - 2 * movesAhead) % numOfRows,     D},
+        {x,                                                  (numOfRows + y + 2 * movesAhead) % numOfRows,     U},
         {(numOfCols + x - 2 * movesAhead) % numOfCols,       (numOfRows + y - 2 * movesAhead) % numOfRows,     DR},
-        {(numOfCols + x - 2 * movesAhead) % numOfCols,       (numOfRows + y + 2 * movesAhead) % numOfRows,     DL},
-        {(numOfCols + x + 2 * movesAhead) % numOfCols,       (numOfRows + y - 2 * movesAhead) % numOfRows,     UR},
+        {(numOfCols + x - 2 * movesAhead) % numOfCols,       (numOfRows + y + 2 * movesAhead) % numOfRows,     UR},
+        {(numOfCols + x + 2 * movesAhead) % numOfCols,       (numOfRows + y - 2 * movesAhead) % numOfRows,     DL},
         {(numOfCols + x + 2 * movesAhead) % numOfCols,       (numOfRows + y + 2 * movesAhead) % numOfRows,     UL},
-        {(numOfCols + x - 2 * movesAhead - 1) % numOfCols,   y,                                                D},
-        {(numOfCols + x + 2 * movesAhead - 1) % numOfCols,   y,                                                U},
-        {x,                                                  (numOfRows + y - 2 * movesAhead - 1) % numOfRows, R},
-        {x,                                                  (numOfRows + y + 2 * movesAhead - 1) % numOfRows, L},
+        {(numOfCols + x - 2 * movesAhead - 1) % numOfCols,   y,                                                R},
+        {(numOfCols + x + 2 * movesAhead - 1) % numOfCols,   y,                                                L},
+        {x,                                                  (numOfRows + y - 2 * movesAhead - 1) % numOfRows, D},
+        {x,                                                  (numOfRows + y + 2 * movesAhead - 1) % numOfRows, U},
         {(numOfCols + x - 2 * movesAhead - 1) % numOfCols,   (numOfRows + y - 2 * movesAhead - 1) % numOfRows, DR},
-        {(numOfCols + x - 2 * movesAhead - 1) % numOfCols,   (numOfRows + y + 2 * movesAhead - 1) % numOfRows, DL},
-        {(numOfCols + x + 2 * movesAhead - 1) % numOfCols,   (numOfRows + y - 2 * movesAhead - 1) % numOfRows, UR},
+        {(numOfCols + x - 2 * movesAhead - 1) % numOfCols,   (numOfRows + y + 2 * movesAhead - 1) % numOfRows, UR},
+        {(numOfCols + x + 2 * movesAhead - 1) % numOfCols,   (numOfRows + y - 2 * movesAhead - 1) % numOfRows, DL},
         {(numOfCols + x + 2 * movesAhead - 1) % numOfCols,   (numOfRows + y + 2 * movesAhead - 1) % numOfRows, UL}
     };
 
@@ -146,6 +146,7 @@ vector<objMove> tank::getRotations(orientation curr, orientation desired) const{
         default:
             break;
     }
+    rotations.push_back(moveForward);
     return rotations;
 }
 
