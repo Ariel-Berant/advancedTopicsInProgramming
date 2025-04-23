@@ -37,14 +37,21 @@ inline bool writeToFile(const string &message, const string &filename)
     ofstream fileToWrite(filename, ios::app);
     if (fileToWrite.is_open())
     {
-        fileToWrite << message << endl;
-        fileToWrite.close();
-        return true;
+        try
+        {
+            fileToWrite << message << endl;
+            fileToWrite.close();
+            return true;
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+        
     }
     else
     {
-        cerr << "Error: Could not open the error file." << endl;
-        return false;
+        cerr << "Error: Could not open " << filename << " continuing the game without writing to it." << endl;
     }
 }
 

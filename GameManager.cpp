@@ -291,7 +291,7 @@ bool gameManager::checkCollisions(vector<movingObject> &objects)
                 // and we need to check if they don't finish at the same point
                 if ((!touchesAtStartOnly || collinear) || endAtSamePoint)
                 {
-                    isCritErr(printCollisionsToLog(objects[i], objects[j]));
+                    printCollisionsToLog(objects[i], objects[j]);
                     objects[i].takeAHit();
                     objects[j].takeAHit();
                 }
@@ -671,3 +671,30 @@ gameManager::~gameManager()
 // 3. **Collision Checker**: The `checkCollisions` function iterates through all pairs of moving object1 and checks for intersections.
 //
 // You can use this function by passing a list of moving object1 with their planned movements.
+
+
+
+
+
+int main(int argc, char const *argv[])
+{
+    if (argc != 2)
+    {
+        cerr << "Usage: " << argv[0] << " <map_file_path>" << endl;
+        return 1;
+    }
+    string mapFilePath = argv[1];
+    try
+    {
+        gameManager gm(mapFilePath);
+        gm.playGame();
+        gm.~gameManager();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "Unexpected Error: " << e.what() << '\n';
+        return(EXIT_FAILURE);
+    }
+    
+    return EXIT_SUCCESS;
+}
