@@ -21,7 +21,7 @@ int *movingObject::newLocation(const int numOfCols, const int numOfRows) const {
         newLoc[1] = (numOfCols + location[1] + 1) % numOfCols;
     }
     else if(orient == R) {
-        newLoc[1] = (numOfCols + location[] + 1) % numOfCols;
+        newLoc[1] = (numOfCols + location[1] + 1) % numOfCols;
     }
     else if(orient == DR) {
         newLoc[0] = (numOfRows + location[0] + 1) % numOfRows;
