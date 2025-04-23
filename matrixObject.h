@@ -22,10 +22,10 @@ protected:
     objectType oType;
 public:
     matrixObject();
-    matrixObject(int x, int y, objectType objectType);
+    matrixObject(int row, int col, objectType objectType);
     virtual ~matrixObject(); // Destructor
     const int *getLocation() const;       // Returns a pointer to the location array
-    void setLocation(int x, int y); // Sets the location of the object
+    void setLocation(int row, int col); // Sets the location of the object
     bool getIsAlive() const;        // Returns whether the object has been destroyed or not
     bool getCanMove() const;        // Returns the canMove status
     void takeAHit();

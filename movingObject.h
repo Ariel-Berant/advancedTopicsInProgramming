@@ -19,7 +19,7 @@ public:
 
     int *newLocation(int numOfCols, int numOfRows) const;
     const int *getOldLocation() const;
-    void setNewLocation(int newX, int newY);
+    void setNewLocation(int newRow, int newCol);
     orientation getOrientation() const;
 };
 

@@ -5,7 +5,7 @@ class wall : public unmovingObject
 {
 
 public:
-    wall(int x, int y, objectType oType);
+    wall(int row, int col, objectType oType);
     ~wall() override;
 };
 

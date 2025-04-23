@@ -7,7 +7,7 @@ matrixObject::matrixObject() : location{0, 0}
     // No additional code is needed here since the initialization is done in the initializer list.
 }
 
-matrixObject::matrixObject(int x, int y, objectType oType) : location{x, y}, hitsLeft(1), oType(oType)
+matrixObject::matrixObject(int row, int col, objectType oType) : location{row, col}, hitsLeft(1), oType(oType)
 {
     // Constructor implementation
     // The member initializer list initializes the location array with the provided x and y values.
@@ -22,11 +22,11 @@ const int* matrixObject::getLocation() const
     return location;
 }
 
-void matrixObject::setLocation(int x, int y)
+void matrixObject::setLocation(int row, int col)
 {
     // Sets the location of the object
-    location[0] = x;
-    location[1] = y;
+    location[0] = row;
+    location[1] = col;
 }
 
 bool matrixObject::getIsAlive() const {
