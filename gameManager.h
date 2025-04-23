@@ -74,7 +74,7 @@ private:
     bool canMakeMove(tank& tankChoseTheMove, enum move moveChosen);
     void makeTankMoves(array<tank*, 2>& tanksArr);
     bool checkCollisions(vector<movingObject>& objects);
-    bool getRowsAndColsFromFile(ifstream& file);
+    bool getRowsAndColsFromFile(const string &filename);
 
 
 

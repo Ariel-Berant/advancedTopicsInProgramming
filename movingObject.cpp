@@ -5,7 +5,11 @@ movingObject::movingObject(int x, int y, objectType oType, orientation orient) :
     // Constructor implementation
     canMove = true; // Initialize canMove to true
 }
-movingObject::~movingObject() = default;
+movingObject::~movingObject(){
+    // Destructor implementation
+    // No specific cleanup is needed here since the base class destructor will handle it.
+    // The destructor is declared virtual in the base class to ensure proper cleanup of derived classes.
+}
 
 int *movingObject::newLocation(const int numOfCols, const int numOfRows) const {
     int *newLoc = new int[2]{location[0], location[1]};

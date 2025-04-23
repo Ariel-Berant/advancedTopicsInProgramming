@@ -114,7 +114,6 @@ array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 
     return {0,0,0,0};
 }
 objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
-    bool found = false;
     int numOfBulletsChasing = 0;
     int closestBulletDist = 7;
     array<int,4> closestLocation ={0};
@@ -127,7 +126,6 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         if(curLocation[2] < closestBulletDist){
             closestBulletDist = curLocation[2];
             closestLocation = curLocation;
-            found = true;
         }
     }
     if(closestBulletDist != 7){//if there is a bullet chasing the tank

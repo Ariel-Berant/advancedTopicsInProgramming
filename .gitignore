@@ -40,3 +40,6 @@ build
 # for CLion IDE
 .idea
 cmake-build-debug
+
+# debugging
+.gdbinit

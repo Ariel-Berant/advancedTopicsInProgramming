@@ -5,7 +5,11 @@ tank::tank(int x, int y, orientation orient, objectType oType) : movingObject(x,
     // The member initializer list initializes the base class movingObject with x, y, and orientation.
     // It also initializes the tank_size, shotsLeft, and inBackwards members.
 }
-tank::~tank() = default;
+tank::~tank(){
+    // Destructor implementation
+    // No specific cleanup is needed here since the base class destructor will handle it.
+    // The destructor is declared virtual in the base class to ensure proper cleanup of derived classes.
+}
 
 int tank::getInBack() const {
     return inBackwards;
@@ -131,6 +135,8 @@ vector<objMove> tank::getRotations(orientation curr, orientation desired) const{
             break;
         case 3:
             rotations.push_back(rotateQuarterLeft);
+            rotations.push_back(rotateEighthLeft);
+            break;
         case 1:
             rotations.push_back(rotateEighthLeft);
             break;
@@ -139,6 +145,8 @@ vector<objMove> tank::getRotations(orientation curr, orientation desired) const{
             break;
         case 5:
             rotations.push_back(rotateQuarterRight);
+            rotations.push_back(rotateEighthRight);
+            break;
         case 7:
             rotations.push_back(rotateEighthRight);
             break;
@@ -160,21 +168,29 @@ bool tank::canSeeOtherTank(const int otherLoc[2], const vector<vector<array<matr
     switch (orient){
         case UR:
             move[0] = 1;
+            move[1] = -1;
+            break;
         case U:
             move[1] = -1;
             break;
         case DL:
             move[0] = -1;
+            move[1] = 1;
+            break;
         case D:
             move[1] = 1;
             break;
         case UL:
             move[1] = -1;
+            move[0] = -1;
+            break;
         case L:
             move[0] = -1;
             break;
         case DR:
             move[1] = 1;
+            move[0] = 1;
+            break;
         case R:
             move[0] = 1;
             break;

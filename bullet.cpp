@@ -5,4 +5,6 @@ bullet::bullet(int x, int y, orientation orient, objectType oType) : movingObjec
     // constructor
     // Initialize the bullet's properties here if needed
 }
-bullet::~bullet() = default;
+bullet::~bullet(){
+    
+}

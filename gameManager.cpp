@@ -5,15 +5,23 @@
 
 using namespace std;
 
-bool gameManager::getRowsAndColsFromFile(ifstream& file1) {
+bool gameManager::getRowsAndColsFromFile(const string &filename) {
     int cols, rows;
     string line;
     bool gotDims = true;
 
+    ifstream file1;
+    file1.open(filename);
+    if (!file1.is_open())
+    {
+        cerr << "Error: Could not open the file '" << filename << "'." << endl;
+        return false;
+    }
+
     if (getline(file1, line))
     {
         istringstream iss(line);
-        if (iss >> cols >> rows)
+        if (iss >> rows >> cols)
         {
             numOfCols = cols;
             numOfRows = rows;
@@ -29,6 +37,8 @@ bool gameManager::getRowsAndColsFromFile(ifstream& file1) {
         cerr << "Error: Failed to read line from file." << endl;
         gotDims = false;
     }
+    file1.close();
+
     return gotDims;
 }
 
@@ -36,6 +46,11 @@ bool gameManager::getRowsAndColsFromFile(ifstream& file1) {
 // If some critical error occurs(criticalErr==true), function fails and returns false(i.e return !criticalErr).
 bool gameManager::createMap(const string &filename)
 {
+    if (!getRowsAndColsFromFile(filename))
+    {
+        return false;
+    }
+    
     ifstream file1;
     file1.open(filename);
     if (!file1.is_open())
@@ -44,16 +59,12 @@ bool gameManager::createMap(const string &filename)
         return false;
     }
 
-    if (!getRowsAndColsFromFile(file1))
-    {
-        return false;
-    }
-
-
     int currRow = 0, currCol = 0;
     string line;
 
     gameBoard = new vector<vector<array<matrixObject *, 3>>>(numOfRows, vector<array<matrixObject *, 3>>(numOfCols));
+
+    getline(file1, line); // Skip the first line with the dimensions
 
     while (getline(file1, line))
     {
@@ -436,7 +447,8 @@ bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true
         (*gameBoard)[movingObjects[i].getOldLocation()[0]][movingObjects[i].getOldLocation()[1]][1] = nullptr;
         (*gameBoard)[objectNewX][objectNewY][2] = &movingObjects[i];
 
-        if ((movingObjects[i].getType() == P1T || movingObjects[i].getType() == P2T) && (*gameBoard)[objectNewX][objectNewY][0]->getType() == M)
+        if (!(*gameBoard)[objectNewX][objectNewY][0]){}
+        else if ((movingObjects[i].getType() == P1T || movingObjects[i].getType() == P2T) && (*gameBoard)[objectNewX][objectNewY][0]->getType() == M)
         {
             // if a tank stepped on a mine - they both destroyed
 
@@ -560,12 +572,13 @@ void gameManager::playGame()
 {
     writeToFile("Starting game\n", GAME_LOG_FILE);
     bool gameOver = false;
-    objMove p1Move, p2Move;
     currMovingObjects.push_back(*tanks[0]);
     currMovingObjects.push_back(*tanks[1]);
 
     while (!gameOver && noBulletsCnt > 0 && turns < 10000){
         turns++;
+        isOddTurn = !isOddTurn;
+        writeToFile("Turn number " + to_string(turns) + "\n", GAME_LOG_FILE);
         if (!(tanks[0]->hasBullets()) && !(tanks[1]->hasBullets())){
             noBulletsCnt--;
         }
@@ -601,8 +614,8 @@ void gameManager::playGame()
     // destroyBoardAndObjects();
 }
 
-gameManager::gameManager(const std::string &filename) : numOfCols(0), numOfRows(0), gameBoard(nullptr),
-    noBulletsCnt(40), isOddTurn(false), turns(0), tanks(array<tank*, 2>{nullptr, nullptr})
+gameManager::gameManager(const std::string &filename) :  numOfRows(0), numOfCols(0),
+turns(0), noBulletsCnt(40), isOddTurn(false), gameBoard(nullptr), tanks(array<tank*, 2>{nullptr, nullptr})
 {
     if (!createMap(filename)){
         cerr << "Error: Failed to create map from file." << endl;
@@ -612,16 +625,16 @@ gameManager::gameManager(const std::string &filename) : numOfCols(0), numOfRows(
 
 gameManager::~gameManager(){
     if (!gameBoard){
-        for (int i = 0; i < numOfRows; ++i){
-            for (int j = 0; j < numOfCols; ++j){
-                for (int k = 0; k < 2; ++k){
-                    if (!(*gameBoard)[i][j][k]){
-                        delete (*gameBoard)[i][j][k];
-                        (*gameBoard)[i][j][k] = nullptr;
-                    }
-                }
-            }
-        }
+        // for (int i = 0; i < numOfRows; ++i){
+        //     for (int j = 0; j < numOfCols; ++j){
+        //         for (int k = 0; k < 2; ++k){
+        //             if (!(*gameBoard)[i][j][k]){
+        //                 delete (*gameBoard)[i][j][k];
+        //                 (*gameBoard)[i][j][k] = nullptr;
+        //             }
+        //         }
+        //     }
+        // }
         delete gameBoard;
         gameBoard = nullptr;
     }

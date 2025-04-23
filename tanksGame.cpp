@@ -14,9 +14,8 @@ int main(int argc, char const *argv[])
     string mapFilePath = argv[1];
     try
     {
-        gameManager gm(mapFilePath);
+        gameManager gm = gameManager(mapFilePath);
         gm.playGame();
-        gm.~gameManager();
     }
     catch(const std::exception& e)
     {
