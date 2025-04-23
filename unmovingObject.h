@@ -12,7 +12,7 @@ class unmovingObject : public matrixObject
     // - canMove: A boo matrixObjectlean indicating whether the object can move or not.
 protected:
 public:
-    unmovingObject(int x, int y ,objectType oType);
+    unmovingObject(int row, int col ,objectType oType);
     ~unmovingObject();
 };
 

@@ -441,57 +441,57 @@ bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true
     for (size_t i = 0; i < movingObjects.size(); ++i)
     {
 
-        const int objectNewX = movingObjects[i].getLocation()[0];
-        const int objectNewY = movingObjects[i].getLocation()[1];
+        const int objectNewRow = movingObjects[i].getLocation()[0];
+        const int objectNewCol = movingObjects[i].getLocation()[1];
 
         (*gameBoard)[movingObjects[i].getOldLocation()[0]][movingObjects[i].getOldLocation()[1]][1] = nullptr;
-        (*gameBoard)[objectNewX][objectNewY][2] = &movingObjects[i];
+        (*gameBoard)[objectNewRow][objectNewCol][2] = &movingObjects[i];
 
-        if (!(*gameBoard)[objectNewX][objectNewY][0]){}
-        else if ((movingObjects[i].getType() == P1T || movingObjects[i].getType() == P2T) && (*gameBoard)[objectNewX][objectNewY][0]->getType() == M)
+        if (!(*gameBoard)[objectNewRow][objectNewCol][0]){}
+        else if ((movingObjects[i].getType() == P1T || movingObjects[i].getType() == P2T) && (*gameBoard)[objectNewRow][objectNewCol][0]->getType() == M)
         {
             // if a tank stepped on a mine - they both destroyed
 
             movingObjects[i].takeAHit();
-            matrixObject *explodedMine = (*gameBoard)[objectNewX][objectNewY][0];
+            matrixObject *explodedMine = (*gameBoard)[objectNewRow][objectNewCol][0];
             delete explodedMine;
-            (*gameBoard)[objectNewX][objectNewY][0] = nullptr; // remove the mine from the board
+            (*gameBoard)[objectNewRow][objectNewCol][0] = nullptr; // remove the mine from the board
 
             int tanksPlayer = movingObjects[i].getType() == P1T ? 1 : 2;
 
             if (movingObjects[i].getIsAlive())
             {
                 writeToFile("A tank of player number " + to_string(tanksPlayer) 
-                + " stepped on a mine at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
+                + " stepped on a mine at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
                                 ") .\n",
                             GAME_LOG_FILE);
             }
             else
             {
-                writeToFile("The mine at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
+                writeToFile("The mine at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
                                 ") has been explode.\n",
                             GAME_LOG_FILE);
             }
         }
 
-        else if (movingObjects[i].getType() == B && (*gameBoard)[objectNewX][objectNewY][0]->getType() == W)
+        else if (movingObjects[i].getType() == B && (*gameBoard)[objectNewRow][objectNewCol][0]->getType() == W)
         {
             // if a bullet hit a wall - the bullet is destroyed and the wall takes a hit
 
-            writeToFile("A bullet hit a wall at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
+            writeToFile("A bullet hit a wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
                             ") .\n",
                         GAME_LOG_FILE);
 
             movingObjects[i].takeAHit();
-            matrixObject *damagedWall = (*gameBoard)[objectNewX][objectNewY][0];
+            matrixObject *damagedWall = (*gameBoard)[objectNewRow][objectNewCol][0];
             damagedWall->takeAHit();
 
             if (!damagedWall->getIsAlive())
             { // if the wall destroyed - remove from the board
                 delete damagedWall;
-                (*gameBoard)[objectNewX][objectNewY][0] = nullptr;
+                (*gameBoard)[objectNewRow][objectNewCol][0] = nullptr;
 
-                writeToFile("The wall at (" + to_string(objectNewX) + "," + to_string(objectNewY) +
+                writeToFile("The wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
                                 ") has been destroyed.\n",
                             GAME_LOG_FILE);
             }
@@ -504,8 +504,8 @@ bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true
             //          - The moving object is a tank, and it stepped on a mine
             //          - The moving object is a bullet, and it hit a wall
 
-            matrixObject *destroyedObject = (*gameBoard)[objectNewX][objectNewY][2];
-            (*gameBoard)[objectNewX][objectNewY][2] = nullptr; // remove the object from the board
+            matrixObject *destroyedObject = (*gameBoard)[objectNewRow][objectNewCol][2];
+            (*gameBoard)[objectNewRow][objectNewCol][2] = nullptr; // remove the object from the board
             movingObjects.erase(movingObjects.begin() + i);    // remove the object from the moving object1 vector
 
             if (destroyedObject->getType() == B)
@@ -529,11 +529,11 @@ bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true
     }
     for (size_t i = 0; i < movingObjects.size(); ++i)
     { // do the actual move to all the object1 that didn't get destroyed
-        int objectNewX = movingObjects[i].getLocation()[0];
-        int objectNewY = movingObjects[i].getLocation()[1];
+        int objectNewRow = movingObjects[i].getLocation()[0];
+        int objectNewCol = movingObjects[i].getLocation()[1];
 
-        (*gameBoard)[objectNewX][objectNewY][2] = nullptr;
-        (*gameBoard)[objectNewX][objectNewY][1] = &movingObjects[i];
+        (*gameBoard)[objectNewRow][objectNewCol][2] = nullptr;
+        (*gameBoard)[objectNewRow][objectNewCol][1] = &movingObjects[i];
     }
     return false;
 }

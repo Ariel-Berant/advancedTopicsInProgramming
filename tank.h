@@ -26,7 +26,7 @@ protected:
 
 
 public:
-    tank(int x, int y, orientation orient, objectType oType);
+    tank(int row, int col, orientation orient, objectType oType);
     ~tank() override;
     void setOrientation( orientation newOrient);
     bool canShoot() const;

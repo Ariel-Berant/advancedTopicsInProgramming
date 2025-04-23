@@ -1,6 +1,6 @@
 #include "playerTank.h"
 
-p1Tank::p1Tank(int x, int y, orientation orient)  : tank(x, y, orient, P1T) {}
+p1Tank::p1Tank(int row, int col, orientation orient)  : tank(row, col, orient, P1T) {}
 
 objMove p1Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *otherLoc, int numOfCols,
                      int numOfRows) {
@@ -29,10 +29,10 @@ vector<objMove> p1Tank::playCalc(const vector<vector<array<matrixObject *, 3>>> 
 
         q.pop();
 
-        int x = current.first, y = current.second;
+        int row = current.first, col = current.second;
 
         // If we reach the target, return the path
-        if (x == tank2Loc[0] && y == tank2Loc[1]) {
+        if (row == tank2Loc[0] && col == tank2Loc[1]) {
             int shots = shotsLeft, sinceShot = turnsUntilNextShot;
             vector<objMove> moves, currRotations;
             orientation currOrient = orient;
@@ -56,20 +56,20 @@ vector<objMove> p1Tank::playCalc(const vector<vector<array<matrixObject *, 3>>> 
         }
 
         // Explore neighbors
-        vector<array<int, 3>> directions = {{0, -1, U}, {0, 1, D}, {-1, 0, L}, {1, 0, R},
-                                             {-1, -1, UL}, {1, -1, UR}, {-1, 1, DL}, {1, 1, DR}};
+        vector<array<int, 3>> directions = {{-1, 0, U}, {1, 0, D}, {0, -1, L}, {0, 1, R},
+                                             {-1, -1, UL}, {-1, 1, UR}, {1, -1, DL}, {1, 1, DR}};
         for (array<int, 3> coords: directions) {
-            int nx = (x + coords[0] + numOfCols) % numOfCols; // Wrap around rows
-            int ny = (y + coords[1] + numOfRows) % numOfRows; // Wrap around cols
+            int nRow = (row + coords[0] + numOfRows) % numOfRows; // Wrap around rows
+            int nCol = (col + coords[1] + numOfCols) % numOfCols; // Wrap around cols
 
-            if (!visited[nx][ny]
-            && isSafe(nx, ny, gameBoard, numOfCols, numOfRows, (int)path.size() + 1)) {
+            if (!visited[nRow][nCol]
+            && isSafe(nRow, nCol, gameBoard, numOfCols, numOfRows, (int)path.size() + 1)) {
                 vector<array<int, 3>> newPath = path;
-                array<int, 3> newCoords = {nx, ny, coords[2]};
+                array<int, 3> newCoords = {nRow, nCol, coords[2]};
                 newPath.emplace_back(newCoords); // Add new direction to path
-                q.push({{nx, ny}, newPath});
+                q.push({{nRow, nCol}, newPath});
             }
-            visited[nx][ny] = true;
+            visited[nRow][nCol] = true;
         }
     }
 

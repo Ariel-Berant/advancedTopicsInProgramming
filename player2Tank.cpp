@@ -1,20 +1,34 @@
 #include "playerTank.h"
 
-p2Tank::p2Tank(int x, int y, orientation orient)  : tank(x, y, orient, P2T) {}
+p2Tank::p2Tank(int row, int col, orientation orient)  : tank(row, col, orient, P2T) {}
 
-// Function to compute the direction from (x, y) offsets
-int getDirectionFromOffset(int x, int y) {
-    double angle = atan2(y, x); // Compute angle in radians
-    int dir = static_cast<int>(round(angle / (M_PI / 4))) % 8; // Map to direction
-    if (dir < 0) dir += 8; // Ensure direction is non-negative
-    return dir;
+// Function to compute the direction from (row, col) offsets
+int getDirectionFromOffset(int row, int col) {
+        // Handle the special case where there's no displacement
+
+        // Calculate the angle in radians
+        double angle = atan2(-row, col); // Negate row for matrix coordinate system
+    
+        // Normalize the angle to a direction (0 to 7)
+        int direction = static_cast<int>(round(4 * angle / M_PI)) % 8;
+    
+        // Ensure the direction is positive
+        if (direction < 0) {
+            direction += 8;
+        }
+    
+        return direction;
 }
-// Function to get the x and y offsets based on the direction
+// Function to get the row and col offsets based on the direction
 pair<int, int> getDirectionOffset(int dir) {
-    // Calculate x and y offsets using cos and sin
-    int x = round(cos(dir * M_PI / 4)); // M_PI is π
-    int y = round(sin(dir * M_PI / 4));
-    return {x, y};
+    // Calculate the angle in radians
+    // Calculate the angle in radians
+    double angle = M_PI / 4.0 * (7 - dir);
+
+    // Calculate row and col displacements using sin and cos
+    int rowDisplacement = -round(sin(angle)); // Flip for matrix row (vertical axis)
+    int colDisplacement = round(cos(angle));  // Horizontal axis
+    return {rowDisplacement, colDisplacement};
 }
 
 pair<int, int> p2Tank::getNeighborPointGivenOrient(int orient){
@@ -52,23 +66,28 @@ int calculateFirstStepInRotate(int startOrient, int endOrient) {
 
 
 // Function to calculate the target orientation based on position differences
-int calculateTargetOrientation(int currentX, int currentY, int targetX, int targetY) {
-    // Calculate the direction vector
-    int dx = targetX - currentX;
-    int dy = targetY - currentY;
+int calculateTargetOrientation(int startRow, int startCol, int targetRow, int targetCol) {
+    // Calculate the offset
+    int offsetRow = targetRow - startRow;
+    int offsetCol = targetCol - startCol;
 
-    // Handle the edge case where the points are the same
-    if (dx == 0 && dy == 0) {
-        return -1; // No valid orientation, already at the target
+    // Handle the edge case where start equals target
+    if (offsetRow == 0 && offsetCol == 0) {
+        return -1; // No orientation needed
     }
 
-    // Calculate the angle of the direction vector in radians
-    double angle = atan2(-dy, dx); // Negative Y is "Up"
+    // Calculate the angle in radians
+    double angle = atan2(-offsetRow, offsetCol); // Negate offsetRow for matrix row system
 
-    // Normalize the angle to one of the 8 orientations
-    int orientation = static_cast<int>(round((angle + M_PI) / (M_PI / 4))) % 8;
+    // Convert the angle to one of the 8 directions
+    int direction = static_cast<int>(round(4 * angle / M_PI)) % 8;
 
-    return orientation;
+    // Ensure the direction is positive
+    if (direction < 0) {
+        direction += 8;
+    }
+
+    return direction;
 }
 
 // Function to determine the correct move to reach the target
@@ -104,11 +123,11 @@ pair<objMove, int> p2Tank::determineNextMove(int currentOrientation, int targetO
 
 
 // the return value is {x, y, distance, orientation}
-array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inX, int inY){
+array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRow, int inCol){
     for(int i = 1; i<= 6 ; i++){
-        matrixObject* obj = gameBoard[location[0] + i * inX][location[1] + i * inY][1];
-        if(obj && obj->getType() == B && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inX, -inY)){
-            return {location[0] + i * inX, location[1] + i * inY, i, getDirectionFromOffset(inX, inY)};
+        matrixObject* obj = gameBoard[location[0] + i * inRow][location[1] + i * inCol][1];
+        if(obj && obj->getType() == B && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inRow, -inCol)){
+            return {location[0] + i * inRow, location[1] + i * inCol, i, getDirectionFromOffset(inRow, inCol)};
         }
     }
     return {0,0,0,0};
