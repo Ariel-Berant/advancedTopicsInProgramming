@@ -23,6 +23,10 @@ bool tank::canShoot() const {
     return shotsLeft > 0 && turnsUntilNextShot == 0;
 }
 
+bool tank::hasBullets() const {
+    return shotsLeft > 0;
+}
+
 void tank::useShot() {
     turnsUntilNextShot = 4;
     shotsLeft--;

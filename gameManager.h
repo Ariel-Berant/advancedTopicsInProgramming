@@ -72,8 +72,9 @@ private:
 
     bool makeAllMoves(vector<movingObject>& objects);
     bool canMakeMove(tank& tankChoseTheMove, enum move moveChosen);
-    bool makeTankMoves(array<tank*, 2>& tanksArr);
+    void makeTankMoves(array<tank*, 2>& tanksArr);
     bool checkCollisions(vector<movingObject>& objects);
+    bool getRowsAndColsFromFile(ifstream& file);
 
 
 

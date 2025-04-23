@@ -18,7 +18,7 @@ public:
     objMove play(const vector<vector<array<matrixObject*, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) override;
     pair<int, int> getNeighborPointGivenOrient(int orient);
     pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
-    array<int,4> searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int inRows, int inCols);
+    array<int,4> searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRows, int inCols);
 };
 
 #endif //PLAYERTANK_H

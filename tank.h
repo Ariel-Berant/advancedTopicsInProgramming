@@ -39,6 +39,7 @@ public:
     bool isSafe(int x, int y, const vector<vector<array<matrixObject*, 3>>>& gameBoard, int numOfCols, int numOfRows, int movesAhead) const;
     vector<objMove> getRotations(orientation start, orientation desired) const;
     bool canSeeOtherTank(const int otherLoc[2], const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfRows, int numOfCols) const;
+    bool hasBullets() const;
 };
 
 

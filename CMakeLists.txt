@@ -29,4 +29,6 @@ add_executable(advancedTopicsInProgramming
         gameManager.h
         player1Tank.cpp
         player2Tank.cpp
-        playerTank.h)
+        playerTank.h
+        tanksGame.cpp
+        tanksGame.h)

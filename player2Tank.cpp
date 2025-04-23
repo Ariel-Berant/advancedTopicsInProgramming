@@ -104,7 +104,7 @@ pair<objMove, int> p2Tank::determineNextMove(int currentOrientation, int targetO
 
 
 // the return value is {x, y, distance, orientation}
-array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int numOfCols, const int numOfRows, int inX, int inY){
+array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inX, int inY){
     for(int i = 1; i<= 6 ; i++){
         matrixObject* obj = gameBoard[location[0] + i * inX][location[1] + i * inY][1];
         if(obj && obj->getType() == B && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inX, -inY)){
@@ -120,7 +120,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
     array<int,4> closestLocation ={0};
     for(int dir=0; dir<8; dir++) {
         pair<int, int> offset = getDirectionOffset(dir);
-        array<int, 4> curLocation = searchForBullets(gameBoard, numOfCols, numOfRows, offset.first, offset.second);
+        array<int, 4> curLocation = searchForBullets(gameBoard, offset.first, offset.second);
         if(curLocation[2] >=1){
             numOfBulletsChasing++;
         }
@@ -149,7 +149,8 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
                 pair<objMove, int> val =  determineNextMove(orien, targetOrientation);
                 objMove nextMove = val.first;
                 int numOfMoves = val.second;
-                if(isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves)){
+                if(isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves)
+                        && isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves + 1)){
                     if(numOfMoves <= (closestBulletDist/2)){
                         return nextMove;
                     }
