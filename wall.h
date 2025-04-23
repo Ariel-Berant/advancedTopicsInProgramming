@@ -6,7 +6,7 @@ class wall : public unmovingObject
 
 public:
     wall(int x, int y, objectType oType);
-    ~wall();
+    ~wall() override;
 };
 
 #endif // WALL_H

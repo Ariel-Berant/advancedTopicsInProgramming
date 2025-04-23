@@ -76,7 +76,6 @@ int* tank::newLocationAtReverse(const int numOfCols, const int numOfRows) const 
 bool tank::isSafe(const int x, const int y, const vector<vector<array<matrixObject*, 3>>>& gameBoard,
                   const int numOfCols, const int numOfRows, const int movesAhead) const{
     matrixObject* unmovingObj = gameBoard[x][y][0];
-    matrixObject* movingObj = gameBoard[x][y][1];
     matrixObject* bulletObj;
 
     // Check for walls or mines

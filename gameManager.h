@@ -52,7 +52,9 @@ inline bool writeToFile(const string &message, const string &filename)
     else
     {
         cerr << "Error: Could not open " << filename << " continuing the game without writing to it." << endl;
+        return false;
     }
+    return true;
 }
 
 class gameManager
@@ -70,7 +72,7 @@ private:
 
     bool makeAllMoves(vector<movingObject>& objects);
     bool canMakeMove(tank& tankChoseTheMove, enum move moveChosen);
-    bool makeTankMoves(array<tank*, 2>& tanks);
+    bool makeTankMoves(array<tank*, 2>& tanksArr);
     bool checkCollisions(vector<movingObject>& objects);
 
 

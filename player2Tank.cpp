@@ -49,32 +49,7 @@ int calculateFirstStepInRotate(int startOrient, int endOrient) {
         return (startOrient - 1 + 8) % 8; // Move 1 step counterclockwise
     }
 }
-objMove determineMove(int startOrient, int targetOrient) {
-    // Calculate the difference
-    int diff = (targetOrient - startOrient + 8) % 8; // Ensure positive difference
 
-    // Map the difference to the appropriate move
-    if (diff == 0) {
-        return moveForward; // Already facing the target
-    } else if (diff == 1) {
-        return rotateEighthRight; // 1 step clockwise
-    } else if (diff == 2) {
-        return rotateQuarterRight; // 2 steps clockwise
-    } else if (diff == 3) {
-        return rotateQuarterRight; // 3 steps clockwise
-    } else if (diff == 4) {
-        return rotateQuarterRight; // 4 steps clockwise (180-degree turn)
-    } else if (diff == 5) {
-        return rotateQuarterLeft; // 3 steps counterclockwise (5/8ths clockwise equivalent)
-    } else if (diff == 6) {
-        return rotateQuarterLeft; // 2 steps counterclockwise
-    } else if (diff == 7) {
-        return rotateEighthLeft; // 1 step counterclockwise
-    }
-    else{
-      return noAction;
-    }
-}
 
 // Function to calculate the target orientation based on position differences
 int calculateTargetOrientation(int currentX, int currentY, int targetX, int targetY) {
@@ -97,7 +72,7 @@ int calculateTargetOrientation(int currentX, int currentY, int targetX, int targ
 }
 
 // Function to determine the correct move to reach the target
-pair<objMove, int> p2Tank::determineNextMove(int currentOrientation, int targetOrientation, int targetX, int targetY) {
+pair<objMove, int> p2Tank::determineNextMove(int currentOrientation, int targetOrientation) {
   if (targetOrientation == -1) {
         return {noAction,0}; // No valid move if already at the target
     }
@@ -163,17 +138,15 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
                 return shoot;
             }
             else{
-                return determineMove(orient, calculateFirstStepInRotate(orient, closestLocation[3]));//change the orientation in order to shoot
+                return determineNextMove(orient, calculateFirstStepInRotate(orient, closestLocation[3])).first;//change the orientation in order to shoot
             }
         }
         else{
             int targetOrientation;
             for(int orien = 0 ;orien < 8 ; orien++){//search for a safe place from the bullets
                 pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien);
-                int dx = pointToCheck.first - location[0];
-                int dy = pointToCheck.second - location[1];
                 targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
-                pair<objMove, int> val =  determineNextMove(orien, targetOrientation, pointToCheck.first, pointToCheck.second);
+                pair<objMove, int> val =  determineNextMove(orien, targetOrientation);
                 objMove nextMove = val.first;
                 int numOfMoves = val.second;
                 if(isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves)){
@@ -191,7 +164,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
           }
           else{
               int targetOrientation = calculateTargetOrientation(location[0], location[1], otherLoc[0], otherLoc[1]);
-              return determineMove(orient, targetOrientation);
+              return determineNextMove(orient, targetOrientation).first;
           }
 
     }

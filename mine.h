@@ -6,7 +6,7 @@ class mine : public unmovingObject
 
 public:
     mine(int x, int y, objectType oType);
-    ~mine();
+    ~mine() override;
 };
 
 #endif // MINE_h

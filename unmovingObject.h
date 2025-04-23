@@ -13,7 +13,7 @@ class unmovingObject : public matrixObject
 protected:
 public:
     unmovingObject(int x, int y ,objectType oType);
-    virtual ~unmovingObject();
+    virtual ~unmovingObject() = 0;
 };
 
 #endif // UNMOVINGOBJECT_H
