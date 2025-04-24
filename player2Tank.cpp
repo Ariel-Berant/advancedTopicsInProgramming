@@ -125,9 +125,11 @@ pair<objMove, int> p2Tank::determineNextMove(int currentOrientation, int targetO
 // the return value is {x, y, distance, orientation}
 array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRow, int inCol){
     for(int i = 1; i<= 6 ; i++){
-        matrixObject* obj = gameBoard[location[0] + i * inRow][location[1] + i * inCol][1];
+        int row = (location[0] + i * inRow) % gameBoard.size();
+        int col = (location[1] + i * inCol) % gameBoard[0].size();
+        matrixObject* obj = gameBoard[row][col][1];
         if(obj && obj->getType() == B && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inRow, -inCol)){
-            return {location[0] + i * inRow, location[1] + i * inCol, i, getDirectionFromOffset(inRow, inCol)};
+            return {row, col, i, getDirectionFromOffset(inRow, inCol)};
         }
     }
     return {0,0,0,0};
