@@ -43,3 +43,6 @@ cmake-build-debug
 
 # debugging
 .gdbinit
+
+# game file
+tanks_game

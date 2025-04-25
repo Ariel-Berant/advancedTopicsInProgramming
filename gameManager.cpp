@@ -412,6 +412,8 @@ void gameManager::makeTankMoves(array<tank*, 2> &tanksArr)
                     tanksArr[i]->useShot();
                     delete newLocation;
                     newLocation = nullptr; // Set to nullptr to enter the else statement(at 430)
+                    writeToFile("The tank at " + (to_string(tanksArr[i]->getLocation()[0]) + "," + to_string(tanksArr[i]->getLocation()[1]))
+                        + " shot a bullet.\n", GAME_LOG_FILE);
                 }
                 else
                 {
