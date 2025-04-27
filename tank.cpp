@@ -93,24 +93,24 @@ bool tank::isSafe(const int row, const int col, const vector<vector<array<matrix
 
     // Check for bullets
     bool bulletNotFound = true;
-	// TODO: ensure no leak from gameBoard boundaries - add numOfRows\numOfCols after modulo
+
     vector<array<int, 3>> possibleLocs = {
-        {row,                                                  	(numOfCols + (col - 2 * movesAhead)) % numOfCols,          	L},
-        {row,                                                  	(numOfCols + col + 2 * movesAhead) % numOfCols,          	R},
-        {(numOfRows + (row - 2 * movesAhead)) % numOfRows,      col,                                                     	U},
-        {(numOfRows + row + 2 * movesAhead) % numOfRows,       	col,                                                     	D},
-        {(numOfRows + (row - 2 * movesAhead)) % numOfRows,      (numOfCols + (col - 2 * movesAhead)) % numOfCols,          	UL},
-        {(numOfRows + row + 2 * movesAhead) % numOfRows,       	(numOfCols + (col - 2 * movesAhead)) % numOfCols,          	DL},
-        {(numOfRows + (row - 2 * movesAhead)) % numOfRows,      (numOfCols + col + 2 * movesAhead) % numOfCols,          	UR},
-        {(numOfRows + row + 2 * movesAhead) % numOfRows,       	(numOfCols + col + 2 * movesAhead) % numOfCols,         	DR},
-        {row,                                                  	(numOfCols + (col - 2 * movesAhead - 1)) % numOfCols,      	L},
-        {row,                                                 	(numOfCols + (col + 2 * movesAhead - 1)) % numOfCols,      	R},
-        {(numOfRows + (row - 2 * movesAhead - 1)) % numOfRows,  col,                                                   		U},
-        {(numOfRows + (row + 2 * movesAhead - 1)) % numOfRows,  col,                                                  	   	D},
-        {(numOfRows + (row - 2 * movesAhead - 1)) % numOfRows,  (numOfCols + (col - 2 * movesAhead - 1)) % numOfCols,      	UL},
-        {(numOfRows + (row + 2 * movesAhead - 1)) % numOfRows,  (numOfCols + (col - 2 * movesAhead - 1)) % numOfCols,    	DL},
-        {(numOfRows + (row - 2 * movesAhead - 1)) % numOfRows,  (numOfCols + (col + 2 * movesAhead - 1)) % numOfCols,    	UR},
-        {(numOfRows + (row + 2 * movesAhead - 1)) % numOfRows,  (numOfCols + (col + 2 * movesAhead - 1)) % numOfCols,    	DR}
+        {row,                                                  					(numOfCols + ((col - 2 * movesAhead) % numOfCols)) % numOfCols,          	L},
+        {row,                                                  					(numOfCols + col + 2 * movesAhead) % numOfCols,          	R},
+        {(numOfRows + ((row - 2 * movesAhead) % numOfRows)) % numOfRows,    	col,                                                     	U},
+        {(numOfRows + row + 2 * movesAhead) % numOfRows,       					col,                                                     	D},
+        {(numOfRows + ((row - 2 * movesAhead) % numOfRows)) % numOfRows,    	(numOfCols + ((col - 2 * movesAhead) % numOfCols)) % numOfCols,          	UL},
+        {(numOfRows + row + 2 * movesAhead) % numOfRows,       					(numOfCols + ((col - 2 * movesAhead) % numOfCols)) % numOfCols,          	DL},
+        {(numOfRows + ((row - 2 * movesAhead) % numOfRows)) % numOfRows,    	(numOfCols + col + 2 * movesAhead) % numOfCols,          	UR},
+        {(numOfRows + row + 2 * movesAhead) % numOfRows,       					(numOfCols + col + 2 * movesAhead) % numOfCols,         	DR},
+        {row,                                                  					(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,      	L},
+        {row,                                                 					(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,      	R},
+        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,	col,                                                   		U},
+        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	col,                                                  		   			D},
+        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,      	UL},
+        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,    	DL},
+        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,    	UR},
+        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,    	DR}
     };
 
 

@@ -165,9 +165,9 @@ bool gameManager::createMap(const string &filename)
 void gameManager::moveBullets()
 {
     int *newLoc;
-    for (bullet b : bullets){
-        newLoc = b.newLocation(numOfCols, numOfRows);
-        b.setNewLocation(newLoc[0], newLoc[1]);
+    for (bullet *b : bullets){
+        newLoc = b->newLocation(numOfCols, numOfRows);
+        b->setNewLocation(newLoc[0], newLoc[1]);
         delete newLoc;
     }
 }
@@ -257,16 +257,16 @@ void printCollisionsToLog(movingObject &object1, movingObject &object2)
 
 // This function was written with the help of chat gpt
 // Function to check for collisions between moving object1
-bool gameManager::checkCollisions(vector<movingObject> &objects)
+bool gameManager::checkCollisions(vector<movingObject*> &objects)
 {
     for (size_t i = 0; i < objects.size(); ++i)
     {
         for (size_t j = i + 1; j < objects.size(); ++j)
         {
-            const int *a_start = objects[i].getOldLocation();
-            const int *a_end = objects[i].getLocation();
-            const int *b_start = objects[j].getOldLocation();
-            const int *b_end = objects[j].getLocation();
+            const int *a_start = objects[i]->getOldLocation();
+            const int *a_end = objects[i]->getLocation();
+            const int *b_start = objects[j]->getOldLocation();
+            const int *b_end = objects[j]->getLocation();
 
             if (doLinesIntersect(a_start, a_end, b_start, b_end))
             {
@@ -287,9 +287,9 @@ bool gameManager::checkCollisions(vector<movingObject> &objects)
                 // and we need to check if they don't finish at the same point
                 if ((!touchesAtStartOnly || collinear) || endAtSamePoint)
                 {
-                    printCollisionsToLog(objects[i], objects[j]);
-                    objects[i].takeAHit();
-                    objects[j].takeAHit();
+                    printCollisionsToLog(*objects[i], *objects[j]);
+                    objects[i]->takeAHit();
+                    objects[j]->takeAHit();
                 }
             }
         }
@@ -405,10 +405,9 @@ void gameManager::makeTankMoves(array<tank*, 2> &tanksArr)
                 if (canMakeMove(*tanksArr[i], tanksMove))
                 {
                     newLocation = tanksArr[i]->newLocation(numOfCols, numOfRows);               // Get bullet location
-                    bullet b(newLocation[0], newLocation[1], tanksArr[i]->getOrientation(), B); // Create bullet
-                    b.setNewLocation(newLocation[0], newLocation[1]); // Set both bullet locations to be the same
-                    currMovingObjects.emplace_back(b);
-                    bullets.emplace_back(b);
+                    bullet *b = new bullet(newLocation[0], newLocation[1], tanksArr[i]->getOrientation(), B); // Create bullet
+                    currMovingObjects.push_back(b);
+                    bullets.push_back(b);
                     tanksArr[i]->useShot();
                     delete newLocation;
                     newLocation = nullptr; // Set to nullptr to enter the else statement(at 430)
@@ -438,30 +437,30 @@ void gameManager::makeTankMoves(array<tank*, 2> &tanksArr)
 }
 
 
-bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true if the game is over and false otherwise
+bool gameManager::makeAllMoves(vector<movingObject*> &movingObjects)//return true if the game is over and false otherwise
 {
     for (size_t i = 0; i < movingObjects.size(); ++i)
     {
 
-        const int objectNewRow = movingObjects[i].getLocation()[0];
-        const int objectNewCol = movingObjects[i].getLocation()[1];
+        const int objectNewRow = movingObjects[i]->getLocation()[0];
+        const int objectNewCol = movingObjects[i]->getLocation()[1];
 
-        (*gameBoard)[movingObjects[i].getOldLocation()[0]][movingObjects[i].getOldLocation()[1]][1] = nullptr;
-        (*gameBoard)[objectNewRow][objectNewCol][2] = &movingObjects[i];
+        (*gameBoard)[movingObjects[i]->getOldLocation()[0]][movingObjects[i]->getOldLocation()[1]][1] = nullptr;
+        (*gameBoard)[objectNewRow][objectNewCol][2] = movingObjects[i];
 
         if (!(*gameBoard)[objectNewRow][objectNewCol][0]){}
-        else if ((movingObjects[i].getType() == P1T || movingObjects[i].getType() == P2T) && (*gameBoard)[objectNewRow][objectNewCol][0]->getType() == M)
+        else if ((movingObjects[i]->getType() == P1T || movingObjects[i]->getType() == P2T) && (*gameBoard)[objectNewRow][objectNewCol][0]->getType() == M)
         {
             // if a tank stepped on a mine - they both destroyed
 
-            movingObjects[i].takeAHit();
+            movingObjects[i]->takeAHit();
             matrixObject *explodedMine = (*gameBoard)[objectNewRow][objectNewCol][0];
             delete explodedMine;
             (*gameBoard)[objectNewRow][objectNewCol][0] = nullptr; // remove the mine from the board
 
-            int tanksPlayer = movingObjects[i].getType() == P1T ? 1 : 2;
+            int tanksPlayer = movingObjects[i]->getType() == P1T ? 1 : 2;
 
-            if (movingObjects[i].getIsAlive())
+            if (movingObjects[i]->getIsAlive())
             {
                 writeToFile("A tank of player number " + to_string(tanksPlayer) 
                 + " stepped on a mine at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
@@ -476,7 +475,7 @@ bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true
             }
         }
 
-        else if (movingObjects[i].getType() == B && (*gameBoard)[objectNewRow][objectNewCol][0]->getType() == W)
+        else if (movingObjects[i]->getType() == B && (*gameBoard)[objectNewRow][objectNewCol][0]->getType() == W)
         {
             // if a bullet hit a wall - the bullet is destroyed and the wall takes a hit
 
@@ -484,7 +483,7 @@ bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true
                             ") .\n",
                         GAME_LOG_FILE);
 
-            movingObjects[i].takeAHit();
+            movingObjects[i]->takeAHit();
             matrixObject *damagedWall = (*gameBoard)[objectNewRow][objectNewCol][0];
             damagedWall->takeAHit();
 
@@ -499,7 +498,7 @@ bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true
             }
         }
 
-        if (!movingObjects[i].getIsAlive())
+        if (!movingObjects[i]->getIsAlive())
         {
             // Check if the moving object has been destroyed, happened if at least one of the following occur:
             //          - The moving object collides with another moving object
@@ -513,11 +512,7 @@ bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true
             if (destroyedObject->getType() == B)
             {
                 bullets.erase(
-                    std::remove_if(bullets.begin(), bullets.end(),
-                                   [&](const bullet &item)
-                                   {
-                                       return &item == &movingObjects[i]; // Compare references
-                                   }),
+                    std::remove(bullets.begin(), bullets.end(), destroyedObject),
                     bullets.end()); // delete the destroyed bullet from the bullets in the air vector
                 delete destroyedObject;
             }
@@ -531,11 +526,11 @@ bool gameManager::makeAllMoves(vector<movingObject> &movingObjects)//return true
     }
     for (size_t i = 0; i < movingObjects.size(); ++i)
     { // do the actual move to all the object1 that didn't get destroyed
-        int objectNewRow = movingObjects[i].getLocation()[0];
-        int objectNewCol = movingObjects[i].getLocation()[1];
+        int objectNewRow = movingObjects[i]->getLocation()[0];
+        int objectNewCol = movingObjects[i]->getLocation()[1];
 
         (*gameBoard)[objectNewRow][objectNewCol][2] = nullptr;
-        (*gameBoard)[objectNewRow][objectNewCol][1] = &movingObjects[i];
+        (*gameBoard)[objectNewRow][objectNewCol][1] = movingObjects[i];
     }
     return false;
 }
@@ -545,7 +540,7 @@ bool gameManager::canMakeMove(tank &tankChoseTheMove, objMove moveChosen)
     if (moveChosen == moveForward)
     {
         int *newLoc = tankChoseTheMove.newLocation(numOfCols, numOfRows);
-        if ((*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
+        if ((*gameBoard)[newLoc[0]][newLoc[1]][0] && (*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
         {
             return false;
         }
@@ -554,7 +549,7 @@ bool gameManager::canMakeMove(tank &tankChoseTheMove, objMove moveChosen)
     else if (moveChosen == moveBackwards)
     {
         int *newLoc = tankChoseTheMove.newLocationAtReverse(numOfCols, numOfRows);
-        if ((*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
+        if ((*gameBoard)[newLoc[0]][newLoc[1]][0] && (*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
         {
             return false;
         }
@@ -574,8 +569,8 @@ void gameManager::playGame()
 {
     writeToFile("Starting game\n", GAME_LOG_FILE);
     bool gameOver = false;
-    currMovingObjects.push_back(*tanks[0]);
-    currMovingObjects.push_back(*tanks[1]);
+    currMovingObjects.push_back(tanks[0]);
+    currMovingObjects.push_back(tanks[1]);
 
     while (!gameOver && noBulletsCnt > 0 && turns < 10000){
         turns++;
