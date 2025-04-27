@@ -72,22 +72,25 @@ int calculateTargetOrientation(int startRow, int startCol, int targetRow, int ta
     int offsetCol = targetCol - startCol;
 
     // Handle the edge case where start equals target
-    if (offsetRow == 0 && offsetCol == 0) {
-        return -1; // No orientation needed
+    if (offsetRow > 0 && offsetCol > 0) {
+        return DR;
     }
-
-    // Calculate the angle in radians
-    double angle = atan2(-offsetRow, offsetCol); // Negate offsetRow for matrix row system
-
-    // Convert the angle to one of the 8 directions
-    int direction = static_cast<int>(round(4 * angle / M_PI)) % 8;
-
-    // Ensure the direction is positive
-    if (direction < 0) {
-        direction += 8;
+    else if (offsetRow < 0 && offsetCol < 0) {
+        return UL;
     }
-
-    return direction;
+    else if (offsetRow == 0) {
+        return (offsetCol > 0) ? R : L; // Horizontal movement
+    }
+    else if (offsetCol == 0) {
+        return (offsetRow > 0) ? D : U; // Vertical movement
+    }
+    else if (offsetRow > 0 && offsetCol < 0) {
+        return DL; // Down-Left
+    }
+    else if (offsetRow < 0 && offsetCol > 0) {
+        return UR; // Up-Right
+    }
+    return 0; // Default case (should not happen)
 }
 
 // Function to determine the correct move to reach the target
@@ -128,13 +131,14 @@ array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 
         int row = (gameBoard.size() + location[0] + i * inRow) % gameBoard.size();
         int col = (gameBoard[0].size() + location[1] + i * inCol) % gameBoard[0].size();
         matrixObject* obj = gameBoard[row][col][1];
-        if(obj && dynamic_cast<bullet *>(obj) && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inRow, -inCol)){
+        if(obj && obj->getType() == B && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inRow, -inCol)){
             return {row, col, i, getDirectionFromOffset(inRow, inCol)};
         }
     }
     return {0,0,0,0};
 }
 objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
+
     int numOfBulletsChasing = 0;
     int closestBulletDist = 7;
     array<int,4> closestLocation ={0};
@@ -143,10 +147,10 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         array<int, 4> curLocation = searchForBullets(gameBoard, offset.first, offset.second);
         if(curLocation[2] >=1){
             numOfBulletsChasing++;
-        }
-        if(curLocation[2] < closestBulletDist){
-            closestBulletDist = curLocation[2];
-            closestLocation = curLocation;
+            if(curLocation[2] < closestBulletDist){
+                closestBulletDist = curLocation[2];
+                closestLocation = curLocation;
+            }
         }
     }
     if(closestBulletDist != 7){//if there is a bullet chasing the tank
@@ -179,13 +183,20 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         }
     }
     else{// if there is no danger
-          if(canSeeOtherTank(otherLoc, gameBoard, numOfCols, numOfRows) && (turnsUntilNextShot == 0)){
-              return shoot;
-          }
-          else{
-              int targetOrientation = calculateTargetOrientation(location[0], location[1], otherLoc[0], otherLoc[1]);
-              return determineNextMove(orient, targetOrientation).first;
-          }
-
+        int targetOrientation = calculateTargetOrientation(location[0], location[1], otherLoc[0], otherLoc[1]);
+        pair<objMove, int> next = determineNextMove(orient, targetOrientation);
+        if(next.first == moveForward && (turnsUntilNextShot == 0)){
+            return shoot;
+        }
+        else if(next.first == moveForward && turnsUntilNextShot > 0){
+            int* newLoc = newLocation(numOfCols, numOfRows);
+            if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1)){
+                return moveForward;
+            }
+            else{
+                return noAction;
+            }
+        }
+        return next.first;
     }
 }

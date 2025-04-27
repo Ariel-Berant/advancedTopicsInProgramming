@@ -186,6 +186,13 @@ bool areCollinear(const int *p, const int *q, const int *r)
     return (q[1] - p[1]) * (r[0] - q[0]) == (q[0] - p[0]) * (r[1] - q[1]);
 }
 
+bool passingBy(const int *aStart, const int *aEnd, const int *bStart, const int *bEnd)
+{
+    // Check if the two collinear segments passing by each other
+    return isSamePoint(aStart, bEnd) && isSamePoint(aEnd, bStart);
+    
+}
+
 // // Helper function to check if two line segments intersect
 bool doLinesIntersect(const int *p1, const int *q1, const int *p2, const int *q2)
 {
@@ -259,34 +266,31 @@ void printCollisionsToLog(movingObject &object1, movingObject &object2)
 // Function to check for collisions between moving object1
 bool gameManager::checkCollisions(vector<movingObject*> &objects)
 {
-    for (size_t i = 0; i < objects.size(); ++i)
+    for (size_t i = 0; i < objects.size(); i++)
     {
-        for (size_t j = i + 1; j < objects.size(); ++j)
+        for (size_t j = i + 1; j < objects.size(); j++)
         {
             const int *a_start = objects[i]->getOldLocation();
             const int *a_end = objects[i]->getLocation();
             const int *b_start = objects[j]->getOldLocation();
             const int *b_end = objects[j]->getLocation();
+            // Check if they only touch at a start point
+            bool touchesAtStartOnly =
+            (isSamePoint(a_start, b_end) && !isSamePoint(a_end, b_start)) ||
+            (isSamePoint(a_end, b_start) && !isSamePoint(a_start, b_end));
 
-            if (doLinesIntersect(a_start, a_end, b_start, b_end))
-            {
-                // Check if they only touch at a start point
-                bool touchesAtStartOnly =
-                    isSamePoint(a_start, b_end) ||
-                    isSamePoint(a_end, b_start);
-
+            if (doLinesIntersect(a_start, a_end, b_start, b_end) && !touchesAtStartOnly){
                 // Check if the segments are collinear
                 bool collinear =
                     areCollinear(a_start, a_end, b_start) &&
-                    areCollinear(a_start, a_end, b_end);
+                    areCollinear(a_start, a_end, b_end) && passingBy(a_start, a_end, b_start, b_end);
 
                 bool endAtSamePoint =
                     isSamePoint(a_end, b_end);
 
-                // If they don't touch only at the start points or are collinear, they collide
+                // If they don't touch only at the start points and are collinear, they collide
                 // and we need to check if they don't finish at the same point
-                if ((!touchesAtStartOnly || collinear) || endAtSamePoint)
-                {
+                if (collinear || endAtSamePoint){
                     printCollisionsToLog(*objects[i], *objects[j]);
                     objects[i]->takeAHit();
                     objects[j]->takeAHit();

@@ -4,7 +4,7 @@ Turn number 1
 
 The tank at (5,10) went forwards to (5,9).
 
-The tank at 1,2 shot a bullet.
+The tank at 1,2 turned45 degrees counter-clockwise.
 
 Turn number 2
 
@@ -12,15 +12,17 @@ Turn number 3
 
 The tank at (5,9) went forwards to (5,8).
 
-A tank of player number 2 shot a blank.
+The tank at 1,2 shot a bullet.
 
 Turn number 4
+
+A bullet hit a wall at (3,4) .
 
 Turn number 5
 
 The tank at 5,8 turned45 degrees counter-clockwise.
 
-A tank of player number 2 shot a blank.
+The tank at (1,2) went forwards to (2,3).
 
 Turn number 6
 
@@ -28,7 +30,7 @@ Turn number 7
 
 The tank at (5,8) went forwards to (4,7).
 
-A tank of player number 2 shot a blank.
+The tank at 2,3 stayed in place.
 
 Turn number 8
 
@@ -36,17 +38,19 @@ Turn number 9
 
 The tank at 4,7 turned315 degrees counter-clockwise.
 
-The tank at 1,2 shot a bullet.
+The tank at 2,3 stayed in place.
 
 Turn number 10
-
-A bullet hit a wall at (1,12) .
 
 Turn number 11
 
 The tank at (4,7) went forwards to (3,7).
 
-A tank of player number 2 shot a blank.
+The tank at 2,3 shot a bullet.
+
+A bullet hit a wall at (3,4) .
+
+The wall at (3,4) has been destroyed.
 
 Turn number 12
 
@@ -54,7 +58,7 @@ Turn number 13
 
 The tank at 3,7 turned45 degrees counter-clockwise.
 
-A tank of player number 2 shot a blank.
+The tank at (2,3) went forwards to (3,4).
 
 Turn number 14
 
@@ -62,7 +66,7 @@ Turn number 15
 
 The tank at 3,7 turned270 degrees clockwise.
 
-A tank of player number 2 shot a blank.
+The tank at 3,4 turned45 degrees clockwise.
 
 Turn number 16
 
@@ -70,57 +74,19 @@ Turn number 17
 
 The tank at 3,7 turned45 degrees clockwise.
 
-The tank at 1,2 shot a bullet.
+The tank at (3,4) went forwards to (3,5).
 
 Turn number 18
-
-A bullet hit a wall at (1,12) .
-
-The wall at (1,12) has been destroyed.
 
 Turn number 19
 
 The tank at (3,7) went forwards to (3,6).
 
-A tank of player number 2 shot a blank.
+The tank at 3,5 shot a bullet.
 
 Turn number 20
 
-Turn number 21
+A tank of player number 1 got hit by a bullet.
 
-The tank at 3,6 turned90 degrees clockwise.
-
-A tank of player number 2 shot a blank.
-
-Turn number 22
-
-Turn number 23
-
-The tank at (3,6) tried to move forwards when he couldn't (unstoppable force met an immovable object).
-
-A tank of player number 2 shot a blank.
-
-Turn number 24
-
-Turn number 25
-
-The tank at 3,6 turned90 degrees clockwise.
-
-The tank at 1,2 shot a bullet.
-
-Turn number 26
-
-Turn number 27
-
-The tank at (3,6) went forwards to (3,7).
-
-A tank of player number 2 shot a blank.
-
-A tank of player number 2 got hit by a bullet.
-
-A bullet has been destroyed by collision.
-
-A bullet hit a wall at (1,0) .
-
-Game result: Player number 1 won
+Game result: Player number 2 won
 
