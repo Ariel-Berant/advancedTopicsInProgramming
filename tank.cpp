@@ -92,36 +92,36 @@ bool tank::isSafe(const int row, const int col, const vector<vector<array<matrix
     }
 
     // Check for bullets
-    bool bulletFound = false;
-
+    bool bulletNotFound = true;
+	// TODO: ensure no leak from gameBoard boundaries - add numOfRows\numOfCols after modulo
     vector<array<int, 3>> possibleLocs = {
-        {row,                                                  (numOfCols + col - 2 * movesAhead) % numOfCols,          R},
-        {row,                                                  (numOfCols + col + 2 * movesAhead) % numOfCols,          L},
-        {(numOfRows + row - 2 * movesAhead) % numOfRows,       col,                                                     D},
-        {(numOfRows + row + 2 * movesAhead) % numOfRows,       col,                                                     U},
-        {(numOfRows + row - 2 * movesAhead) % numOfRows,       (numOfCols + col - 2 * movesAhead) % numOfCols,          DR},
-        {(numOfRows + row + 2 * movesAhead) % numOfRows,       (numOfCols + col - 2 * movesAhead) % numOfCols,          UR},
-        {(numOfRows + row - 2 * movesAhead) % numOfRows,       (numOfCols + col + 2 * movesAhead) % numOfCols,          DL},
-        {(numOfRows + row + 2 * movesAhead) % numOfRows,       (numOfCols + col + 2 * movesAhead) % numOfCols,          UL},
-        {row,                                                  (numOfCols + col - 2 * movesAhead - 1) % numOfCols,      R},
-        {row,                                                  (numOfCols + col + 2 * movesAhead - 1) % numOfCols,      L},
-        {(numOfRows + row - 2 * movesAhead - 1) % numOfRows,   col,                                                     D},
-        {(numOfRows + row + 2 * movesAhead - 1) % numOfRows,   col,                                                     U},
-        {(numOfRows + row - 2 * movesAhead - 1) % numOfRows,   (numOfCols + col - 2 * movesAhead - 1) % numOfCols,      DR},
-        {(numOfRows + row + 2 * movesAhead - 1) % numOfRows,   (numOfCols + col - 2 * movesAhead - 1) % numOfCols,      UR},
-        {(numOfRows + row - 2 * movesAhead - 1) % numOfRows,   (numOfCols + col + 2 * movesAhead - 1) % numOfCols,      DL},
-        {(numOfRows + row + 2 * movesAhead - 1) % numOfRows,   (numOfCols + col + 2 * movesAhead - 1) % numOfCols,      UL}
+        {row,                                                  	(numOfCols + (col - 2 * movesAhead)) % numOfCols,          	L},
+        {row,                                                  	(numOfCols + col + 2 * movesAhead) % numOfCols,          	R},
+        {(numOfRows + (row - 2 * movesAhead)) % numOfRows,      col,                                                     	U},
+        {(numOfRows + row + 2 * movesAhead) % numOfRows,       	col,                                                     	D},
+        {(numOfRows + (row - 2 * movesAhead)) % numOfRows,      (numOfCols + (col - 2 * movesAhead)) % numOfCols,          	UL},
+        {(numOfRows + row + 2 * movesAhead) % numOfRows,       	(numOfCols + (col - 2 * movesAhead)) % numOfCols,          	DL},
+        {(numOfRows + (row - 2 * movesAhead)) % numOfRows,      (numOfCols + col + 2 * movesAhead) % numOfCols,          	UR},
+        {(numOfRows + row + 2 * movesAhead) % numOfRows,       	(numOfCols + col + 2 * movesAhead) % numOfCols,         	DR},
+        {row,                                                  	(numOfCols + (col - 2 * movesAhead - 1)) % numOfCols,      	L},
+        {row,                                                 	(numOfCols + (col + 2 * movesAhead - 1)) % numOfCols,      	R},
+        {(numOfRows + (row - 2 * movesAhead - 1)) % numOfRows,  col,                                                   		U},
+        {(numOfRows + (row + 2 * movesAhead - 1)) % numOfRows,  col,                                                  	   	D},
+        {(numOfRows + (row - 2 * movesAhead - 1)) % numOfRows,  (numOfCols + (col - 2 * movesAhead - 1)) % numOfCols,      	UL},
+        {(numOfRows + (row + 2 * movesAhead - 1)) % numOfRows,  (numOfCols + (col - 2 * movesAhead - 1)) % numOfCols,    	DL},
+        {(numOfRows + (row - 2 * movesAhead - 1)) % numOfRows,  (numOfCols + (col + 2 * movesAhead - 1)) % numOfCols,    	UR},
+        {(numOfRows + (row + 2 * movesAhead - 1)) % numOfRows,  (numOfCols + (col + 2 * movesAhead - 1)) % numOfCols,    	DR}
     };
 
 
     for (array<int, 3> loc: possibleLocs) {
         bulletObj = gameBoard[loc[0]][loc[1]][1];
         if (bulletObj && dynamic_cast<bullet *>(bulletObj) && dynamic_cast<bullet *>(bulletObj)->getOrientation() == loc[2]) {
-            bulletFound = true;
+            bulletNotFound = false;
         }
     }
 
-    return bulletFound;
+    return bulletNotFound;
 }
 
 
