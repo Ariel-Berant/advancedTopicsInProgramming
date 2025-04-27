@@ -179,7 +179,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         }
     }
     else{// if there is no danger
-          if(canSeeOtherTank(otherLoc, gameBoard, numOfCols, numOfRows)){
+          if(canSeeOtherTank(otherLoc, gameBoard, numOfCols, numOfRows) && (turnsUntilNextShot == 0)){
               return shoot;
           }
           else{
