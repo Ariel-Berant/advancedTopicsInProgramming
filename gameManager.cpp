@@ -684,7 +684,9 @@ turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numO
         cerr << "Error: Failed to create map from file." << endl;
         exit(EXIT_FAILURE);
     }
-    gameMapFileName = "output_" + filesystem::path(filename).stem().string() + ".txt";
+    string fileStem = filesystem::path(filename).stem().string();
+    gameMapFileName = filesystem::path(filename).replace_extension("").string();
+    gameMapFileName.replace((gameMapFileName.length() - fileStem.length()), fileStem.length(), "output_" + fileStem + ".txt");
 
 }
 
