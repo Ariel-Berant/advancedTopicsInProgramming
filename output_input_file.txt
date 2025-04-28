@@ -90,11 +90,21 @@ The tank of player 1 at (1,9) stayed in place.
 
 The tank of player 2 at (1,8) went forwards to (1,9).
 
-
-
-Turn number 14:
+A tank of player number 1 collided with a tank of player number 2.
 
 
 
-Turn number 15:
+Game summary:
+
+Turns played: 13
+
+The tank of player 1 shot 0 bullets out of 16
+
+The tank of player 2 shot 2 bullets out of 16
+
+1 out of 39 walls were destroyed
+
+0 out of 12 mines were destroyed
+
+Game result: A tie because the two tanks have been destroyed at the same time
 

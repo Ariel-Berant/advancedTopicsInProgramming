@@ -76,10 +76,10 @@ private:
     array<tank*, 2> tanks; // Vector to store tanks on the board
     vector<movingObject*> currMovingObjects;
 
-    bool makeAllMoves(vector<movingObject*>& objects);
+    bool makeAllMoves();
     bool canMakeMove(tank& tankChoseTheMove, enum move moveChosen);
-    void makeTankMoves(array<tank*, 2>& tanksArr);
-    bool checkCollisions(vector<movingObject*>& objects);
+    void makeTankMoves();
+    bool checkCollisions();
     bool getRowsAndColsFromFile(const string &filename);
     void printSummeryToLog();
     bool isValidFile(const string &filename);
