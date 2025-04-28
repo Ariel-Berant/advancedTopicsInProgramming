@@ -31,10 +31,10 @@ pair<int, int> getDirectionOffset(int dir) {
     return {rowDisplacement, colDisplacement};
 }
 
-pair<int, int> p2Tank::getNeighborPointGivenOrient(int orient){
+pair<int, int> p2Tank::getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols) {
     pair<int, int> off = getDirectionOffset(orient);
-    off.first += location[0];
-    off.second += location[1];
+    off.first = (off.first + location[0] + numOfROws) % numOfROws;
+    off.second = (off.second + location[1] + numOfCols) % numOfCols;
     return off;
 }
 
@@ -167,7 +167,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         else{
             int targetOrientation;
             for(int orien = 0 ;orien < 8 ; orien++){//search for a safe place from the bullets
-                pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien);
+                pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfRows, numOfCols);
                 targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
                 pair<objMove, int> val =  determineNextMove(orien, targetOrientation);
                 objMove nextMove = val.first;

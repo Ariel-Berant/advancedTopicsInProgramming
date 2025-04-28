@@ -11,35 +11,36 @@ movingObject::~movingObject(){
     // The destructor is declared virtual in the base class to ensure proper cleanup of derived classes.
 }
 
-int *movingObject::newLocation(const int numOfCols, const int numOfRows) const {
+int *movingObject::newLocation(const int numOfCols, const int numOfRows, bool atReverse) const {
     int *newLoc = new int[2]{location[0], location[1]};
+    int i = atReverse == true ? -1 : 1; // Determine the direction of movement based on atReverse
     if(orient == U) {
-        newLoc[0] = (numOfRows + location[0] - 1) % numOfRows;
+        newLoc[0] = (numOfRows + location[0] - 1 * i) % numOfRows;
 }
     else if(orient == UR) {
-        newLoc[0] = (numOfRows + location[0] - 1) % numOfRows;
-        newLoc[1] = (numOfCols + location[1] + 1) % numOfCols;
+        newLoc[0] = (numOfRows + location[0] - 1 * i) % numOfRows;
+        newLoc[1] = (numOfCols + location[1] + 1 * i) % numOfCols;
     }
     else if(orient == R) {
-        newLoc[1] = (numOfCols + location[1] + 1) % numOfCols;
+        newLoc[1] = (numOfCols + location[1] + 1 * i) % numOfCols;
     }
     else if(orient == DR) {
-        newLoc[0] = (numOfRows + location[0] + 1) % numOfRows;
-        newLoc[1] = (numOfCols + location[1] + 1) % numOfCols;
+        newLoc[0] = (numOfRows + location[0] + 1 * i) % numOfRows;
+        newLoc[1] = (numOfCols + location[1] + 1 * i) % numOfCols;
     }
     else if(orient == D) {
-        newLoc[0] = (numOfRows + location[0] + 1) % numOfRows;
+        newLoc[0] = (numOfRows + location[0] + 1 * i) % numOfRows;
     }
     else if(orient == DL) {
-        newLoc[0] = (numOfRows +  location[0] + 1) % numOfRows;
-        newLoc[1] = (numOfCols + location[1] - 1) % numOfCols;
+        newLoc[0] = (numOfRows +  location[0] + 1) * i % numOfRows;
+        newLoc[1] = (numOfCols + location[1] - 1 * i) % numOfCols;
     }
     else if(orient == L) {
-        newLoc[1] = (numOfCols + location[1] - 1) % numOfCols;
+        newLoc[1] = (numOfCols + location[1] - 1 * i) % numOfCols;
     }
     else if(orient == UL) {
-        newLoc[0] = (numOfRows + location[0] - 1) % numOfRows;
-        newLoc[1] = (numOfCols + location[1] - 1) % numOfCols;
+        newLoc[0] = (numOfRows + location[0] - 1 * i) % numOfRows;
+        newLoc[1] = (numOfCols + location[1] - 1 * i) % numOfCols;
     }
     return newLoc;
 }

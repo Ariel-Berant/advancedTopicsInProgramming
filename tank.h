@@ -30,7 +30,7 @@ public:
     ~tank() override;
     void setOrientation( orientation newOrient);
     bool canShoot() const;
-    int* newLocationAtReverse( int numOfCols,  int numOfRows) const;
+    // int* newLocationAtReverse( int numOfCols,  int numOfRows) const;
     void updateTurn();
     void useShot();
     int getInBack() const; // Returns the inBackwards status
@@ -40,6 +40,8 @@ public:
     vector<objMove> getRotations(orientation start, orientation desired) const;
     bool canSeeOtherTank(const int otherLoc[2], const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfRows, int numOfCols) const;
     bool hasBullets() const;
+    int getNumOfShotsLeft() const;
+
 };
 
 

@@ -45,7 +45,7 @@ inline bool writeToFile(const string &message, const string &filename)
         }
         catch(const std::exception& e)
         {
-            std::cerr << e.what() << '\n';
+            std::cerr << e.what();
         }
         
     }
@@ -75,6 +75,7 @@ private:
     void makeTankMoves(array<tank*, 2>& tanksArr);
     bool checkCollisions(vector<movingObject*>& objects);
     bool getRowsAndColsFromFile(const string &filename);
+    void printSummeryToLog();
 
 
 

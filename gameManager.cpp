@@ -61,6 +61,7 @@ bool gameManager::createMap(const string &filename)
 
     int currRow = 0, currCol = 0;
     string line;
+    bool tank1appeared = false , tank2appeared = false;
 
     gameBoard = new vector<vector<array<matrixObject *, 3>>>(numOfRows, vector<array<matrixObject *, 3>>(numOfCols));
 
@@ -92,6 +93,7 @@ bool gameManager::createMap(const string &filename)
                 {
                     tanks[0] = new p1Tank(currRow, currCol, L);
                     (*gameBoard)[currRow][currCol][1] = tanks[0];
+                    tank1appeared = true;
                 }
                 else
                 {
@@ -106,6 +108,7 @@ bool gameManager::createMap(const string &filename)
                 {
                     tanks[1] = new p2Tank(currRow, currCol, R);
                     (*gameBoard)[currRow][currCol][1] = tanks[1];
+                    tank2appeared = true;
                 }
                 else
                 {
@@ -145,6 +148,11 @@ bool gameManager::createMap(const string &filename)
         currRow++;
         currCol = 0;
     }
+    if(!tank1appeared && !tank2appeared){
+        writeToFile("Error: There are missing tanks in the map file.\n", INP_ERR_FILE);
+        file1.close();
+        return false;
+    }
     if (currRow < numOfRows)
     {
         writeToFile("Error: Not enough rows in the map file.\n", INP_ERR_FILE);
@@ -168,7 +176,7 @@ void gameManager::moveBullets()
     for (bullet *b : bullets){
         newLoc = b->newLocation(numOfCols, numOfRows);
         b->setNewLocation(newLoc[0], newLoc[1]);
-        delete newLoc;
+        delete[] newLoc;
     }
 }
 
@@ -333,7 +341,7 @@ void gameManager::makeTankMoves(array<tank*, 2> &tanksArr)
                 else {
                     tanksArr[i]->setInBackwards(tanksArr[i]->getInBack() + 1);
                     if(tanksArr[i]->getInBack() == 3){
-                        newLocation = tanksArr[i]->newLocationAtReverse(numOfCols, numOfRows);
+                        newLocation = tanksArr[i]->newLocation(numOfCols, numOfRows , true);
                         tanksArr[i]->setNewLocation(newLocation[0], newLocation[1]);
                         writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + to_string(tanksArr[i]->getOldLocation()[0]) + "," + to_string(tanksArr[i]->getOldLocation()[1])
                                     + ") moved backwards to (" + to_string(tanksArr[i]->getLocation()[0]) + "," + to_string(tanksArr[i]->getLocation()[1]) + ").\n", GAME_LOG_FILE);
@@ -388,7 +396,7 @@ void gameManager::makeTankMoves(array<tank*, 2> &tanksArr)
                     if (tanksArr[i]->getInBack() >= 3) // if we have moved backwards last turn and want to move
                     {
                         tanksArr[i]->setInBackwards(tanksArr[i]->getInBack() + 1);
-                        newLocation = tanksArr[i]->newLocationAtReverse(numOfCols, numOfRows);
+                        newLocation = tanksArr[i]->newLocation(numOfCols, numOfRows , true);
                         tanksArr[i]->setNewLocation(newLocation[0], newLocation[1]);
                         writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanksArr[i]->getLocation()[0]) + "," + to_string(tanksArr[i]->getLocation()[1]))
                         + ") moved backwards to (" + to_string(tanksArr[i]->getLocation()[0]) + "," + to_string(tanksArr[i]->getLocation()[1]) + ").\n", GAME_LOG_FILE);
@@ -415,7 +423,7 @@ void gameManager::makeTankMoves(array<tank*, 2> &tanksArr)
                     currMovingObjects.push_back(b);
                     bullets.push_back(b);
                     tanksArr[i]->useShot();
-                    delete newLocation;
+                    delete[] newLocation;
                     newLocation = nullptr; // Set to nullptr to enter the else statement(at 430)
                     writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanksArr[i]->getLocation()[0]) + "," + to_string(tanksArr[i]->getLocation()[1]))
                         + ") shot a bullet.\n", GAME_LOG_FILE);
@@ -433,7 +441,7 @@ void gameManager::makeTankMoves(array<tank*, 2> &tanksArr)
 
         if (newLocation != nullptr)
         {
-            delete newLocation; // Free the memory allocated for newLocation
+            delete[] newLocation; // Free the memory allocated for newLocation
             newLocation = nullptr; // Set it to nullptr to avoid dangling pointer
         }
         else
@@ -554,18 +562,21 @@ bool gameManager::canMakeMove(tank &tankChoseTheMove, objMove moveChosen)
         int *newLoc = tankChoseTheMove.newLocation(numOfCols, numOfRows);
         if ((*gameBoard)[newLoc[0]][newLoc[1]][0] && (*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
         {
+            delete[] newLoc;
             return false;
         }
+        delete[] newLoc;
         return true;
     }
     else if (moveChosen == moveBackwards)
     {
-        int *newLoc = tankChoseTheMove.newLocationAtReverse(numOfCols, numOfRows);
+        int *newLoc = tankChoseTheMove.newLocation(numOfCols, numOfRows , true);
         if ((*gameBoard)[newLoc[0]][newLoc[1]][0] && (*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
         {
+            delete[] newLoc;
             return false;
         }
-        return true;
+        delete[] newLoc;
     }
     else if (moveChosen == shoot)
     {
@@ -577,6 +588,15 @@ bool gameManager::canMakeMove(tank &tankChoseTheMove, objMove moveChosen)
     return true;
 }
 
+void gameManager::printSummeryToLog(){
+    writeToFile("\n", GAME_LOG_FILE);
+    writeToFile("Game summary:\n", GAME_LOG_FILE);
+    writeToFile("Turns played: " + to_string(turns) + "\n", GAME_LOG_FILE);
+    writeToFile("The tank of player 1 shot: " + to_string(16 - tanks[0]->getNumOfShotsLeft()) + " out of 16\n", GAME_LOG_FILE);
+    writeToFile("The tank of player 2 shot: " + to_string(16 - tanks[1]->getNumOfShotsLeft()) + " out of 16\n", GAME_LOG_FILE);
+}
+
+
 void gameManager::playGame()
 {
     writeToFile("Starting game\n", GAME_LOG_FILE);
@@ -587,7 +607,8 @@ void gameManager::playGame()
     while (!gameOver && noBulletsCnt > 0 && turns < 10000){
         turns++;
         isOddTurn = !isOddTurn;
-        writeToFile("Turn number " + to_string(turns) + "\n", GAME_LOG_FILE);
+        writeToFile("\n", GAME_LOG_FILE);
+        writeToFile("Turn number " + to_string(turns) + ":\n", GAME_LOG_FILE);
         if (!(tanks[0]->hasBullets()) && !(tanks[1]->hasBullets())){
             noBulletsCnt--;
         }
@@ -598,6 +619,7 @@ void gameManager::playGame()
         gameManager::checkCollisions(currMovingObjects);
         gameOver = makeAllMoves(currMovingObjects);
     }
+    printSummeryToLog();
     if (tanks[0]->getIsAlive() && tanks[1]->getIsAlive() && (noBulletsCnt == 0))// if the game over because no bullets left
     {
         writeToFile("Game result: A tie due to lack of bullets\n", GAME_LOG_FILE);

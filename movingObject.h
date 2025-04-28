@@ -17,7 +17,7 @@ public:
     movingObject(int row, int col,objectType oType, orientation orient);
     virtual ~movingObject();
 
-    int *newLocation(int numOfCols, int numOfRows) const;
+    int *newLocation(int numOfCols, int numOfRows, bool atReverse = false) const;
     const int *getOldLocation() const;
     void setNewLocation(int newRow, int newCol);
     orientation getOrientation() const;

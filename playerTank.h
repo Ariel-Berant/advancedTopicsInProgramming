@@ -17,7 +17,7 @@ class p2Tank : public tank
 public:
     p2Tank(int x, int y, orientation orient);
     objMove play(const vector<vector<array<matrixObject*, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) override;
-    pair<int, int> getNeighborPointGivenOrient(int orient);
+    pair<int, int> getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols);
     pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
     array<int,4> searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRows, int inCols);
 };
