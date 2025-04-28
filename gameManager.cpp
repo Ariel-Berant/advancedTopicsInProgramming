@@ -678,7 +678,7 @@ turns(0), noBulletsCnt(40), isOddTurn(false), gameBoard(nullptr), tanks(array<ta
         cerr << "Error: Failed to create map from file." << endl;
         exit(EXIT_FAILURE);
     }
-    gameMapFileName = "output_" + filename;
+    gameMapFileName = "output_" + filesystem::path(filename).stem().string() + ".txt";
 
 }
 

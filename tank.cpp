@@ -214,6 +214,6 @@ bool tank::canSeeOtherTank(const int otherLoc[2], const vector<vector<array<matr
             canSee = true; // Other tank found
             break;
         }
-    } while (currLoc[0] != location[0] && currLoc[1] != location[1]);
+    } while (currLoc[0] != location[0] || currLoc[1] != location[1]);
     return canSee;
 }
