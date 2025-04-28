@@ -190,6 +190,21 @@ bool gameManager::createMap(const string &filename)
     return true;
 }
 
+// Function to convert orientation enum to string
+std::string orientationToString(orientation o) {
+    switch (o) {
+        case U: return "U";
+        case UR: return "UR";
+        case R: return "R";
+        case DR: return "DR";
+        case D: return "D";
+        case DL: return "DL";
+        case L: return "L";
+        case UL: return "UL";
+        default: return "Unknown";
+    }
+}
+
 void gameManager::moveBullets()
 {
     int *newLoc;
@@ -387,9 +402,7 @@ void gameManager::makeTankMoves()
                 ornt = tanks[i]->getOrientation();
                 tanks[i]->setOrientation(orientation((8 + tanks[i]->getOrientation() - 5 + tanksMove) % 8));
                 writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," + to_string(tanks[i]->getLocation()[1]))
-                            + ") turned " + to_string(45 * abs(ornt - tanks[i]->getOrientation())) + " degrees"
-                            + (tanksMove<5 ? " clockwise.\n":" counter-clockwise.\n"), gameMapFileName);
-                            tanks[i]->setInBackwards(0);
+                            + ") turned from " + orientationToString(ornt) + " to " + orientationToString(tanks[i]->getOrientation()) + ".\n", gameMapFileName);
                 break;
             case noAction:
                 writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," + to_string(tanks[i]->getLocation()[1]))
@@ -485,7 +498,7 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
         (*gameBoard)[objectNewRow][objectNewCol][2] = currMovingObjects[i];
 
         if (!(*gameBoard)[objectNewRow][objectNewCol][0]){}
-        else if ((currMovingObjects[i]->getType() == P1T || currMovingObjects[i]->getType() == P2T) && (*gameBoard)[objectNewRow][objectNewCol][0]->getType() == M)
+        else if (checkIfTank(*currMovingObjects[i]) && (*gameBoard)[objectNewRow][objectNewCol][0]->getType() == M)
         {
             // if a tank stepped on a mine - they both destroyed
 
@@ -567,8 +580,7 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
     }
     for (size_t i = 0; i < currMovingObjects.size(); ++i)
     { // do the actual move to all the object1 that didn't get destroyed
-        if (currMovingObjects[i]->getType() == B && currMovingObjects[i]->getOldLocation()[0] != currMovingObjects[i]->getLocation()[0] 
-            && currMovingObjects[i]->getOldLocation()[1] != currMovingObjects[i]->getLocation()[1]){ // If a bullet moved (after the first turn)
+        if (currMovingObjects[i]->getType() == B && !isSamePoint(currMovingObjects[i]->getOldLocation(), currMovingObjects[i]->getLocation())){ // If a bullet moved (after the first turn)
             writeToFile("The bullet at (" + (to_string(currMovingObjects[i]->getOldLocation()[0]) + "," + to_string(currMovingObjects[i]->getOldLocation()[1]))
                     + ") moved to (" + to_string(currMovingObjects[i]->getLocation()[0]) + "," + to_string(currMovingObjects[i]->getLocation()[1]) + ").\n", gameMapFileName);
         }

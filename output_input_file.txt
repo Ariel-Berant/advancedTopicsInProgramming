@@ -6,11 +6,7 @@ Turn number 1:
 
 The tank of player 1 at (1,9) stayed in place.
 
-The tank of player 2 at (1,7) shot a bullet.
-
-The new bullet starting location is (1,8).
-
-A bullet hit a wall at (1,8) .
+The tank of player 2 at (5,5) turned from R to UR.
 
 
 
@@ -22,7 +18,11 @@ Turn number 3:
 
 The tank of player 1 at (1,9) stayed in place.
 
-The tank of player 2 at (1,7) stayed in place.
+The tank of player 2 at (5,5) shot a bullet.
+
+The new bullet starting location is (4,6).
+
+A bullet hit a wall at (4,6) .
 
 
 
@@ -34,7 +34,7 @@ Turn number 5:
 
 The tank of player 1 at (1,9) stayed in place.
 
-The tank of player 2 at (1,7) stayed in place.
+The tank of player 2 at (5,5) stayed in place.
 
 
 
@@ -46,7 +46,7 @@ Turn number 7:
 
 The tank of player 1 at (1,9) stayed in place.
 
-The tank of player 2 at (1,7) stayed in place.
+The tank of player 2 at (5,5) stayed in place.
 
 
 
@@ -58,13 +58,7 @@ Turn number 9:
 
 The tank of player 1 at (1,9) stayed in place.
 
-The tank of player 2 at (1,7) shot a bullet.
-
-The new bullet starting location is (1,8).
-
-A bullet hit a wall at (1,8) .
-
-The wall at (1,8) has been destroyed.
+The tank of player 2 at (5,5) stayed in place.
 
 
 
@@ -76,7 +70,13 @@ Turn number 11:
 
 The tank of player 1 at (1,9) stayed in place.
 
-The tank of player 2 at (1,7) went forwards to (1,8).
+The tank of player 2 at (5,5) shot a bullet.
+
+The new bullet starting location is (4,6).
+
+A bullet hit a wall at (4,6) .
+
+The wall at (4,6) has been destroyed.
 
 
 
@@ -88,7 +88,31 @@ Turn number 13:
 
 The tank of player 1 at (1,9) stayed in place.
 
-The tank of player 2 at (1,8) went forwards to (1,9).
+The tank of player 2 at (5,5) went forwards to (4,6).
+
+
+
+Turn number 14:
+
+
+
+Turn number 15:
+
+The tank of player 1 at (1,9) turned from L to DL.
+
+The tank of player 2 at (4,6) went forwards to (3,7).
+
+
+
+Turn number 16:
+
+
+
+Turn number 17:
+
+The tank of player 1 at (1,9) went forwards to (2,8).
+
+The tank of player 2 at (3,7) went forwards to (2,8).
 
 A tank of player number 1 collided with a tank of player number 2.
 
@@ -96,15 +120,15 @@ A tank of player number 1 collided with a tank of player number 2.
 
 Game summary:
 
-Turns played: 13
+Turns played: 17
 
 The tank of player 1 shot 0 bullets out of 16
 
 The tank of player 2 shot 2 bullets out of 16
 
-1 out of 39 walls were destroyed
+1 out of 31 walls were destroyed
 
-0 out of 12 mines were destroyed
+0 out of 8 mines were destroyed
 
 Game result: A tie because the two tanks have been destroyed at the same time
 

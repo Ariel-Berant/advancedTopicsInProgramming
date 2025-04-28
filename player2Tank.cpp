@@ -190,7 +190,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         }
         else if(next.first == moveForward && turnsUntilNextShot > 0){
             int* newLoc = newLocation(numOfCols, numOfRows);
-            if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1)){
+            if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1) ){
                 delete[] newLoc;
                 newLoc = nullptr;
                 return moveForward;
