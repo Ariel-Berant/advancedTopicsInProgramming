@@ -15,6 +15,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <filesystem>
 
 /*
  * Includes in matrixObject.h:
@@ -60,6 +61,7 @@ inline bool writeToFile(const string &message, const string &filename)
 class gameManager
 {
 private:
+    string gameMapFileName;
     int numOfRows;
     int numOfCols;
     int turns;
@@ -76,7 +78,8 @@ private:
     bool checkCollisions(vector<movingObject*>& objects);
     bool getRowsAndColsFromFile(const string &filename);
     void printSummeryToLog();
-
+    bool isValidFile(const string &filename);
+    void printCollisionsToLog(const movingObject &object1, const movingObject &object2) const;
 
 
 public:
@@ -88,25 +91,3 @@ public:
 };
 
 #endif // GAME_MANAGER_H
-
-/*
-
-Need to add:
-
-- player class, player1 and player2
-
-- player1 and player2 inherit the player class. inherit since every player needs two different algorithms
-
-- figure out how to implement the game loop
-
-- save an array of bullets in the air
-
-- either turn counter, or a variable to say if on even or odd turn(for overflow considerations)
-
-- save an array of tanks on the board
-
-- figure out how to create an interface between the player algorithms and the gameManager class
-
-- save a matrix of the game board in the gameManager class
-
-*/

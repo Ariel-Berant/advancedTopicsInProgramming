@@ -1,5 +1,5 @@
 CPP = g++
-CPP_FLAGS = -std=c++20 -g -Wall -Wextra -Werror -pedantic -fsanitize=address
+CPP_FLAGS = -std=c++20 -g -Wall -Wextra -Werror -pedantic #-fsanitize=address
 
 # Target executable
 TARGET = tanks_game
@@ -55,7 +55,7 @@ player2Tank.o: player2Tank.cpp playerTank.h tank.h move.h
 # Clean up build files
 clean:
 	rm -f $(OBJECTS) $(TARGET)
-	rm -rf log_file.txt
+	rm -rf output_*.txt
 	rm -rf input_errors.txt
 
 # Phony targets
