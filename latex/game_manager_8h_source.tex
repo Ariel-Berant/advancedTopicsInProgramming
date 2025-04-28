@@ -1,0 +1,102 @@
+\doxysection{game\+Manager.\+h}
+\hypertarget{game_manager_8h_source}{}\label{game_manager_8h_source}\mbox{\hyperlink{game_manager_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ GAME\_MANAGER\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ GAME\_MANAGER\_H}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{matrix_object_8h}{matrixObject.h}}"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{moving_object_8h}{movingObject.h}}"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{unmoving_object_8h}{unmovingObject.h}}"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{bullet_8h}{bullet.h}}"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{move_8h}{move.h}}"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{tank_8h}{tank.h}}"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{mine_8h}{mine.h}}"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{wall_8h}{wall.h}}"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{orientation_8h}{orientation.h}}"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{player_tank_8h}{playerTank.h}}"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <fstream>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <sstream>}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <filesystem>}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *\ Includes\ in\ matrixObject.h:}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ *\ \#include\ <vector>}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ *\ \#include\ <array>}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ *\ \#include\ <queue>}}
+\DoxyCodeLine{00026\ \textcolor{comment}{\ *\ \#include\ <unordered\_set>}}
+\DoxyCodeLine{00027\ \textcolor{comment}{\ *\ \#include\ <string>}}
+\DoxyCodeLine{00028\ \textcolor{comment}{\ *\ \#include\ <cmath>}}
+\DoxyCodeLine{00029\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00030\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{using\ namespace\ }std;}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ A\ function\ used\ for\ writing\ to\ files(e.g.,\ error\ logs)\ without\ necessarily\ opening\ them\ beforehand.}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//\ The\ function\ return\ true\ if\ the\ file\ was\ opened\ successfully\ and\ the\ message\ was\ written\ to\ it.}}
+\DoxyCodeLine{00036\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{game_manager_8h_a574349f8c99770192a0c663bd3c442c7}{writeToFile}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ \&message,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ \&filename)}
+\DoxyCodeLine{00037\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ ofstream\ fileToWrite(filename,\ ios::app);}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordflow}{if}\ (fileToWrite.is\_open())}
+\DoxyCodeLine{00040\ \ \ \ \ \{}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ fileToWrite\ <<\ message\ <<\ endl;}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ fileToWrite.close();}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{catch}(\textcolor{keyword}{const}\ std::exception\&\ e)}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ e.what();}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00052\ \ \ \ \ \}}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00054\ \ \ \ \ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ cerr\ <<\ \textcolor{stringliteral}{"{}Error:\ Could\ not\ open\ "{}}\ <<\ filename\ <<\ \textcolor{stringliteral}{"{}\ continuing\ the\ game\ without\ writing\ to\ it."{}}\ <<\ endl;}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00057\ \ \ \ \ \}}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00059\ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classgame_manager_a2c792cdf676516a7eb6a6356398198d6}{gameManager}}}
+\DoxyCodeLine{00062\ \{}
+\DoxyCodeLine{00063\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordtype}{string}\ gameMapFileName;}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{int}\ numOfRows;}
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{int}\ numOfCols;}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{int}\ turns;}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{int}\ noBulletsCnt;}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{bool}\ isOddTurn;}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{int}\ numOfWalls;}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{int}\ numOfMines;}
+\DoxyCodeLine{00072\ \ \ \ \ \textcolor{keywordtype}{int}\ numOfWallsDestroyed;}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{int}\ numOfMinesDestroyed;}
+\DoxyCodeLine{00074\ \ \ \ \ vector<vector<array<matrixObject*,\ 3>>>\ *gameBoard;}
+\DoxyCodeLine{00075\ \ \ \ \ vector<bullet*>\ bullets;\ \textcolor{comment}{//\ Vector\ to\ store\ bullets\ in\ the\ air}}
+\DoxyCodeLine{00076\ \ \ \ \ array<tank*,\ 2>\ tanks;\ \textcolor{comment}{//\ Vector\ to\ store\ tanks\ on\ the\ board}}
+\DoxyCodeLine{00077\ \ \ \ \ vector<movingObject*>\ currMovingObjects;}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keywordtype}{bool}\ makeAllMoves();}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordtype}{bool}\ canMakeMove(\mbox{\hyperlink{classtank}{tank}}\&\ tankChoseTheMove,\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{move_8h_a1eae2f0eb13d25eaa55d5334838178c1}{move}}\ moveChosen);}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordtype}{void}\ makeTankMoves();}
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordtype}{bool}\ checkCollisions();}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{keywordtype}{bool}\ getRowsAndColsFromFile(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ \&filename);}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keywordtype}{void}\ printSummeryToLog();}
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordtype}{bool}\ isValidFile(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ \&filename);}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{void}\ printCollisionsToLog(\textcolor{keyword}{const}\ \mbox{\hyperlink{classmoving_object}{movingObject}}\ \&object1,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{classmoving_object}{movingObject}}\ \&object2)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00090\ \ \ \ \ \mbox{\hyperlink{classgame_manager_a2c792cdf676516a7eb6a6356398198d6}{gameManager}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ \&filename);}
+\DoxyCodeLine{00091\ \ \ \ \ \mbox{\hyperlink{classgame_manager_a4b87f61f8e89d59c061a860e975e4b50}{\string~gameManager}}();}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classgame_manager_a696d3cc26c380f8718b39e063594f564}{createMap}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{string}\ \&filename);}
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classgame_manager_a354d6f59e96b5806d4a1b6475b8c57f8}{playGame}}();}
+\DoxyCodeLine{00094\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classgame_manager_a3270206ef6015962ea1140b88d7d713f}{moveBullets}}();}
+\DoxyCodeLine{00095\ \};}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ GAME\_MANAGER\_H}}
+
+\end{DoxyCode}

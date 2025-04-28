@@ -1,0 +1,7 @@
+<map id="wall" name="wall">
+<area shape="rect" id="Node000001" title=" " alt="" coords="45,517,291,608"/>
+<area shape="rect" id="Node000002" href="$classunmoving_object.html" title=" " alt="" coords="9,379,326,469"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="170,484,170,518,165,518,165,484"/>
+<area shape="rect" id="Node000003" href="$classmatrix_object.html" title=" " alt="" coords="5,5,330,331"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="170,345,170,379,165,379,165,345"/>
+</map>

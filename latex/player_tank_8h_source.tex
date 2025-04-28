@@ -1,0 +1,30 @@
+\doxysection{player\+Tank.\+h}
+\hypertarget{player_tank_8h_source}{}\label{player_tank_8h_source}\mbox{\hyperlink{player_tank_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ PLAYERTANK\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ PLAYERTANK\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{tank_8h}{tank.h}}"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classp1_tank_a7cde3e0cadf0e0479bd993b1d4ad593a}{p1Tank}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtank_a8498a20c3545dfffb3e6020777daa7c0}{tank}}\ \{}
+\DoxyCodeLine{00008\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00009\ \ \ \ \ \mbox{\hyperlink{classp1_tank_a7cde3e0cadf0e0479bd993b1d4ad593a}{p1Tank}}(\textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{int}\ col,\ \mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}\ \mbox{\hyperlink{classmoving_object_a9f64708a13c1a272456aeb940647d73a}{orient}});}
+\DoxyCodeLine{00010\ \ \ \ \ \mbox{\hyperlink{move_8h_a34fada7315a155c603b9c3270fdf5a81}{objMove}}\ \mbox{\hyperlink{classp1_tank_ab0438f9328119a1f572dbf104da3c019}{play}}(\textcolor{keyword}{const}\ vector<vector<array<matrixObject\ *,\ 3>>>\ \&gameBoard,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ otherLoc[2],\ \textcolor{keywordtype}{int}\ numOfCols,\ \textcolor{keywordtype}{int}\ numOfRows)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00011\ \ \ \ \ vector<objMove>\ \mbox{\hyperlink{classp1_tank_aef3372dd302514978256ce68202e4fdf}{playCalc}}(\textcolor{keyword}{const}\ vector<vector<array<matrixObject\ *,\ 3>>>\ \&gameBoard,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ tank2Loc[2],\ \textcolor{keywordtype}{int}\ numOfRows,\ \textcolor{keywordtype}{int}\ numOfCols);}
+\DoxyCodeLine{00012\ \};}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classp2_tank_abf97bb000e217d7522818b62e9a328cb}{p2Tank}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtank_a8498a20c3545dfffb3e6020777daa7c0}{tank}}}
+\DoxyCodeLine{00015\ \{}
+\DoxyCodeLine{00016\ \ \ \ \ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{classp2_tank_abf97bb000e217d7522818b62e9a328cb}{p2Tank}}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}\ \mbox{\hyperlink{classmoving_object_a9f64708a13c1a272456aeb940647d73a}{orient}});}
+\DoxyCodeLine{00019\ \ \ \ \ \mbox{\hyperlink{move_8h_a34fada7315a155c603b9c3270fdf5a81}{objMove}}\ \mbox{\hyperlink{classp2_tank_a61192d5a121744aaab41396b226db948}{play}}(\textcolor{keyword}{const}\ vector<vector<array<matrixObject*,\ 3>>>\&\ gameBoard,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ otherLoc[2],\ \textcolor{keywordtype}{int}\ numOfCols,\ \textcolor{keywordtype}{int}\ numOfRows)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00020\ \ \ \ \ pair<int,\ int>\ \mbox{\hyperlink{classp2_tank_ac49683c4fd11f73ed9e2481c8a688da9}{getNeighborPointGivenOrient}}(\textcolor{keywordtype}{int}\ \mbox{\hyperlink{classmoving_object_a9f64708a13c1a272456aeb940647d73a}{orient}},\ \textcolor{keywordtype}{int}\ numOfROws,\ \textcolor{keywordtype}{int}\ numOfCols);}
+\DoxyCodeLine{00021\ \ \ \ \ pair<objMove,\ int>\ \mbox{\hyperlink{classp2_tank_a05157f0679085bdb7cb30c2d2e157765}{determineNextMove}}(\textcolor{keywordtype}{int}\ currentOrientation,\ \textcolor{keywordtype}{int}\ targetOrientation);}
+\DoxyCodeLine{00022\ \ \ \ \ array<int,4>\ \mbox{\hyperlink{classp2_tank_a84fa6f128338812824d120f73098e1c9}{searchForBullets}}(\textcolor{keyword}{const}\ vector<vector<array<matrixObject\ *,\ 3>>>\ \&gameBoard,\ \textcolor{keywordtype}{int}\ inRows,\ \textcolor{keywordtype}{int}\ inCols);}
+\DoxyCodeLine{00023\ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//PLAYERTANK\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,53 @@
+\doxysection{tank.\+h}
+\hypertarget{tank_8h_source}{}\label{tank_8h_source}\mbox{\hyperlink{tank_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ TANK\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ TANK\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{moving_object_8h}{movingObject.h}}"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{move_8h}{move.h}}"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{bullet_8h}{bullet.h}}"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{using\ namespace\ }std;}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtank_a8498a20c3545dfffb3e6020777daa7c0}{tank}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classmoving_object_a7350cd10c65b2edd2647586b8517f2fd}{movingObject}}}
+\DoxyCodeLine{00011\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{comment}{//\ The\ tank\ class\ inherits\ from\ movingObject,\ allowing\ it\ to\ use\ the\ properties\ and\ methods\ of\ movingObject.}}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{comment}{//\ This\ class\ represents\ a\ tank\ object\ in\ a\ 2D\ space.}}
+\DoxyCodeLine{00014\ \ \ \ \ }
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{comment}{//\ The\ tank\ class\ has\ the\ following\ properties:}}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{comment}{//\ -\/\ orientation:\ A\ float\ representing\ the\ orientation\ of\ the\ tank.}}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{comment}{//\ -\/\ shotsLeft:\ An\ integer\ representing\ the\ number\ of\ shots\ left\ for\ the\ tank.}}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{comment}{//\ -\/\ inBackwards:\ An\ integer\ indicating\ whether\ the\ tank\ is\ moving\ backward\ or\ not.}}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{comment}{//\ -\/\ tank\_size:\ A\ constant\ size\_t\ representing\ the\ size\ of\ the\ tank.}}
+\DoxyCodeLine{00020\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classtank_ae914a406882132faee77d299e49616c7}{shotsLeft}};}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classtank_a208669f9cdbc4f052bc51d6d5f4bba39}{inBackwards}};}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classtank_a0d47eca81677b9f37d3d826075836fb1}{turnsUntilNextShot}};}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classtank_a2586301a8a970ac3f384f629b76f1efb}{calcMoveRound}};}
+\DoxyCodeLine{00025\ \ \ \ \ vector<objMove>\ \mbox{\hyperlink{classtank_a737e1b7628ecdefed0405efd8fd42a45}{moves}};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{classtank_a8498a20c3545dfffb3e6020777daa7c0}{tank}}(\textcolor{keywordtype}{int}\ row,\ \textcolor{keywordtype}{int}\ col,\ \mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}\ \mbox{\hyperlink{classmoving_object_a9f64708a13c1a272456aeb940647d73a}{orient}},\ \mbox{\hyperlink{object_type_8h_a2a3cae49e6781726af07e98e7d9f2e30}{objectType}}\ \mbox{\hyperlink{classmatrix_object_ae8e7b48568a05139f9509b4c13651ad1}{oType}});}
+\DoxyCodeLine{00030\ \ \ \ \ \mbox{\hyperlink{classtank_a1e76cafa33f3b672a401d1913c834f43}{\string~tank}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classtank_ac66335a297265c5d3758ad1d8c529628}{setOrientation}}(\ \mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}\ newOrient);}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classtank_a9e3827468e9908b061d4541521a2d00e}{canShoot}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//\ int*\ newLocationAtReverse(\ int\ numOfCols,\ \ int\ numOfRows)\ const;}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classtank_a994c5f45f1a893183a1ceb4b517d237e}{updateTurn}}();}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classtank_a73a749a3c4b7080880db7e64a539ea52}{useShot}}();}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classtank_a6cd75b2850937e788f1d227cc7797ae6}{getInBack}}()\ \textcolor{keyword}{const};\ \textcolor{comment}{//\ Returns\ the\ inBackwards\ status}}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classtank_ad9873a55e2ff0db3f60e955fc2f7657f}{setInBackwards}}(\textcolor{keywordtype}{int}\ inBack);\ \textcolor{comment}{//\ Sets\ the\ inBackwards\ status}}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{move_8h_a34fada7315a155c603b9c3270fdf5a81}{objMove}}\ \mbox{\hyperlink{classtank_af568b0d05038df5896d0cca5f61b10c5}{play}}(\textcolor{keyword}{const}\ vector<vector<array<matrixObject*,\ 3>>>\&\ gameBoard,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ otherLoc[2],\ \textcolor{keywordtype}{int}\ numOfCols,\ \textcolor{keywordtype}{int}\ numOfRows)\ =\ 0;\ \textcolor{comment}{//\ Pure\ virtual\ function}}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classtank_ae856744fd568251e371b7119875d008a}{isSafe}}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y,\ \textcolor{keyword}{const}\ vector<vector<array<matrixObject*,\ 3>>>\&\ gameBoard,\ \textcolor{keywordtype}{int}\ numOfCols,\ \textcolor{keywordtype}{int}\ numOfRows,\ \textcolor{keywordtype}{int}\ movesAhead)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00040\ \ \ \ \ vector<objMove>\ \mbox{\hyperlink{classtank_ac6e8b15fbd23a4109a3bc0a3aed5531e}{getRotations}}(\mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}\ start,\ \mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}\ desired)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classtank_a3ec6a72f9da1f7434a991349ddd75240}{canSeeOtherTank}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ otherLoc[2],\ \textcolor{keyword}{const}\ vector<vector<array<matrixObject\ *,\ 3>>>\ \&gameBoard,\ \textcolor{keywordtype}{int}\ numOfRows,\ \textcolor{keywordtype}{int}\ numOfCols)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classtank_ac5449fae778859bc0788a39611e6eff8}{hasBullets}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classtank_aef11c4a78027357a40520a301366dbe5}{getNumOfShotsLeft}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \};}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ TANK\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,259 @@
+\doxysection{tank Class Reference}
+\hypertarget{classtank}{}\label{classtank}\index{tank@{tank}}
+
+
+{\ttfamily \#include "{}tank.\+h"{}}
+
+
+
+Inheritance diagram for tank\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classtank__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for tank\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classtank__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classtank_a8498a20c3545dfffb3e6020777daa7c0}{tank}} (int row, int col, \mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} \mbox{\hyperlink{classmoving_object_a9f64708a13c1a272456aeb940647d73a}{orient}}, \mbox{\hyperlink{object_type_8h_a2a3cae49e6781726af07e98e7d9f2e30}{object\+Type}} \mbox{\hyperlink{classmatrix_object_ae8e7b48568a05139f9509b4c13651ad1}{o\+Type}})
+\item 
+\mbox{\hyperlink{classtank_a1e76cafa33f3b672a401d1913c834f43}{\texorpdfstring{$\sim$}{\string~}tank}} () override
+\item 
+void \mbox{\hyperlink{classtank_ac66335a297265c5d3758ad1d8c529628}{set\+Orientation}} (\mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} new\+Orient)
+\item 
+bool \mbox{\hyperlink{classtank_a9e3827468e9908b061d4541521a2d00e}{can\+Shoot}} () const
+\item 
+void \mbox{\hyperlink{classtank_a994c5f45f1a893183a1ceb4b517d237e}{update\+Turn}} ()
+\item 
+void \mbox{\hyperlink{classtank_a73a749a3c4b7080880db7e64a539ea52}{use\+Shot}} ()
+\item 
+int \mbox{\hyperlink{classtank_a6cd75b2850937e788f1d227cc7797ae6}{get\+In\+Back}} () const
+\item 
+void \mbox{\hyperlink{classtank_ad9873a55e2ff0db3f60e955fc2f7657f}{set\+In\+Backwards}} (int in\+Back)
+\item 
+virtual \mbox{\hyperlink{move_8h_a34fada7315a155c603b9c3270fdf5a81}{obj\+Move}} \mbox{\hyperlink{classtank_af568b0d05038df5896d0cca5f61b10c5}{play}} (const vector$<$ vector$<$ array$<$ \mbox{\hyperlink{classmatrix_object}{matrix\+Object}} \texorpdfstring{$\ast$}{*}, 3 $>$ $>$ $>$ \&game\+Board, const int other\+Loc\mbox{[}2\mbox{]}, int num\+Of\+Cols, int num\+Of\+Rows)=0
+\item 
+bool \mbox{\hyperlink{classtank_ae856744fd568251e371b7119875d008a}{is\+Safe}} (int x, int y, const vector$<$ vector$<$ array$<$ \mbox{\hyperlink{classmatrix_object}{matrix\+Object}} \texorpdfstring{$\ast$}{*}, 3 $>$ $>$ $>$ \&game\+Board, int num\+Of\+Cols, int num\+Of\+Rows, int moves\+Ahead) const
+\item 
+vector$<$ \mbox{\hyperlink{move_8h_a34fada7315a155c603b9c3270fdf5a81}{obj\+Move}} $>$ \mbox{\hyperlink{classtank_ac6e8b15fbd23a4109a3bc0a3aed5531e}{get\+Rotations}} (\mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} start, \mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} desired) const
+\item 
+bool \mbox{\hyperlink{classtank_a3ec6a72f9da1f7434a991349ddd75240}{can\+See\+Other\+Tank}} (const int other\+Loc\mbox{[}2\mbox{]}, const vector$<$ vector$<$ array$<$ \mbox{\hyperlink{classmatrix_object}{matrix\+Object}} \texorpdfstring{$\ast$}{*}, 3 $>$ $>$ $>$ \&game\+Board, int num\+Of\+Rows, int num\+Of\+Cols) const
+\item 
+bool \mbox{\hyperlink{classtank_ac5449fae778859bc0788a39611e6eff8}{has\+Bullets}} () const
+\item 
+int \mbox{\hyperlink{classtank_aef11c4a78027357a40520a301366dbe5}{get\+Num\+Of\+Shots\+Left}} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classmoving_object}{moving\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmoving_object_a7350cd10c65b2edd2647586b8517f2fd}{moving\+Object}} (int row, int col, \mbox{\hyperlink{object_type_8h_a2a3cae49e6781726af07e98e7d9f2e30}{object\+Type}} \mbox{\hyperlink{classmatrix_object_ae8e7b48568a05139f9509b4c13651ad1}{o\+Type}}, \mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} \mbox{\hyperlink{classmoving_object_a9f64708a13c1a272456aeb940647d73a}{orient}})
+\item 
+virtual \mbox{\hyperlink{classmoving_object_a2c3f09ac0adbdbebd3178216269a7be2}{\texorpdfstring{$\sim$}{\string~}moving\+Object}} ()
+\item 
+int \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmoving_object_a60a23e1f4c38fbe88c46ff44ef3867fb}{new\+Location}} (int num\+Of\+Cols, int num\+Of\+Rows, bool at\+Reverse=false) const
+\item 
+const int \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmoving_object_af5c5f7c4bda4a2cb1ac77c1ff0376736}{get\+Old\+Location}} () const
+\item 
+void \mbox{\hyperlink{classmoving_object_aaf21025d4e8e4e1a954eb26b6eae188b}{set\+New\+Location}} (int new\+Row, int new\+Col)
+\item 
+\mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} \mbox{\hyperlink{classmoving_object_a5f43b8c5efb594df7465a9b9ccd3f09e}{get\+Orientation}} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classmatrix_object}{matrix\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmatrix_object_abf243eae28eb5b6e315dab881ba3a599}{matrix\+Object}} ()
+\item 
+\mbox{\hyperlink{classmatrix_object_a65d921f2af4e64b7685b93cc17932c2f}{matrix\+Object}} (int row, int col, \mbox{\hyperlink{object_type_8h_a2a3cae49e6781726af07e98e7d9f2e30}{object\+Type}} \mbox{\hyperlink{object_type_8h_a2a3cae49e6781726af07e98e7d9f2e30}{object\+Type}})
+\item 
+virtual \mbox{\hyperlink{classmatrix_object_a7363211f911236f2c4237dd5a583c41c}{\texorpdfstring{$\sim$}{\string~}matrix\+Object}} ()
+\item 
+const int \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classmatrix_object_aa4b4d5e6b44db6e186215c15e6b6a35c}{get\+Location}} () const
+\item 
+void \mbox{\hyperlink{classmatrix_object_a3034b823cccb2aead8b4e57eec068644}{set\+Location}} (int row, int col)
+\item 
+bool \mbox{\hyperlink{classmatrix_object_aa1f71299f7bd4ed7732074d4bdc73c8d}{get\+Is\+Alive}} () const
+\item 
+bool \mbox{\hyperlink{classmatrix_object_a411addf7ae4b8ba10ea3b1a53ed8743f}{get\+Can\+Move}} () const
+\item 
+void \mbox{\hyperlink{classmatrix_object_a46ec1dae44f857ae6ed1f5fa8709215b}{take\+AHit}} ()
+\item 
+\mbox{\hyperlink{object_type_8h_a2a3cae49e6781726af07e98e7d9f2e30}{object\+Type}} \mbox{\hyperlink{classmatrix_object_a98a6189bdc5f93b89862b82d7fd13d8d}{get\+Type}} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classtank_ae914a406882132faee77d299e49616c7}{shots\+Left}}
+\item 
+int \mbox{\hyperlink{classtank_a208669f9cdbc4f052bc51d6d5f4bba39}{in\+Backwards}}
+\item 
+int \mbox{\hyperlink{classtank_a0d47eca81677b9f37d3d826075836fb1}{turns\+Until\+Next\+Shot}}
+\item 
+int \mbox{\hyperlink{classtank_a2586301a8a970ac3f384f629b76f1efb}{calc\+Move\+Round}}
+\item 
+vector$<$ \mbox{\hyperlink{move_8h_a34fada7315a155c603b9c3270fdf5a81}{obj\+Move}} $>$ \mbox{\hyperlink{classtank_a737e1b7628ecdefed0405efd8fd42a45}{moves}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classmoving_object}{moving\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}} \mbox{\hyperlink{classmoving_object_a9f64708a13c1a272456aeb940647d73a}{orient}}
+\item 
+int \mbox{\hyperlink{classmoving_object_af166ba6ba96fc7d1ec63fa2cba93ff0b}{old\+Location}} \mbox{[}2\mbox{]}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classmatrix_object}{matrix\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{classmatrix_object_a0ab7790d0d62b5bf59246ebd2e4864df}{location}} \mbox{[}2\mbox{]}
+\item 
+bool \mbox{\hyperlink{classmatrix_object_a6d1a92c5355d5bd55c62b1f591016814}{is\+Alive}} = true
+\item 
+bool \mbox{\hyperlink{classmatrix_object_a67c49f14bfe4ae171ff2585a02582b80}{can\+Move}} = false
+\item 
+int \mbox{\hyperlink{classmatrix_object_a8547199ea7501479dbecab11d22917df}{hits\+Left}}
+\item 
+\mbox{\hyperlink{object_type_8h_a2a3cae49e6781726af07e98e7d9f2e30}{object\+Type}} \mbox{\hyperlink{classmatrix_object_ae8e7b48568a05139f9509b4c13651ad1}{o\+Type}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classtank_a8498a20c3545dfffb3e6020777daa7c0}\index{tank@{tank}!tank@{tank}}
+\index{tank@{tank}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{tank()}{tank()}}
+{\footnotesize\ttfamily \label{classtank_a8498a20c3545dfffb3e6020777daa7c0} 
+tank\+::tank (\begin{DoxyParamCaption}\item[{int}]{row}{, }\item[{int}]{col}{, }\item[{\mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}}]{orient}{, }\item[{\mbox{\hyperlink{object_type_8h_a2a3cae49e6781726af07e98e7d9f2e30}{object\+Type}}}]{o\+Type}{}\end{DoxyParamCaption})}
+
+\Hypertarget{classtank_a1e76cafa33f3b672a401d1913c834f43}\index{tank@{tank}!````~tank@{\texorpdfstring{$\sim$}{\string~}tank}}
+\index{````~tank@{\texorpdfstring{$\sim$}{\string~}tank}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}tank()}{\string~tank()}}
+{\footnotesize\ttfamily \label{classtank_a1e76cafa33f3b672a401d1913c834f43} 
+tank\+::\texorpdfstring{$\sim$}{\string~}tank (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}}
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classtank_a3ec6a72f9da1f7434a991349ddd75240}\index{tank@{tank}!canSeeOtherTank@{canSeeOtherTank}}
+\index{canSeeOtherTank@{canSeeOtherTank}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{canSeeOtherTank()}{canSeeOtherTank()}}
+{\footnotesize\ttfamily \label{classtank_a3ec6a72f9da1f7434a991349ddd75240} 
+bool tank\+::can\+See\+Other\+Tank (\begin{DoxyParamCaption}\item[{const int}]{other\+Loc}{\mbox{[}2\mbox{]}, }\item[{const vector$<$ vector$<$ array$<$ \mbox{\hyperlink{classmatrix_object}{matrix\+Object}} \texorpdfstring{$\ast$}{*}, 3 $>$ $>$ $>$ \&}]{game\+Board}{, }\item[{int}]{num\+Of\+Rows}{, }\item[{int}]{num\+Of\+Cols}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{classtank_a9e3827468e9908b061d4541521a2d00e}\index{tank@{tank}!canShoot@{canShoot}}
+\index{canShoot@{canShoot}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{canShoot()}{canShoot()}}
+{\footnotesize\ttfamily \label{classtank_a9e3827468e9908b061d4541521a2d00e} 
+bool tank\+::can\+Shoot (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{classtank_a6cd75b2850937e788f1d227cc7797ae6}\index{tank@{tank}!getInBack@{getInBack}}
+\index{getInBack@{getInBack}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{getInBack()}{getInBack()}}
+{\footnotesize\ttfamily \label{classtank_a6cd75b2850937e788f1d227cc7797ae6} 
+int tank\+::get\+In\+Back (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{classtank_aef11c4a78027357a40520a301366dbe5}\index{tank@{tank}!getNumOfShotsLeft@{getNumOfShotsLeft}}
+\index{getNumOfShotsLeft@{getNumOfShotsLeft}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{getNumOfShotsLeft()}{getNumOfShotsLeft()}}
+{\footnotesize\ttfamily \label{classtank_aef11c4a78027357a40520a301366dbe5} 
+int tank\+::get\+Num\+Of\+Shots\+Left (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{classtank_ac6e8b15fbd23a4109a3bc0a3aed5531e}\index{tank@{tank}!getRotations@{getRotations}}
+\index{getRotations@{getRotations}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{getRotations()}{getRotations()}}
+{\footnotesize\ttfamily \label{classtank_ac6e8b15fbd23a4109a3bc0a3aed5531e} 
+vector$<$ \mbox{\hyperlink{move_8h_a34fada7315a155c603b9c3270fdf5a81}{obj\+Move}} $>$ tank\+::get\+Rotations (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}}]{start}{, }\item[{\mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}}]{desired}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{classtank_ac5449fae778859bc0788a39611e6eff8}\index{tank@{tank}!hasBullets@{hasBullets}}
+\index{hasBullets@{hasBullets}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{hasBullets()}{hasBullets()}}
+{\footnotesize\ttfamily \label{classtank_ac5449fae778859bc0788a39611e6eff8} 
+bool tank\+::has\+Bullets (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{classtank_ae856744fd568251e371b7119875d008a}\index{tank@{tank}!isSafe@{isSafe}}
+\index{isSafe@{isSafe}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{isSafe()}{isSafe()}}
+{\footnotesize\ttfamily \label{classtank_ae856744fd568251e371b7119875d008a} 
+bool tank\+::is\+Safe (\begin{DoxyParamCaption}\item[{int}]{x}{, }\item[{int}]{y}{, }\item[{const vector$<$ vector$<$ array$<$ \mbox{\hyperlink{classmatrix_object}{matrix\+Object}} \texorpdfstring{$\ast$}{*}, 3 $>$ $>$ $>$ \&}]{game\+Board}{, }\item[{int}]{num\+Of\+Cols}{, }\item[{int}]{num\+Of\+Rows}{, }\item[{int}]{moves\+Ahead}{}\end{DoxyParamCaption}) const}
+
+\Hypertarget{classtank_af568b0d05038df5896d0cca5f61b10c5}\index{tank@{tank}!play@{play}}
+\index{play@{play}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{play()}{play()}}
+{\footnotesize\ttfamily \label{classtank_af568b0d05038df5896d0cca5f61b10c5} 
+virtual \mbox{\hyperlink{move_8h_a34fada7315a155c603b9c3270fdf5a81}{obj\+Move}} tank\+::play (\begin{DoxyParamCaption}\item[{const vector$<$ vector$<$ array$<$ \mbox{\hyperlink{classmatrix_object}{matrix\+Object}} \texorpdfstring{$\ast$}{*}, 3 $>$ $>$ $>$ \&}]{game\+Board}{, }\item[{const int}]{other\+Loc}{\mbox{[}2\mbox{]}, }\item[{int}]{num\+Of\+Cols}{, }\item[{int}]{num\+Of\+Rows}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \mbox{\hyperlink{classp1_tank_ab0438f9328119a1f572dbf104da3c019}{p1\+Tank}}, and \mbox{\hyperlink{classp2_tank_a61192d5a121744aaab41396b226db948}{p2\+Tank}}.
+
+\Hypertarget{classtank_ad9873a55e2ff0db3f60e955fc2f7657f}\index{tank@{tank}!setInBackwards@{setInBackwards}}
+\index{setInBackwards@{setInBackwards}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{setInBackwards()}{setInBackwards()}}
+{\footnotesize\ttfamily \label{classtank_ad9873a55e2ff0db3f60e955fc2f7657f} 
+void tank\+::set\+In\+Backwards (\begin{DoxyParamCaption}\item[{int}]{in\+Back}{}\end{DoxyParamCaption})}
+
+\Hypertarget{classtank_ac66335a297265c5d3758ad1d8c529628}\index{tank@{tank}!setOrientation@{setOrientation}}
+\index{setOrientation@{setOrientation}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{setOrientation()}{setOrientation()}}
+{\footnotesize\ttfamily \label{classtank_ac66335a297265c5d3758ad1d8c529628} 
+void tank\+::set\+Orientation (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{orientation_8h_ac5fc6e200c34376449ba20a234061eb4}{orientation}}}]{new\+Orient}{}\end{DoxyParamCaption})}
+
+\Hypertarget{classtank_a994c5f45f1a893183a1ceb4b517d237e}\index{tank@{tank}!updateTurn@{updateTurn}}
+\index{updateTurn@{updateTurn}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{updateTurn()}{updateTurn()}}
+{\footnotesize\ttfamily \label{classtank_a994c5f45f1a893183a1ceb4b517d237e} 
+void tank\+::update\+Turn (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{classtank_a73a749a3c4b7080880db7e64a539ea52}\index{tank@{tank}!useShot@{useShot}}
+\index{useShot@{useShot}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{useShot()}{useShot()}}
+{\footnotesize\ttfamily \label{classtank_a73a749a3c4b7080880db7e64a539ea52} 
+void tank\+::use\+Shot (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classtank_a2586301a8a970ac3f384f629b76f1efb}\index{tank@{tank}!calcMoveRound@{calcMoveRound}}
+\index{calcMoveRound@{calcMoveRound}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{calcMoveRound}{calcMoveRound}}
+{\footnotesize\ttfamily \label{classtank_a2586301a8a970ac3f384f629b76f1efb} 
+int tank\+::calc\+Move\+Round\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classtank_a208669f9cdbc4f052bc51d6d5f4bba39}\index{tank@{tank}!inBackwards@{inBackwards}}
+\index{inBackwards@{inBackwards}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{inBackwards}{inBackwards}}
+{\footnotesize\ttfamily \label{classtank_a208669f9cdbc4f052bc51d6d5f4bba39} 
+int tank\+::in\+Backwards\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classtank_a737e1b7628ecdefed0405efd8fd42a45}\index{tank@{tank}!moves@{moves}}
+\index{moves@{moves}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{moves}{moves}}
+{\footnotesize\ttfamily \label{classtank_a737e1b7628ecdefed0405efd8fd42a45} 
+vector$<$\mbox{\hyperlink{move_8h_a34fada7315a155c603b9c3270fdf5a81}{obj\+Move}}$>$ tank\+::moves\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classtank_ae914a406882132faee77d299e49616c7}\index{tank@{tank}!shotsLeft@{shotsLeft}}
+\index{shotsLeft@{shotsLeft}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{shotsLeft}{shotsLeft}}
+{\footnotesize\ttfamily \label{classtank_ae914a406882132faee77d299e49616c7} 
+int tank\+::shots\+Left\hspace{0.3cm}{\ttfamily [protected]}}
+
+\Hypertarget{classtank_a0d47eca81677b9f37d3d826075836fb1}\index{tank@{tank}!turnsUntilNextShot@{turnsUntilNextShot}}
+\index{turnsUntilNextShot@{turnsUntilNextShot}!tank@{tank}}
+\doxysubsubsection{\texorpdfstring{turnsUntilNextShot}{turnsUntilNextShot}}
+{\footnotesize\ttfamily \label{classtank_a0d47eca81677b9f37d3d826075836fb1} 
+int tank\+::turns\+Until\+Next\+Shot\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{tank_8h}{tank.\+h}}\item 
+\mbox{\hyperlink{tank_8cpp}{tank.\+cpp}}\end{DoxyCompactItemize}
