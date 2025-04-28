@@ -676,16 +676,14 @@ gameManager::~gameManager() {
     
     // Clean up the game board
     if (gameBoard) {
-        // for (int i = 0; i < numOfRows; ++i) {
-        //     for (int j = 0; j < numOfCols; ++j) {
-        //         for (int k = 0; k < 3; ++k) {
-        //             if ((*gameBoard)[i][j][k]) {
-        //                 delete (*gameBoard)[i][j][k];
-        //                 (*gameBoard)[i][j][k] = nullptr;
-        //             }
-        //         }
-        //     }
-        // }
+        for (int i = 0; i < numOfRows; ++i) {
+            for (int j = 0; j < numOfCols; ++j) {
+                if ((*gameBoard)[i][j][0]) {
+                    delete (*gameBoard)[i][j][0];
+                    (*gameBoard)[i][j][0] = nullptr;
+                }
+            }
+        }
         delete gameBoard;
         gameBoard = nullptr;
     }
