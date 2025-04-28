@@ -67,6 +67,10 @@ private:
     int turns;
     int noBulletsCnt;
     bool isOddTurn;
+    int numOfWalls;
+    int numOfMines;
+    int numOfWallsDestroyed;
+    int numOfMinesDestroyed;
     vector<vector<array<matrixObject*, 3>>> *gameBoard;
     vector<bullet*> bullets; // Vector to store bullets in the air
     array<tank*, 2> tanks; // Vector to store tanks on the board
