@@ -1,0 +1,34 @@
+Starting game
+
+
+
+Turn number 1:
+
+The tank of player 1 at (1,9) went forwards to (1,8).
+
+The tank of player 2 at (1,7) shot a bullet.
+
+The new bullet starting location is (1,8).
+
+
+
+Turn number 2:
+
+A tank of player number 1 got hit by a bullet.
+
+
+
+Game summary:
+
+Turns played: 2
+
+The tank of player 1 shot 0 bullets out of 16
+
+The tank of player 2 shot 1 bullets out of 16
+
+0 out of 37 walls were destroyed
+
+0 out of 12 mines were destroyed
+
+Game result: Player number 2 won
+

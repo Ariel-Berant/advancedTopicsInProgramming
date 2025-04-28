@@ -103,6 +103,7 @@ bool gameManager::createMap(const string &filename)
             {
             case '#':
                 (*gameBoard)[currRow][currCol][0] = new wall(currRow, currCol, W);
+                numOfWalls++;
                 (*gameBoard)[currRow][currCol][1] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
@@ -138,6 +139,7 @@ bool gameManager::createMap(const string &filename)
                 break;
             case '@':
                 (*gameBoard)[currRow][currCol][0] = new mine(currRow, currCol, M);
+                numOfMines++;
                 (*gameBoard)[currRow][currCol][1] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
@@ -446,7 +448,7 @@ void gameManager::makeTankMoves(array<tank*, 2> &tanksArr)
                     newLocation = nullptr; // Set to nullptr to enter the else statement(at 430)
                     writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanksArr[i]->getLocation()[0]) + "," + to_string(tanksArr[i]->getLocation()[1]))
                         + ") shot a bullet.\n", gameMapFileName);
-                    writeToFile("The new bullet location is (" + (to_string(b->getLocation()[0]) + "," + to_string(b->getLocation()[1])) + ").\n", gameMapFileName);
+                    writeToFile("The new bullet starting location is (" + (to_string(b->getLocation()[0]) + "," + to_string(b->getLocation()[1])) + ").\n", gameMapFileName);
                 }
                 else
                 {
@@ -507,6 +509,7 @@ bool gameManager::makeAllMoves(vector<movingObject*> &movingObjects)//return tru
                 writeToFile("The mine at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
                                 ") has been explode.\n",
                             gameMapFileName);
+                numOfMinesDestroyed++;
             }
         }
 
@@ -531,6 +534,7 @@ bool gameManager::makeAllMoves(vector<movingObject*> &movingObjects)//return tru
                 writeToFile("The wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
                                 ") has been destroyed.\n",
                             gameMapFileName);
+                numOfWallsDestroyed++;
             }
         }
 
@@ -618,8 +622,10 @@ void gameManager::printSummeryToLog(){
     writeToFile("\n", gameMapFileName);
     writeToFile("Game summary:\n", gameMapFileName);
     writeToFile("Turns played: " + to_string(turns) + "\n", gameMapFileName);
-    writeToFile("The tank of player 1 shot: " + to_string(16 - tanks[0]->getNumOfShotsLeft()) + " out of 16\n", gameMapFileName);
-    writeToFile("The tank of player 2 shot: " + to_string(16 - tanks[1]->getNumOfShotsLeft()) + " out of 16\n", gameMapFileName);
+    writeToFile("The tank of player 1 shot " + to_string(16 - tanks[0]->getNumOfShotsLeft()) + " bullets out of 16\n", gameMapFileName);
+    writeToFile("The tank of player 2 shot " + to_string(16 - tanks[1]->getNumOfShotsLeft()) + " bullets out of 16\n", gameMapFileName);
+    writeToFile(to_string(numOfWallsDestroyed) + " out of " + to_string(numOfWalls) + " walls were destroyed\n", gameMapFileName);
+    writeToFile(to_string(numOfMinesDestroyed) + " out of " + to_string(numOfMines) + " mines were destroyed\n", gameMapFileName);
 }
 
 
@@ -672,7 +678,7 @@ void gameManager::playGame()
 }
 
 gameManager::gameManager(const std::string &filename) :  numOfRows(0), numOfCols(0),
-turns(0), noBulletsCnt(40), isOddTurn(false), gameBoard(nullptr), tanks(array<tank*, 2>{nullptr, nullptr})
+turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(array<tank*, 2>{nullptr, nullptr})
 {
     if (!createMap(filename)){
         cerr << "Error: Failed to create map from file." << endl;
