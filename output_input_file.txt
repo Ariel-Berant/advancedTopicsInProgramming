@@ -1,0 +1,100 @@
+Starting game
+
+
+
+Turn number 1:
+
+The tank of player 1 at (1,9) stayed in place.
+
+The tank of player 2 at (1,7) shot a bullet.
+
+The new bullet starting location is (1,8).
+
+A bullet hit a wall at (1,8) .
+
+
+
+Turn number 2:
+
+
+
+Turn number 3:
+
+The tank of player 1 at (1,9) stayed in place.
+
+The tank of player 2 at (1,7) stayed in place.
+
+
+
+Turn number 4:
+
+
+
+Turn number 5:
+
+The tank of player 1 at (1,9) stayed in place.
+
+The tank of player 2 at (1,7) stayed in place.
+
+
+
+Turn number 6:
+
+
+
+Turn number 7:
+
+The tank of player 1 at (1,9) stayed in place.
+
+The tank of player 2 at (1,7) stayed in place.
+
+
+
+Turn number 8:
+
+
+
+Turn number 9:
+
+The tank of player 1 at (1,9) stayed in place.
+
+The tank of player 2 at (1,7) shot a bullet.
+
+The new bullet starting location is (1,8).
+
+A bullet hit a wall at (1,8) .
+
+The wall at (1,8) has been destroyed.
+
+
+
+Turn number 10:
+
+
+
+Turn number 11:
+
+The tank of player 1 at (1,9) stayed in place.
+
+The tank of player 2 at (1,7) went forwards to (1,8).
+
+
+
+Turn number 12:
+
+
+
+Turn number 13:
+
+The tank of player 1 at (1,9) stayed in place.
+
+The tank of player 2 at (1,8) went forwards to (1,9).
+
+
+
+Turn number 14:
+
+
+
+Turn number 15:
+
