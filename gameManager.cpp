@@ -177,6 +177,7 @@ void gameManager::moveBullets()
         newLoc = b->newLocation(numOfCols, numOfRows);
         b->setNewLocation(newLoc[0], newLoc[1]);
         delete[] newLoc;
+        newLoc = nullptr;
     }
 }
 
@@ -471,6 +472,7 @@ bool gameManager::makeAllMoves(vector<movingObject*> &movingObjects)//return tru
             movingObjects[i]->takeAHit();
             matrixObject *explodedMine = (*gameBoard)[objectNewRow][objectNewCol][0];
             delete explodedMine;
+            explodedMine = nullptr;
             (*gameBoard)[objectNewRow][objectNewCol][0] = nullptr; // remove the mine from the board
 
             int tanksPlayer = movingObjects[i]->getType() == P1T ? 1 : 2;
@@ -505,6 +507,7 @@ bool gameManager::makeAllMoves(vector<movingObject*> &movingObjects)//return tru
             if (!damagedWall->getIsAlive())
             { // if the wall destroyed - remove from the board
                 delete damagedWall;
+                damagedWall = nullptr;
                 (*gameBoard)[objectNewRow][objectNewCol][0] = nullptr;
 
                 writeToFile("The wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
@@ -530,6 +533,7 @@ bool gameManager::makeAllMoves(vector<movingObject*> &movingObjects)//return tru
                     std::remove(bullets.begin(), bullets.end(), destroyedObject),
                     bullets.end()); // delete the destroyed bullet from the bullets in the air vector
                 delete destroyedObject;
+                destroyedObject = nullptr;
             }
 
             --i;
@@ -563,9 +567,11 @@ bool gameManager::canMakeMove(tank &tankChoseTheMove, objMove moveChosen)
         if ((*gameBoard)[newLoc[0]][newLoc[1]][0] && (*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
         {
             delete[] newLoc;
+            newLoc = nullptr;
             return false;
         }
         delete[] newLoc;
+        newLoc = nullptr;
         return true;
     }
     else if (moveChosen == moveBackwards)
@@ -574,9 +580,11 @@ bool gameManager::canMakeMove(tank &tankChoseTheMove, objMove moveChosen)
         if ((*gameBoard)[newLoc[0]][newLoc[1]][0] && (*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
         {
             delete[] newLoc;
+            newLoc = nullptr;
             return false;
         }
         delete[] newLoc;
+        newLoc = nullptr;
     }
     else if (moveChosen == shoot)
     {
@@ -654,21 +662,46 @@ turns(0), noBulletsCnt(40), isOddTurn(false), gameBoard(nullptr), tanks(array<ta
     }
 }
 
-gameManager::~gameManager(){
-    if (!gameBoard){
-        // for (int i = 0; i < numOfRows; ++i){
-        //     for (int j = 0; j < numOfCols; ++j){
-        //         for (int k = 0; k < 2; ++k){
-        //             if (!(*gameBoard)[i][j][k]){
-        //                 delete (*gameBoard)[i][j][k];
-        //                 (*gameBoard)[i][j][k] = nullptr;
-        //             }
-        //         }
-        //     }
-        // }
+gameManager::~gameManager() {
+    // Clean up tanks first to avoid double deletion
+    for (tank* t : tanks) {
+        if (t) {
+            delete t;
+            t = nullptr;
+        }
+    }
+
+    // Clean up the game board
+    if (gameBoard) {
+        for (int i = 0; i < numOfRows; ++i) {
+            for (int j = 0; j < numOfCols; ++j) {
+                for (int k = 0; k < 3; ++k) {
+                    if ((*gameBoard)[i][j][k]) {
+                        delete (*gameBoard)[i][j][k];
+                        (*gameBoard)[i][j][k] = nullptr;
+                    }
+                }
+            }
+        }
         delete gameBoard;
         gameBoard = nullptr;
     }
+
+    // Clean up bullets
+    for (bullet* b : bullets) {
+        if (b) {
+            delete b;
+        }
+    }
+    bullets.clear();
+
+    // Clean up other moving objects
+    for (movingObject* obj : currMovingObjects) {
+        if (obj) {
+            delete obj;
+        }
+    }
+    currMovingObjects.clear();
 }
 
 /*
