@@ -670,38 +670,41 @@ gameManager::~gameManager() {
             t = nullptr;
         }
     }
-
+    
+    currMovingObjects.clear();
+    bullets.clear();
+    
     // Clean up the game board
     if (gameBoard) {
-        for (int i = 0; i < numOfRows; ++i) {
-            for (int j = 0; j < numOfCols; ++j) {
-                for (int k = 0; k < 3; ++k) {
-                    if ((*gameBoard)[i][j][k]) {
-                        delete (*gameBoard)[i][j][k];
-                        (*gameBoard)[i][j][k] = nullptr;
-                    }
-                }
-            }
-        }
+        // for (int i = 0; i < numOfRows; ++i) {
+        //     for (int j = 0; j < numOfCols; ++j) {
+        //         for (int k = 0; k < 3; ++k) {
+        //             if ((*gameBoard)[i][j][k]) {
+        //                 delete (*gameBoard)[i][j][k];
+        //                 (*gameBoard)[i][j][k] = nullptr;
+        //             }
+        //         }
+        //     }
+        // }
         delete gameBoard;
         gameBoard = nullptr;
     }
 
-    // Clean up bullets
-    for (bullet* b : bullets) {
-        if (b) {
-            delete b;
-        }
-    }
-    bullets.clear();
+    // // Clean up bullets
+    // for (bullet* b : bullets) {
+    //     if (b) {
+    //         delete b;
+    //     }
+    // }
+    // bullets.clear();
 
-    // Clean up other moving objects
-    for (movingObject* obj : currMovingObjects) {
-        if (obj) {
-            delete obj;
-        }
-    }
-    currMovingObjects.clear();
+    // // Clean up other moving objects
+    // for (movingObject* obj : currMovingObjects) {
+    //     if (obj) {
+    //         delete obj;
+    //     }
+    // }
+
 }
 
 /*
