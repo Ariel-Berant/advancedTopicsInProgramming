@@ -185,10 +185,10 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
     else{// if there is no danger
         int targetOrientation = calculateTargetOrientation(location[0], location[1], otherLoc[0], otherLoc[1]);
         pair<objMove, int> next = determineNextMove(orient, targetOrientation);
-        if(next.first == moveForward && (turnsUntilNextShot == 0)){
+        if(next.first == moveForward && canShoot()){
             return shoot;
         }
-        else if(next.first == moveForward && turnsUntilNextShot > 0){
+        else if(next.first == moveForward && !canShoot()){
             int* newLoc = newLocation(numOfCols, numOfRows);
             if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1) ){
                 delete[] newLoc;
