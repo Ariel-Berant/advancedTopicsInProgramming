@@ -202,28 +202,38 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         int targetOrientation = calculateTargetOrientation(location[0], location[1], otherLoc[0], otherLoc[1]);
         pair<objMove, int> next = determineNextMove(orient, targetOrientation);
         if(next.first == moveForward && canShoot()){
+            // if the tank can shoot and in order to get to the other tank he needs to move forward- shoot
             return shoot;
         }
-        else if(next.first == moveForward && !canShoot()){
+        else if(next.first != moveForward && calcMoveRound == 0){
+            // if in order to get to the other tank he doesn't need to move forward- perform the move
+            return next.first;
+        }
+        else{
             int* newLoc = newLocation(numOfCols, numOfRows);
-            if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1) && calcMoveRound == 0){
-                delete[] newLoc;
-                newLoc = nullptr;
-                return moveForward;
+            if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1) && next.first == moveForward){
+                // we don't need to change the move it's stay next.first
             }
             else{
-                delete[] newLoc;
-                newLoc = nullptr;
-                pair<objMove, int> movesPair = findAdjSafe(gameBoard, numOfCols, numOfRows);
-                if (calcMoveRound == 0) {
-                    calcMoveRound = movesPair.second;
-                } 
-                else {
-                    calcMoveRound--;
+
+                if(next.first != moveForward && calcMoveRound == 0){
+                    // we don't need to change the move it's stay next.first
                 }
-                return movesPair.first;
+                else{
+                    next = findAdjSafe(gameBoard, numOfCols, numOfRows);
+                    if (calcMoveRound == 0) {
+                        calcMoveRound = next.second;
+                    } 
+                    else {
+                        calcMoveRound--;
+                    }
+                    return next.first;
+                }
             }
+            delete[] newLoc;
+            newLoc = nullptr;
+            return next.first;
         }
-        return next.first;
     }
+    return noAction;
 }
