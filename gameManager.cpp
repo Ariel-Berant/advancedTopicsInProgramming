@@ -502,7 +502,6 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
         {
             // if a tank stepped on a mine - they both destroyed
 
-            currMovingObjects[i]->takeAHit();
             matrixObject *explodedMine = (*gameBoard)[objectNewRow][objectNewCol][0];
             delete explodedMine;
             explodedMine = nullptr;
@@ -516,6 +515,7 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
                 + " stepped on a mine at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
                                 ") .\n",
                             gameMapFileName);
+                currMovingObjects[i]->takeAHit();
             }
             else
             {

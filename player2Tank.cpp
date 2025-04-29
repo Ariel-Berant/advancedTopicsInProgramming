@@ -138,23 +138,22 @@ array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 
     return {0,0,0,0};
 }
 
-objMove p2Tank::findAdjSafe(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist){
+pair<objMove, int> p2Tank::findAdjSafe(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist){
     //search for a safest place among all the neighbors cells and return the fist move needed to get there 
-    int targetOrientation;
+    // int targetOrientation;
     for(int orien = 0 ;orien < 8 ; orien++){
         pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfRows, numOfCols);
-        targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
-        pair<objMove, int> val =  determineNextMove(orien, targetOrientation);
-        objMove nextMove = val.first;
-        int numOfMoves = val.second;
+        // targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
+        pair<objMove, int> movesPair =  determineNextMove(orient, orien);
+        int numOfMoves = movesPair.second;
         if(isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves)
                 && isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves + 1)){
             if(numOfMoves <= (closestBulletDist/2)){
-                return nextMove;
+                return movesPair;
             }
         }
     }
-    return noAction;
+    return {noAction,0};
 }
 
 
@@ -177,6 +176,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         }
     }
     if(closestBulletDist != 7){//if there is a bullet chasing the tank
+        calcMoveRound = 0;
         int numOfTurnsToRotate = calculateTurnsToRotate(orient, closestLocation[3]);
         if(numOfTurnsToRotate + max(0, turnsUntilNextShot - numOfTurnsToRotate ) + 1 <= closestBulletDist/2 && numOfBulletsChasing <= 1) {
             // if the tank can shoot the bullet before it gets to him there is only one bullet chasing him
@@ -188,7 +188,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
             }
         }
         else{
-            objMove nextMove = findAdjSafe(gameBoard, numOfCols, numOfRows, closestBulletDist);
+            objMove nextMove = findAdjSafe(gameBoard, numOfCols, numOfRows, closestBulletDist).first;
             if(nextMove == noAction){
                 return shoot;
             }
@@ -197,6 +197,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
             }
         }
     }
+    
     else{// if there is no danger
         int targetOrientation = calculateTargetOrientation(location[0], location[1], otherLoc[0], otherLoc[1]);
         pair<objMove, int> next = determineNextMove(orient, targetOrientation);
@@ -205,7 +206,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         }
         else if(next.first == moveForward && !canShoot()){
             int* newLoc = newLocation(numOfCols, numOfRows);
-            if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1) ){
+            if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1) && calcMoveRound == 0){
                 delete[] newLoc;
                 newLoc = nullptr;
                 return moveForward;
@@ -213,7 +214,14 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
             else{
                 delete[] newLoc;
                 newLoc = nullptr;
-                return findAdjSafe(gameBoard, numOfCols, numOfRows);
+                pair<objMove, int> movesPair = findAdjSafe(gameBoard, numOfCols, numOfRows);
+                if (calcMoveRound == 0) {
+                    calcMoveRound = movesPair.second;
+                } 
+                else {
+                    calcMoveRound--;
+                }
+                return movesPair.first;
             }
         }
         return next.first;
