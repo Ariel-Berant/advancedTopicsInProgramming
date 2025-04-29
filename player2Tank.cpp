@@ -137,6 +137,29 @@ array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 
     }
     return {0,0,0,0};
 }
+
+objMove p2Tank::findAdjSafe(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist){
+    //search for a safest place among all the neighbors cells and return the fist move needed to get there 
+    int targetOrientation;
+    for(int orien = 0 ;orien < 8 ; orien++){
+        pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfRows, numOfCols);
+        targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
+        pair<objMove, int> val =  determineNextMove(orien, targetOrientation);
+        objMove nextMove = val.first;
+        int numOfMoves = val.second;
+        if(isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves)
+                && isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves + 1)){
+            if(numOfMoves <= (closestBulletDist/2)){
+                return nextMove;
+            }
+        }
+    }
+    return noAction;
+}
+
+
+
+
 objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
 
     int numOfBulletsChasing = 0;
@@ -165,21 +188,13 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
             }
         }
         else{
-            int targetOrientation;
-            for(int orien = 0 ;orien < 8 ; orien++){//search for a safe place from the bullets
-                pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfRows, numOfCols);
-                targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
-                pair<objMove, int> val =  determineNextMove(orien, targetOrientation);
-                objMove nextMove = val.first;
-                int numOfMoves = val.second;
-                if(isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves)
-                        && isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves + 1)){
-                    if(numOfMoves <= (closestBulletDist/2)){
-                        return nextMove;
-                    }
-                }
+            objMove nextMove = findAdjSafe(gameBoard, numOfCols, numOfRows, closestBulletDist);
+            if(nextMove == noAction){
+                return shoot;
             }
-            return shoot;
+            else{
+                return nextMove;
+            }
         }
     }
     else{// if there is no danger
@@ -198,7 +213,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
             else{
                 delete[] newLoc;
                 newLoc = nullptr;
-                return noAction;
+                return findAdjSafe(gameBoard, numOfCols, numOfRows);
             }
         }
         return next.first;

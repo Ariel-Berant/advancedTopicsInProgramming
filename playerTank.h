@@ -19,6 +19,7 @@ public:
     objMove play(const vector<vector<array<matrixObject*, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) override;
     pair<int, int> getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols);
     pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
+    objMove findAdjSafe(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist = 100);
     array<int,4> searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRows, int inCols);
 };
 
