@@ -710,6 +710,14 @@ gameManager::~gameManager() {
             t = nullptr;
         }
     }
+
+    for (bullet *b : bullets) {
+        if (b) {
+            delete b;
+            b = nullptr;
+        }
+    }
+    
     
     currMovingObjects.clear();
     bullets.clear();

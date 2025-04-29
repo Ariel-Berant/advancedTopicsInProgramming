@@ -44,46 +44,7 @@ void tank::updateTurn() {
     if(turnsUntilNextShot > 0){
         turnsUntilNextShot--;
     }
-    if(calcMoveRound < 7){
-        calcMoveRound++;
-    } else{
-        calcMoveRound = 0;
-    }
 }
-
-
-// int* tank::newLocationAtReverse(const int numOfCols, const int numOfRows) const {
-//     int *newLoc = new int[2]{location[0], location[1]};
-//     if(orient == U) {
-//         newLoc[0] = (numOfRows + location[0] + 1) % numOfRows;
-//     }
-//     else if(orient == UR) {
-//         newLoc[0] = (numOfRows + location[0] + 1) % numOfRows;
-//         newLoc[1] = (numOfCols + location[1] - 1) % numOfCols;
-//     }
-//     else if(orient == R) {
-//         newLoc[1] = (numOfCols + location[1] - 1) % numOfCols;
-//     }
-//     else if(orient == DR) {
-//         newLoc[0] = (numOfRows + location[0] - 1) % numOfRows;
-//         newLoc[1] = (numOfCols + location[1] - 1) % numOfCols;
-//     }
-//     else if(orient == D) {
-//         newLoc[0] = (numOfRows + location[0] - 1) % numOfRows;
-//     }
-//     else if(orient == DL) {
-//         newLoc[0] = (numOfRows +  location[0] - 1) % numOfRows;
-//         newLoc[1] = (numOfCols + location[1] + 1) % numOfCols;
-//     }
-//     else if(orient == L) {
-//         newLoc[1] = (numOfCols + location[1] + 1) % numOfCols;
-//     }
-//     else if(orient == UL) {
-//         newLoc[0] = (numOfRows + location[0] + 1) % numOfRows;
-//         newLoc[1] = (numOfCols + location[1] + 1) % numOfCols;
-//     }
-//     return newLoc;
-// }
 
 bool tank::isSafe(const int row, const int col, const vector<vector<array<matrixObject*, 3>>>& gameBoard,
                   const int numOfCols, const int numOfRows, const int movesAhead) const{
@@ -216,4 +177,28 @@ bool tank::canSeeOtherTank(const int otherLoc[2], const vector<vector<array<matr
         }
     } while (currLoc[0] != location[0] || currLoc[1] != location[1]);
     return canSee;
+}
+
+
+// Function to check if the tank is surrounded by walls, bullets or mines(if by tank, it will try to shoot it, not surrounded)
+bool tank::isSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tankLoc) const {
+    // Check if the tank is surrounded by walls or bullets
+    for (int i = -1; i <= 1; ++i) {
+        for (int j = -1; j <= 1; ++j) {
+            if (i == 0 && j == 0) continue; // Skip the tank's own position
+            int newRow = (tankLoc[0] + i + gameBoard.size()) % gameBoard.size();
+            int newCol = (tankLoc[1] + j + gameBoard[0].size()) % gameBoard[0].size();
+            if (gameBoard[newRow][newCol][0] && gameBoard[newRow][newCol][0]->getType() != W) {
+                // No wall found
+                if (gameBoard[newRow][newCol][1] && gameBoard[newRow][newCol][1]->getType() != B) {
+                    // No bullet found
+                    if (gameBoard[newRow][newCol][1] && gameBoard[newRow][newCol][1]->getType() != M) {
+                        // No mine found - free space
+                        return false; 
+                    }
+                }
+            }
+        }
+    }
+    return true; // Surrounded by walls, bullets or mines
 }
