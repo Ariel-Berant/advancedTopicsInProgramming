@@ -47,6 +47,10 @@ cmake-build-debug
 ./html
 ./xml
 ./inputTests/*
+Doxyfile
 
 # game file
 tanks_game
+
+# personal
+ids.txt

@@ -1,0 +1,70 @@
+Starting game
+
+
+
+Turn number 1:
+
+The tank of player 1 at (1,1) turned from L to U.
+
+The tank of player 2 at (1,3) turned from R to D.
+
+
+
+Turn number 2:
+
+
+
+Turn number 3:
+
+The tank of player 1 at (1,1) turned from U to R.
+
+The tank of player 2 at (1,3) turned from D to L.
+
+
+
+Turn number 4:
+
+
+
+Turn number 5:
+
+The tank of player 1 at (1,1) shot a bullet.
+
+The new bullet starting location is (1,2).
+
+The tank of player 2 at (1,3) shot a bullet.
+
+The new bullet starting location is (1,2).
+
+The bullet at (1,2) collided with the bullet at (1,2) destroying each other.
+
+
+
+Turn number 6:
+
+
+
+Turn number 7:
+
+The tank of player 1 at (1,1) went forwards to (1,2).
+
+The tank of player 2 at (1,3) went forwards to (1,2).
+
+A tank of player number 1 collided with a tank of player number 2.
+
+
+
+Game summary:
+
+Turns played: 7
+
+The tank of player 1 shot 1 bullets out of 16
+
+The tank of player 2 shot 1 bullets out of 16
+
+0 out of 12 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because the two tanks have been destroyed at the same time
+

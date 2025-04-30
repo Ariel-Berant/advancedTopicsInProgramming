@@ -1,0 +1,94 @@
+Starting game
+
+
+
+Turn number 1:
+
+The tank of player 1 at (1,1) turned from L to D.
+
+The tank of player 2 at (3,5) turned from R to U.
+
+
+
+Turn number 2:
+
+
+
+Turn number 3:
+
+The tank of player 1 at (1,1) went forwards to (2,1).
+
+The tank of player 2 at (3,5) turned from U to UL.
+
+
+
+Turn number 4:
+
+
+
+Turn number 5:
+
+The tank of player 1 at (2,1) turned from D to DR.
+
+The tank of player 2 at (3,5) shot a bullet.
+
+The new bullet starting location is (2,4).
+
+A bullet hit a wall at (2,4) .
+
+
+
+Turn number 6:
+
+
+
+Turn number 7:
+
+The tank of player 1 at (2,1) went forwards to (3,2).
+
+The tank of player 2 at (3,5) turned from UL to L.
+
+
+
+Turn number 8:
+
+
+
+Turn number 9:
+
+The tank of player 1 at (3,2) turned from DR to R.
+
+The tank of player 2 at (3,5) went forwards to (3,4).
+
+
+
+Turn number 10:
+
+
+
+Turn number 11:
+
+The tank of player 1 at (3,2) shot a bullet.
+
+The new bullet starting location is (3,3).
+
+The tank of player 2 at (3,4) went forwards to (3,3).
+
+A tank of player number 2 got hit by a bullet.
+
+
+
+Game summary:
+
+Turns played: 11
+
+The tank of player 1 shot 1 bullets out of 16
+
+The tank of player 2 shot 1 bullets out of 16
+
+0 out of 23 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: Player number 1 won
+

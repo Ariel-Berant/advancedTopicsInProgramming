@@ -32,7 +32,7 @@ error_files=(
 echo "Running valid input files..."
 for file in "${input_files[@]}"; do
     echo "Running tanks_game with $file..."
-    ../tanks_game "$file"
+    ./tanks_game "$(pwd)/inputTests/$file"
     echo "-----------------------------------"
 done
 
@@ -40,6 +40,6 @@ done
 echo "Running error input files..."
 for file in "${error_files[@]}"; do
     echo "Running tanks_game with $file..."
-    ../tanks_game "$file"
+    ./tanks_game "$(pwd)/inputTests/$file"
     echo "-----------------------------------"
 done
