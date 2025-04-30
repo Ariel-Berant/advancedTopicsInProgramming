@@ -1,0 +1,8 @@
+We've added extra logging for the run itself. 
+This includes:
+- Bullet movement
+- Verbose move logging
+- Custom object death messages
+- Game summary
+
+All prints can be found in the gameManager.cpp file.
