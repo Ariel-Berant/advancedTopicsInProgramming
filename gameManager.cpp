@@ -695,7 +695,7 @@ turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numO
 {
     try
     {
-        // filesystem::remove(INP_ERR_FILE);
+        filesystem::remove(INP_ERR_FILE);
         filesystem::remove("output_" + filesystem::path(filename).stem().string() + ".txt");
     }
     catch(const std::exception& e)
