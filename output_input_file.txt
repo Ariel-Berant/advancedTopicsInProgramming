@@ -6,7 +6,7 @@ Turn number 1:
 
 The tank of player 1 at (1,11) went forwards to (1,10).
 
-The tank of player 2 at (4,3) turned from R to D.
+The tank of player 2 at (4,3) turned from R to U.
 
 
 
@@ -18,7 +18,7 @@ Turn number 3:
 
 The tank of player 1 at (1,10) turned from L to DL.
 
-The tank of player 2 at (4,3) turned from D to DL.
+The tank of player 2 at (4,3) went forwards to (3,3).
 
 
 
@@ -29,4 +29,380 @@ Turn number 4:
 Turn number 5:
 
 The tank of player 1 at (1,10) went forwards to (2,9).
+
+The tank of player 2 at (3,3) went forwards to (2,3).
+
+
+
+Turn number 6:
+
+
+
+Turn number 7:
+
+The tank of player 1 at (2,9) turned from DL to D.
+
+The tank of player 2 at (2,3) went forwards to (1,3).
+
+
+
+Turn number 8:
+
+
+
+Turn number 9:
+
+The tank of player 1 at (2,9) went forwards to (3,9).
+
+The tank of player 2 at (1,3) went forwards to (0,3).
+
+
+
+Turn number 10:
+
+
+
+Turn number 11:
+
+The tank of player 1 at (3,9) turned from D to DR.
+
+The tank of player 2 at (0,3) went forwards to (6,3).
+
+
+
+Turn number 12:
+
+
+
+Turn number 13:
+
+The tank of player 1 at (3,9) went forwards to (4,10).
+
+The tank of player 2 at (6,3) turned from U to R.
+
+
+
+Turn number 14:
+
+
+
+Turn number 15:
+
+The tank of player 1 at (4,10) turned from DR to DL.
+
+The tank of player 2 at (6,3) turned from R to D.
+
+
+
+Turn number 16:
+
+
+
+Turn number 17:
+
+The tank of player 1 at (4,10) turned from DL to L.
+
+The tank of player 2 at (6,3) went forwards to (0,3).
+
+
+
+Turn number 18:
+
+
+
+Turn number 19:
+
+The tank of player 1 at (4,10) went forwards to (4,9).
+
+The tank of player 2 at (0,3) turned from D to L.
+
+
+
+Turn number 20:
+
+
+
+Turn number 21:
+
+The tank of player 1 at (4,9) turned from L to U.
+
+The tank of player 2 at (0,3) turned from L to U.
+
+
+
+Turn number 22:
+
+
+
+Turn number 23:
+
+The tank of player 1 at (4,9) turned from U to UR.
+
+The tank of player 2 at (0,3) went forwards to (6,3).
+
+
+
+Turn number 24:
+
+
+
+Turn number 25:
+
+The tank of player 1 at (4,9) went forwards to (3,10).
+
+The tank of player 2 at (6,3) turned from U to R.
+
+
+
+Turn number 26:
+
+
+
+Turn number 27:
+
+The tank of player 1 at (3,10) turned from UR to DR.
+
+The tank of player 2 at (6,3) turned from R to D.
+
+
+
+Turn number 28:
+
+
+
+Turn number 29:
+
+The tank of player 1 at (3,10) turned from DR to D.
+
+The tank of player 2 at (6,3) went forwards to (0,3).
+
+
+
+Turn number 30:
+
+
+
+Turn number 31:
+
+The tank of player 1 at (3,10) turned from D to L.
+
+The tank of player 2 at (0,3) turned from D to L.
+
+
+
+Turn number 32:
+
+
+
+Turn number 33:
+
+The tank of player 1 at (3,10) went forwards to (3,9).
+
+The tank of player 2 at (0,3) turned from L to U.
+
+
+
+Turn number 34:
+
+
+
+Turn number 35:
+
+The tank of player 1 at (3,9) turned from L to U.
+
+The tank of player 2 at (0,3) went forwards to (6,3).
+
+
+
+Turn number 36:
+
+
+
+Turn number 37:
+
+The tank of player 1 at (3,9) went forwards to (2,9).
+
+The tank of player 2 at (6,3) turned from U to R.
+
+
+
+Turn number 38:
+
+
+
+Turn number 39:
+
+The tank of player 1 at (2,9) turned from U to UR.
+
+The tank of player 2 at (6,3) turned from R to D.
+
+
+
+Turn number 40:
+
+
+
+Turn number 41:
+
+The tank of player 1 at (2,9) went forwards to (1,10).
+
+The tank of player 2 at (6,3) went forwards to (0,3).
+
+
+
+Turn number 42:
+
+
+
+Turn number 43:
+
+The tank of player 1 at (1,10) turned from UR to R.
+
+The tank of player 2 at (0,3) turned from D to L.
+
+
+
+Turn number 44:
+
+
+
+Turn number 45:
+
+The tank of player 1 at (1,10) went forwards to (1,11).
+
+The tank of player 2 at (0,3) turned from L to U.
+
+
+
+Turn number 46:
+
+
+
+Turn number 47:
+
+The tank of player 1 at (1,11) turned from R to U.
+
+The tank of player 2 at (0,3) went forwards to (6,3).
+
+
+
+Turn number 48:
+
+
+
+Turn number 49:
+
+The tank of player 1 at (1,11) turned from U to L.
+
+The tank of player 2 at (6,3) turned from U to R.
+
+
+
+Turn number 50:
+
+
+
+Turn number 51:
+
+The tank of player 1 at (1,11) went forwards to (1,10).
+
+The tank of player 2 at (6,3) turned from R to D.
+
+
+
+Turn number 52:
+
+
+
+Turn number 53:
+
+The tank of player 1 at (1,10) turned from L to U.
+
+The tank of player 2 at (6,3) went forwards to (0,3).
+
+
+
+Turn number 54:
+
+
+
+Turn number 55:
+
+The tank of player 1 at (1,10) turned from U to UR.
+
+The tank of player 2 at (0,3) turned from D to L.
+
+
+
+Turn number 56:
+
+
+
+Turn number 57:
+
+The tank of player 1 at (1,10) went forwards to (0,11).
+
+The tank of player 2 at (0,3) turned from L to U.
+
+The tank of player number 1 stepped on a mine at (0,11) .
+
+
+
+Game summary:
+
+Turns played: 57
+
+The tank of player 1 shot 0 bullets out of 16
+
+The tank of player 2 shot 0 bullets out of 16
+
+0 out of 29 walls were destroyed
+
+0 out of 14 mines were destroyed
+
+Game result: Player number 2 won
+
+Starting game
+
+
+
+Turn number 1:
+
+The tank of player 1 at (1,11) went forwards to (1,10).
+
+The tank of player 2 at (4,3) turned from R to U.
+
+
+
+Turn number 2:
+
+
+
+Turn number 3:
+
+The tank of player 1 at (1,10) turned from L to DL.
+
+The tank of player 2 at (4,3) went forwards to (3,3).
+
+
+
+Turn number 4:
+
+
+
+Turn number 5:
+
+The tank of player 1 at (1,10) went forwards to (2,9).
+
+The tank of player 2 at (3,3) went forwards to (2,3).
+
+
+
+Turn number 6:
+
+
+
+Turn number 7:
+
+The tank of player 1 at (2,9) turned from DL to D.
 

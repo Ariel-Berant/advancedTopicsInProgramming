@@ -3,32 +3,30 @@
 p2Tank::p2Tank(int row, int col, orientation orient)  : tank(row, col, orient, P2T) {}
 
 // Function to compute the direction from (row, col) offsets
-int getDirectionFromOffset(int row, int col) {
-        // Handle the special case where there's no displacement
-
-        // Calculate the angle in radians
-        double angle = atan2(-row, col); // Negate row for matrix coordinate system
-    
-        // Normalize the angle to a direction (0 to 7)
-        int direction = static_cast<int>(round(4 * angle / M_PI)) % 8;
-    
-        // Ensure the direction is positive
-        if (direction < 0) {
-            direction += 8;
-        }
-    
-        return direction;
+int getDirectionFromOffset(int rowOffset, int colOffset) {
+    if (rowOffset == -1 && colOffset == 0) return 0;  // U
+    if (rowOffset == -1 && colOffset == 1) return 1;  // UR
+    if (rowOffset == 0 && colOffset == 1) return 2;   // R
+    if (rowOffset == 1 && colOffset == 1) return 3;   // DR
+    if (rowOffset == 1 && colOffset == 0) return 4;   // D
+    if (rowOffset == 1 && colOffset == -1) return 5;  // DL
+    if (rowOffset == 0 && colOffset == -1) return 6;  // L
+    if (rowOffset == -1 && colOffset == -1) return 7; // UL
+    return -1; // Invalid offset
 }
 // Function to get the row and col offsets based on the direction
 pair<int, int> getDirectionOffset(int dir) {
-    // Calculate the angle in radians
-    // Calculate the angle in radians
-    double angle = M_PI / 4.0 * (7 - dir);
-
-    // Calculate row and col displacements using sin and cos
-    int rowDisplacement = -round(sin(angle)); // Flip for matrix row (vertical axis)
-    int colDisplacement = round(cos(angle));  // Horizontal axis
-    return {rowDisplacement, colDisplacement};
+    switch (dir) {
+        case 0: return {-1, 0};  // U
+        case 1: return {-1, 1};  // UR
+        case 2: return {0, 1};   // R
+        case 3: return {1, 1};   // DR
+        case 4: return {1, 0};   // D
+        case 5: return {1, -1};  // DL
+        case 6: return {0, -1};  // L
+        case 7: return {-1, -1}; // UL
+        default: return {0, 0};  // Default case (invalid direction)
+    }
 }
 
 pair<int, int> p2Tank::getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols) {
