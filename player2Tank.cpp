@@ -225,7 +225,6 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
                     else {
                         calcMoveRound--;
                     }
-                    return next.first;
                 }
             }
             delete[] newLoc;
