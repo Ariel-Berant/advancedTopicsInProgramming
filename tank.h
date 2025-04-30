@@ -24,6 +24,12 @@ protected:
     int calcMoveRound;
     vector<objMove> moves;
     bool isSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc) const;
+    pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
+    int calculateTargetOrientation(int targetRow, int targetCol);
+    pair<objMove, int> findAdjSafe(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist = 100);
+    pair<int, int> getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols);
+    pair<int, int> getDirectionOffset(int dir);
+    
 
 
 public:
@@ -39,7 +45,7 @@ public:
     virtual objMove play(const vector<vector<array<matrixObject*, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) = 0; // Pure virtual function
     bool isSafe(int x, int y, const vector<vector<array<matrixObject*, 3>>>& gameBoard, int numOfCols, int numOfRows, int movesAhead) const;
     vector<objMove> getRotations(orientation start, orientation desired) const;
-    bool canSeeOtherTank(const int otherLoc[2], const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfRows, int numOfCols) const;
+    bool canSeeOtherTank(const int otherLoc[2], int numOfRows, int numOfCols) const;
     bool hasBullets() const;
     int getNumOfShotsLeft() const;
 

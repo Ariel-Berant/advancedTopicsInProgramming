@@ -126,9 +126,9 @@ vector<objMove> tank::getRotations(orientation curr, orientation desired) const{
     return rotations;
 }
 
-bool tank::canSeeOtherTank(const int otherLoc[2], const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfRows, int numOfCols) const {
+bool tank::canSeeOtherTank(const int otherLoc[2], int numOfRows, int numOfCols) const {
     int move[2] = {0, 0}, currLoc[2] = {location[0], location[1]};
-    matrixObject* matObj;
+    // matrixObject* matObj;
     bool canSee = false;
     switch (orient){
         case UR:
@@ -166,11 +166,11 @@ bool tank::canSeeOtherTank(const int otherLoc[2], const vector<vector<array<matr
     do {
         currLoc[0] = (currLoc[0] + move[0] + numOfRows) % numOfRows;
         currLoc[1] = (currLoc[1] + move[1] + numOfCols) % numOfCols;
-        matObj = gameBoard[currLoc[0]][currLoc[1]][0];
-        if (matObj && matObj->getType() == W) {
-            canSee = false; // Wall encountered
-            break;
-        }
+        // matObj = gameBoard[currLoc[0]][currLoc[1]][0];
+        // if (matObj && matObj->getType() == W) {
+        //     canSee = false; // Wall encountered
+        //     break;
+        // }
         if (currLoc[0] == otherLoc[0] && currLoc[1] == otherLoc[1]) {
             canSee = true; // Other tank found
             break;
@@ -201,4 +201,106 @@ bool tank::isSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoar
         }
     }
     return true; // Surrounded by walls, bullets or mines
+}
+
+
+// Function to calculate the target orientation based on position differences
+int tank::calculateTargetOrientation(int targetRow, int targetCol) {
+    // Calculate the offset
+    int offsetRow = targetRow - location[0];
+    int offsetCol = targetCol - location[1];
+
+    // Handle the edge case where start equals target
+    if (offsetRow > 0 && offsetCol > 0) {
+        return DR;
+    }
+    else if (offsetRow < 0 && offsetCol < 0) {
+        return UL;
+    }
+    else if (offsetRow == 0) {
+        return (offsetCol > 0) ? R : L; // Horizontal movement
+    }
+    else if (offsetCol == 0) {
+        return (offsetRow > 0) ? D : U; // Vertical movement
+    }
+    else if (offsetRow > 0 && offsetCol < 0) {
+        return DL; // Down-Left
+    }
+    else if (offsetRow < 0 && offsetCol > 0) {
+        return UR; // Up-Right
+    }
+    return 0; // Default case (should not happen)
+}
+
+// Function to determine the correct move to reach the target
+pair<objMove, int> tank::determineNextMove(int currentOrientation, int targetOrientation) {
+    if (targetOrientation == -1) {
+          return {noAction,0}; // No valid move if already at the target
+      }
+  
+      // Calculate the difference in orientation
+      int diff = (targetOrientation - currentOrientation + 8) % 8;
+  
+      // Determine the next move based on the difference in orientation
+      if (diff == 0) {
+          return {moveForward, 1}; // Already facing the target
+      } else if (diff == 1) {
+          return {rotateEighthRight,1}; // 1 step clockwise
+      } else if (diff == 2) {
+          return {rotateQuarterRight, 1}; // 2 steps clockwise
+      } else if (diff == 3) {
+          return {rotateQuarterRight, 2}; // 3 steps clockwise
+      } else if (diff == 4) {
+          return {rotateQuarterRight, 2}; // 4 steps clockwise (180-degree turn)
+      } else if (diff == 5) {
+          return {rotateQuarterLeft, 2}; // 3 steps counterclockwise (5/8ths clockwise equivalent)
+      } else if (diff == 6) {
+          return {rotateQuarterLeft, 1}; // 2 steps counterclockwise
+      } else if (diff == 7) {
+          return {rotateEighthLeft, 1}; // 1 step counterclockwise
+      }
+  
+      return {noAction,0}; // Default action if something goes wrong
+  }
+
+
+  pair<objMove, int> tank::findAdjSafe(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist){
+    //search for a safest place among all the neighbors cells and return the fist move needed to get there 
+    // int targetOrientation;
+    for(int orien = 0 ;orien < 8 ; orien++){
+        pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfRows, numOfCols);
+        // targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
+        pair<objMove, int> movesPair =  determineNextMove(orient, orien);
+        int numOfMoves = movesPair.second;
+        if(isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves)
+                && isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves + 1)){
+            if(numOfMoves <= (closestBulletDist/2)){
+                return movesPair;
+            }
+        }
+    }
+    return {noAction,0};
+}
+
+
+// Function to get the row and col offsets based on the direction
+pair<int, int> tank::getDirectionOffset(int dir) {
+    switch (dir) {
+        case 0: return {-1, 0};  // U
+        case 1: return {-1, 1};  // UR
+        case 2: return {0, 1};   // R
+        case 3: return {1, 1};   // DR
+        case 4: return {1, 0};   // D
+        case 5: return {1, -1};  // DL
+        case 6: return {0, -1};  // L
+        case 7: return {-1, -1}; // UL
+        default: return {0, 0};  // Default case (invalid direction)
+    }
+}
+
+pair<int, int> tank::getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols) {
+    pair<int, int> off = getDirectionOffset(orient);
+    off.first = (off.first + location[0] + numOfROws) % numOfROws;
+    off.second = (off.second + location[1] + numOfCols) % numOfCols;
+    return off;
 }

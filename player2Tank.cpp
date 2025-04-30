@@ -14,27 +14,7 @@ int getDirectionFromOffset(int rowOffset, int colOffset) {
     if (rowOffset == -1 && colOffset == -1) return 7; // UL
     return -1; // Invalid offset
 }
-// Function to get the row and col offsets based on the direction
-pair<int, int> getDirectionOffset(int dir) {
-    switch (dir) {
-        case 0: return {-1, 0};  // U
-        case 1: return {-1, 1};  // UR
-        case 2: return {0, 1};   // R
-        case 3: return {1, 1};   // DR
-        case 4: return {1, 0};   // D
-        case 5: return {1, -1};  // DL
-        case 6: return {0, -1};  // L
-        case 7: return {-1, -1}; // UL
-        default: return {0, 0};  // Default case (invalid direction)
-    }
-}
 
-pair<int, int> p2Tank::getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols) {
-    pair<int, int> off = getDirectionOffset(orient);
-    off.first = (off.first + location[0] + numOfROws) % numOfROws;
-    off.second = (off.second + location[1] + numOfCols) % numOfCols;
-    return off;
-}
 
 int calculateTurnsToRotate(int startOrient, int endOrient) {
     // Calculate the absolute difference
@@ -62,67 +42,6 @@ int calculateFirstStepInRotate(int startOrient, int endOrient) {
     }
 }
 
-
-// Function to calculate the target orientation based on position differences
-int calculateTargetOrientation(int startRow, int startCol, int targetRow, int targetCol) {
-    // Calculate the offset
-    int offsetRow = targetRow - startRow;
-    int offsetCol = targetCol - startCol;
-
-    // Handle the edge case where start equals target
-    if (offsetRow > 0 && offsetCol > 0) {
-        return DR;
-    }
-    else if (offsetRow < 0 && offsetCol < 0) {
-        return UL;
-    }
-    else if (offsetRow == 0) {
-        return (offsetCol > 0) ? R : L; // Horizontal movement
-    }
-    else if (offsetCol == 0) {
-        return (offsetRow > 0) ? D : U; // Vertical movement
-    }
-    else if (offsetRow > 0 && offsetCol < 0) {
-        return DL; // Down-Left
-    }
-    else if (offsetRow < 0 && offsetCol > 0) {
-        return UR; // Up-Right
-    }
-    return 0; // Default case (should not happen)
-}
-
-// Function to determine the correct move to reach the target
-pair<objMove, int> p2Tank::determineNextMove(int currentOrientation, int targetOrientation) {
-  if (targetOrientation == -1) {
-        return {noAction,0}; // No valid move if already at the target
-    }
-
-    // Calculate the difference in orientation
-    int diff = (targetOrientation - currentOrientation + 8) % 8;
-
-    // Determine the next move based on the difference in orientation
-    if (diff == 0) {
-        return {moveForward, 1}; // Already facing the target
-    } else if (diff == 1) {
-        return {rotateEighthRight,1}; // 1 step clockwise
-    } else if (diff == 2) {
-        return {rotateQuarterRight, 1}; // 2 steps clockwise
-    } else if (diff == 3) {
-        return {rotateQuarterRight, 2}; // 3 steps clockwise
-    } else if (diff == 4) {
-        return {rotateQuarterRight, 2}; // 4 steps clockwise (180-degree turn)
-    } else if (diff == 5) {
-        return {rotateQuarterLeft, 2}; // 3 steps counterclockwise (5/8ths clockwise equivalent)
-    } else if (diff == 6) {
-        return {rotateQuarterLeft, 1}; // 2 steps counterclockwise
-    } else if (diff == 7) {
-        return {rotateEighthLeft, 1}; // 1 step counterclockwise
-    }
-
-    return {noAction,0}; // Default action if something goes wrong
-}
-
-
 // the return value is {x, y, distance, orientation}
 array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRow, int inCol){
     for(int i = 1; i<= 6 ; i++){
@@ -135,26 +54,6 @@ array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 
     }
     return {0,0,0,0};
 }
-
-pair<objMove, int> p2Tank::findAdjSafe(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist){
-    //search for a safest place among all the neighbors cells and return the fist move needed to get there 
-    // int targetOrientation;
-    for(int orien = 0 ;orien < 8 ; orien++){
-        pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfRows, numOfCols);
-        // targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
-        pair<objMove, int> movesPair =  determineNextMove(orient, orien);
-        int numOfMoves = movesPair.second;
-        if(isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves)
-                && isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves + 1)){
-            if(numOfMoves <= (closestBulletDist/2)){
-                return movesPair;
-            }
-        }
-    }
-    return {noAction,0};
-}
-
-
 
 
 objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
@@ -197,7 +96,7 @@ objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
     }
     
     else{// if there is no danger
-        int targetOrientation = calculateTargetOrientation(location[0], location[1], otherLoc[0], otherLoc[1]);
+        int targetOrientation = calculateTargetOrientation(otherLoc[0], otherLoc[1]);
         pair<objMove, int> next = determineNextMove(orient, targetOrientation);
         if(next.first == moveForward && canShoot()){
             // if the tank can shoot and in order to get to the other tank he needs to move forward- shoot

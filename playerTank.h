@@ -11,6 +11,7 @@ public:
     objMove play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) override;
     vector<objMove> playCalc(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int tank2Loc[2], int numOfRows, int numOfCols);
     vector<objMove> handleSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc);
+    bool checkIfOnSameLine(const int *otherLoc) const;
 };
 
 class p2Tank : public tank
@@ -19,9 +20,6 @@ class p2Tank : public tank
 public:
     p2Tank(int x, int y, orientation orient);
     objMove play(const vector<vector<array<matrixObject*, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) override;
-    pair<int, int> getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols);
-    pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
-    pair<objMove, int> findAdjSafe(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist = 100);
     array<int,4> searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRows, int inCols);
 };
 

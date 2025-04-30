@@ -11,13 +11,52 @@ void p1Tank::updateTurn() {
     }
 }
 
+
+
 p1Tank::p1Tank(int row, int col, orientation orient)  : tank(row, col, orient, P1T) {}
+
+bool p1Tank::checkIfOnSameLine(const int *otherLoc) const {
+    if(abs(location[0] - otherLoc[0]) == abs(location[1] - otherLoc[1])){ // check if both tanks are on the same diagonal
+        return true;
+    }
+    if (location[0] == otherLoc[0] || location[1] == otherLoc[1]) { //check if both tanks are on the same row or column
+        return true;
+    }
+    return false;
+}
+
 
 objMove p1Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *otherLoc, int numOfCols,
                      int numOfRows) {
     objMove currAction;
+    if(!isSafe(location[0], location[1], gameBoard, numOfCols, numOfRows, 1) || !isSafe(location[0], location[1], gameBoard, numOfCols, numOfRows, 2)
+            || !isSafe(location[0], location[1], gameBoard, numOfCols, numOfRows, 3)){
+        pair<objMove, int> nextMove = findAdjSafe(gameBoard, numOfCols, numOfRows);
+        if(nextMove.first != noAction){
+            return nextMove.first;
+        }
+    }
+    if (checkIfOnSameLine(otherLoc)) {// just need to change rotation and shoot
+        int targetOrientation = calculateTargetOrientation(otherLoc[0], otherLoc[1]);
+        objMove nextMove = determineNextMove(orient, targetOrientation).first;
+        if(nextMove == moveForward && canShoot()){
+            return shoot;
+        }
+        else if(nextMove != moveForward){
+            return nextMove;
+        }
+    }    
     if (moves.empty() || calcMoveRound == 0) {
         moves = playCalc(gameBoard, otherLoc, numOfRows, numOfCols);
+    }
+    if(!moves.empty() && moves[0] == noAction){
+        int locationToCheck[2] = {otherLoc[0] , location[1] };
+        moves = playCalc(gameBoard, locationToCheck, numOfRows, numOfCols);
+        if(moves.empty() || moves[0] == noAction){
+            locationToCheck[0] = location[0];
+            locationToCheck[1] = otherLoc[1];
+            moves = playCalc(gameBoard, locationToCheck, numOfRows, numOfCols); 
+        }
     }
     currAction = moves[0];
     moves.erase(moves.begin());
@@ -51,7 +90,7 @@ vector<objMove> p1Tank::playCalc(const vector<vector<array<matrixObject *, 3>>> 
                 currRotations = getRotations(currOrient, (orientation)coords[2]);
                 for (objMove move : currRotations){
                     if (shots > 0 && sinceShot == 0
-                    && canSeeOtherTank(tank2Loc, gameBoard, numOfRows, numOfCols)) {
+                    && canSeeOtherTank(tank2Loc, numOfRows, numOfCols)) {
                         moves.push_back(shoot);
                         shots--;
                         sinceShot = 4;
