@@ -16,7 +16,8 @@ void p1Tank::updateTurn() {
 p1Tank::p1Tank(int row, int col, orientation orient)  : tank(row, col, orient, P1T) {}
 
 bool p1Tank::checkIfOnSameLine(const int *otherLoc) const {
-    if(abs(location[0] - otherLoc[0]) == abs(location[1] - otherLoc[1])){ // check if both tanks are on the same diagonal
+    if(abs(location[0] - otherLoc[0]) == abs(location[1] - otherLoc[1])){ 
+        // check if both tanks are on the same diagonal - linear function, bias cancels out, and slope is 1
         return true;
     }
     if (location[0] == otherLoc[0] || location[1] == otherLoc[1]) { //check if both tanks are on the same row or column
@@ -29,13 +30,20 @@ bool p1Tank::checkIfOnSameLine(const int *otherLoc) const {
 objMove p1Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *otherLoc, int numOfCols,
                      int numOfRows) {
     objMove currAction;
+
+    // First check for immediate danger\moves - if the other tank is in the same line, or if threatened. Otherwise, play normally
+
+    // Check if current location is safe
     if(!isSafe(location[0], location[1], gameBoard, numOfCols, numOfRows, 1) || !isSafe(location[0], location[1], gameBoard, numOfCols, numOfRows, 2)
             || !isSafe(location[0], location[1], gameBoard, numOfCols, numOfRows, 3)){
+        // If not safe, find a safe adjacent location
         pair<objMove, int> nextMove = findAdjSafe(gameBoard, numOfCols, numOfRows);
         if(nextMove.first != noAction){
             return nextMove.first;
         }
     }
+
+    // Check if the other tank is in the same line
     if (checkIfOnSameLine(otherLoc)) {// just need to change rotation and shoot
         int targetOrientation = calculateTargetOrientation(otherLoc[0], otherLoc[1]);
         objMove nextMove = determineNextMove(orient, targetOrientation).first;
@@ -45,19 +53,26 @@ objMove p1Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
         else if(nextMove != moveForward){
             return nextMove;
         }
-    }    
+    }
+
     if (moves.empty() || calcMoveRound == 0) {
         moves = playCalc(gameBoard, otherLoc, numOfRows, numOfCols);
     }
+
+    // If first move is noAction, couldn't find a path to the other tank.
+    // So, try whatever is available in the same row or column, to get closer to the other tank.
     if(!moves.empty() && moves[0] == noAction){
-        int locationToCheck[2] = {otherLoc[0] , location[1] };
+        // Try to be in the same row as the other tank
+        int locationToCheck[2] = {otherLoc[0] , location[1]};
         moves = playCalc(gameBoard, locationToCheck, numOfRows, numOfCols);
         if(moves.empty() || moves[0] == noAction){
+            // Try to be in the same column as the other tank
             locationToCheck[0] = location[0];
             locationToCheck[1] = otherLoc[1];
             moves = playCalc(gameBoard, locationToCheck, numOfRows, numOfCols); 
         }
     }
+    
     currAction = moves[0];
     moves.erase(moves.begin());
     return currAction;
@@ -126,9 +141,6 @@ vector<objMove> p1Tank::playCalc(const vector<vector<array<matrixObject *, 3>>> 
 
     return handleSurrounded(gameBoard, tank2Loc); // Return empty path if no valid path found
 }
-
-
-// TODO: Add handleSurrounded function
 
 vector<objMove> p1Tank::handleSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc) {
     vector<objMove> currMoves;

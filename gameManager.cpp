@@ -692,6 +692,16 @@ void gameManager::playGame()
 gameManager::gameManager(const std::string &filename) :  numOfRows(0), numOfCols(0),
 turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(array<tank*, 2>{nullptr, nullptr})
 {
+    try
+    {
+        filesystem::remove(INP_ERR_FILE);
+        filesystem::remove("output_" + filesystem::path(filename).stem().string() + ".txt");
+    }
+    catch(const std::exception& e)
+    {
+        // Error in file deletion - not really critical, just continue
+    }
+    
     if (!createMap(filename)){
         cerr << "Error: Failed to create map from file." << endl;
         exit(EXIT_FAILURE);

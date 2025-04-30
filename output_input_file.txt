@@ -8,7 +8,9 @@ The tank of player 1 at (1,11) shot a bullet.
 
 The new bullet starting location is (1,10).
 
-The tank of player 2 at (4,3) turned from R to UR.
+The tank of player 2 at (1,5) shot a bullet.
+
+The new bullet starting location is (1,6).
 
 
 
@@ -16,35 +18,29 @@ Turn number 2:
 
 The bullet at (1,10) moved to (1,9).
 
+The bullet at (1,6) moved to (1,7).
+
 
 
 Turn number 3:
 
 The tank of player 1 at (1,11) turned from L to D.
 
-The tank of player 2 at (4,3) shot a bullet.
+The tank of player 2 at (1,5) turned from R to U.
 
-The new bullet starting location is (3,4).
-
-The bullet at (1,9) moved to (1,8).
+The bullet at (1,9) collided with the bullet at (1,7) destroying each other.
 
 
 
 Turn number 4:
 
-The bullet at (1,8) moved to (1,7).
-
-The bullet at (3,4) moved to (2,5).
-
 
 
 Turn number 5:
 
-The tank of player 1 at (1,11) went forwards to (2,11).
+The tank of player 1 at (1,11) turned from D to L.
 
-The tank of player 2 at (4,3) stayed in place.
-
-The bullet at (1,7) collided with the bullet at (2,5) destroying each other.
+The tank of player 2 at (1,5) turned from U to R.
 
 
 
@@ -54,9 +50,9 @@ Turn number 6:
 
 Turn number 7:
 
-The tank of player 1 at (2,11) went forwards to (3,11).
+The tank of player 1 at (1,11) went forwards to (1,10).
 
-The tank of player 2 at (4,3) stayed in place.
+The tank of player 2 at (1,5) went forwards to (1,6).
 
 
 
@@ -66,69 +62,53 @@ Turn number 8:
 
 Turn number 9:
 
-The tank of player 1 at (3,11) shot a bullet.
+The tank of player 1 at (1,10) shot a bullet.
 
-The new bullet starting location is (4,11).
+The new bullet starting location is (1,9).
 
-The tank of player 2 at (4,3) stayed in place.
+The tank of player 2 at (1,6) shot a bullet.
+
+The new bullet starting location is (1,7).
 
 
 
 Turn number 10:
 
-The bullet at (4,11) moved to (5,11).
+The bullet at (1,9) collided with the bullet at (1,7) destroying each other.
 
 
 
 Turn number 11:
 
-The tank of player 1 at (3,11) turned from D to L.
+The tank of player number 1 shot a blank.
 
-The tank of player 2 at (4,3) shot a bullet.
-
-The new bullet starting location is (3,4).
-
-The bullet at (5,11) moved to (6,11).
+The tank of player 2 at (1,6) went forwards to (1,7).
 
 
 
 Turn number 12:
 
-The bullet at (6,11) moved to (0,11).
-
-The bullet at (3,4) moved to (2,5).
-
 
 
 Turn number 13:
 
-The tank of player 1 at (3,11) turned from L to U.
+The tank of player 1 at (1,10) went forwards to (1,9).
 
-The tank of player 2 at (4,3) stayed in place.
-
-The bullet at (0,11) moved to (1,11).
-
-The bullet at (2,5) moved to (1,6).
+The tank of player 2 at (1,7) went forwards to (1,8).
 
 
 
 Turn number 14:
 
-The bullet at (1,11) moved to (2,11).
-
-The bullet at (1,6) moved to (0,7).
-
 
 
 Turn number 15:
 
-The tank of player 1 at (3,11) went forwards to (2,11).
+The tank of player 1 at (1,9) went forwards to (1,8).
 
-The tank of player 2 at (4,3) stayed in place.
+The tank of player 2 at (1,8) turned from R to D.
 
-A tank of player number 1 got hit by a bullet.
-
-A bullet hit a wall at (6,8) .
+A tank of player number 1 collided with a tank of player number 2.
 
 
 
@@ -140,9 +120,9 @@ The tank of player 1 shot 2 bullets out of 16
 
 The tank of player 2 shot 2 bullets out of 16
 
-0 out of 28 walls were destroyed
+0 out of 27 walls were destroyed
 
-0 out of 14 mines were destroyed
+0 out of 10 mines were destroyed
 
-Game result: Player number 2 won
+Game result: A tie because the two tanks have been destroyed at the same time
 
