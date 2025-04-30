@@ -1,5 +1,5 @@
 CPP = g++
-CPP_FLAGS = -std=c++20 -g -Wall -Wextra -Werror -pedantic -fsanitize=address
+CPP_FLAGS = -std=c++20 -g -Wall -Wextra -Werror -pedantic #-fsanitize=address
 
 # Target executable
 TARGET = tanks_game

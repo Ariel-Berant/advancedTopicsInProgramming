@@ -41,8 +41,12 @@ build
 .idea
 cmake-build-debug
 
-# debugging
+# debugging and testing
 .gdbinit
+./latex
+./html
+./xml
+./inputTests/*
 
 # game file
 tanks_game
