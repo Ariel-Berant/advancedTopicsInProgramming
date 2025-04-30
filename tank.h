@@ -23,6 +23,7 @@ protected:
     int turnsUntilNextShot;
     int calcMoveRound;
     vector<objMove> moves;
+    bool isSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc) const;
 
 
 public:
@@ -31,7 +32,7 @@ public:
     void setOrientation( orientation newOrient);
     bool canShoot() const;
     // int* newLocationAtReverse( int numOfCols,  int numOfRows) const;
-    void updateTurn();
+    virtual void updateTurn();
     void useShot();
     int getInBack() const; // Returns the inBackwards status
     void setInBackwards(int inBack); // Sets the inBackwards status
