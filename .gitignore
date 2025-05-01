@@ -54,3 +54,9 @@ tanks_game
 
 # personal
 ids.txt
+
+# Ex.1 additional files
+Ex1/additionalFiles/
+*.lyx
+*.lyx~
+projectHLD.pdf
