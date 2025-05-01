@@ -1,10 +1,6 @@
 #include "movingObject.h"
 
 
-movingObject::movingObject(int row, int col, objectType oType, orientation orient) : matrixObject(row, col, oType), orient(orient), oldLocation{row, col} {
-    // Constructor implementation
-    canMove = true; // Initialize canMove to true
-}
 movingObject::~movingObject(){
     // Destructor implementation
     // No specific cleanup is needed here since the base class destructor will handle it.

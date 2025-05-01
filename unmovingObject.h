@@ -9,7 +9,6 @@ class unmovingObject : public matrixObject
     
     // The unmovingObject class has the following properties:
     // - isAlive: A boolean indicating whether the object is alive or not.
-    // - canMove: A boo matrixObjectlean indicating whether the object can move or not.
 protected:
 public:
     unmovingObject(int row, int col ,objectType oType);

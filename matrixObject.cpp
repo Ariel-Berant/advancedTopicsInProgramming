@@ -35,9 +35,6 @@ bool matrixObject::getIsAlive() const {
 void matrixObject::takeAHit() {
     hitsLeft--;
 }
-bool matrixObject::getCanMove() const {
-    return canMove;
-}
 objectType matrixObject::getType() const {
     return oType;
 }
