@@ -84,14 +84,13 @@ private:
     void printSummeryToLog();
     bool isValidFile(const string &filename);
     void printCollisionsToLog(const movingObject &object1, const movingObject &object2) const;
-
+    void moveBullets();
 
 public:
     gameManager(const string &filename);
     ~gameManager();
     bool createMap(const string &filename);
     void playGame();
-    void moveBullets();
 };
 
 #endif // GAME_MANAGER_H
