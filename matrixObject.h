@@ -13,8 +13,6 @@ class matrixObject
 protected:
     int location[2];
     // The location array holds the x and y coordinates of the object.
-    bool isAlive = true; // Initialize isAlive to true
-    // The isAlive variable indicates whether the object is alive or not.
     int hitsLeft;
     //The hitsLeft variable indicates how many hits the object can get before it's destroyed
     objectType oType;
