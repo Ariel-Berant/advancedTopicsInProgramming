@@ -17,7 +17,12 @@
 #include <algorithm>
 #include <filesystem>
 #include <string>
-
+#include "common/ActionRequest.h"
+#include "common/Player.h"
+#include "common/TankAlgorithm.h"
+#include "common/TankAlgorithmFactory.h"
+#include "common/PlayerFactory.h"
+#include "common/BattleInfo.h"
 
 /*
  * Includes in matrixObject.h:
@@ -76,7 +81,7 @@ private:
     int numOfMinesDestroyed;
     vector<vector<array<matrixObject*, 3>>> *gameBoard;
     vector<bullet*> bullets; // Vector to store bullets in the air
-    array<tank*, 2> tanks; // Vector to store tanks on the board
+    vector<TankAlgorithm> tanks; // Vector to store tanks on the board
     vector<movingObject*> currMovingObjects;
 
     bool makeAllMoves();

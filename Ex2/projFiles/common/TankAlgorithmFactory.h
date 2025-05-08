@@ -1,9 +1,11 @@
-//
-// Created by ariel on 5/8/2025.
-//
-
 #ifndef TANKALGORITHMFACTORY_H
 #define TANKALGORITHMFACTORY_H
+
+
+#include <memory>
+#include "TankAlgorithm.h"
+using std::unique_ptr;
+
 class TankAlgorithmFactory {
 public:
     virtual ~TankAlgorithmFactory() {}

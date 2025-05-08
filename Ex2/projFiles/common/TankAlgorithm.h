@@ -1,9 +1,11 @@
-//
-// Created by ariel on 5/8/2025.
-//
-
 #ifndef TANKALGORITHM_H
 #define TANKALGORITHM_H
+
+#include "ActionRequest.h"
+#include "BattleInfo.h"
+
+
+
 class TankAlgorithm {
 public:
     virtual ~TankAlgorithm() {}

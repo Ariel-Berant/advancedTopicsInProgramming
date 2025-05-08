@@ -1,9 +1,11 @@
-//
-// Created by ariel on 5/8/2025.
-//
-
 #ifndef PLAYERFACTORY_H
 #define PLAYERFACTORY_H
+
+#include <memory>
+#include "Player.h"
+using std::unique_ptr;
+
+
 class PlayerFactory {
 public:
     virtual ~PlayerFactory() {}

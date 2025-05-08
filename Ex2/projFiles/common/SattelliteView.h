@@ -1,9 +1,8 @@
-//
-// Created by ariel on 5/8/2025.
-//
-
 #ifndef SATTELLITEVIEW_H
 #define SATTELLITEVIEW_H
+
+#include <cstddef>
+
 class SatelliteView {
 public:
     virtual ~SatelliteView() {}

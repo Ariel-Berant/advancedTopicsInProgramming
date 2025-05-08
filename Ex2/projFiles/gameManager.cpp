@@ -81,6 +81,7 @@ bool gameManager::createMap(const string &filename)
     string line;
     bool tank1appeared = false , tank2appeared = false;
 
+
     gameBoard = new vector<vector<array<matrixObject *, 3>>>(numOfRows, vector<array<matrixObject *, 3>>(numOfCols));
 
     getline(file1, line); // Skip the first line with the dimensions
@@ -108,8 +109,8 @@ bool gameManager::createMap(const string &filename)
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
             case '1':
-
-                tanks[0] = new p1Tank(currRow, currCol, L);
+                tank* myTank = TankAlgorithmFactory::create(currRow, currCol, L);
+                tanks[0] = new p1Tank;
                 (*gameBoard)[currRow][currCol][1] = tanks[0];
                 tank1appeared = true;
                 (*gameBoard)[currRow][currCol][0] = nullptr;

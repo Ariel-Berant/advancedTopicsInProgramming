@@ -1,9 +1,7 @@
-//
-// Created by ariel on 5/8/2025.
-//
-
 #ifndef ACTIONREQUEST_H
 #define ACTIONREQUEST_H
+
+
 enum class ActionRequest {
     MoveForward, MoveBackward,
     RotateLeft90, RotateRight90, RotateLeft45, RotateRight45,

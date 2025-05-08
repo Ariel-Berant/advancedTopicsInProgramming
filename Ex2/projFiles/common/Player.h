@@ -1,9 +1,11 @@
-//
-// Created by ariel on 5/8/2025.
-//
-
 #ifndef PLAYER_H
 #define PLAYER_H
+
+#include "TankAlgorithm.h"
+#include "SattelliteView.h"
+
+
+
 class Player {
 public:
     Player( int player_index,
