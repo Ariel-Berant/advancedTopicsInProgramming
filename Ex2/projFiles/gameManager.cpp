@@ -108,17 +108,10 @@ bool gameManager::createMap(const string &filename)
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
             case '1':
-                if (!tanks[0])
-                {
-                    tanks[0] = new p1Tank(currRow, currCol, L);
-                    (*gameBoard)[currRow][currCol][1] = tanks[0];
-                    tank1appeared = true;
-                }
-                else
-                {
-                    writeToFile("Error: More than one tank for player 1.\n", INP_ERR_FILE);
-                    (*gameBoard)[currRow][currCol][1] = nullptr;
-                }
+
+                tanks[0] = new p1Tank(currRow, currCol, L);
+                (*gameBoard)[currRow][currCol][1] = tanks[0];
+                tank1appeared = true;
                 (*gameBoard)[currRow][currCol][0] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
@@ -649,7 +642,7 @@ void gameManager::playGame()
     currMovingObjects.push_back(tanks[0]);
     currMovingObjects.push_back(tanks[1]);
 
-    while (!gameOver && noBulletsCnt > 0 && turns < 10000){
+    while (!gameOver && noBulletsCnt > 0 && turns < maxTurns){
         turns++;
         isOddTurn = !isOddTurn;
         writeToFile("\n", gameMapFileName);

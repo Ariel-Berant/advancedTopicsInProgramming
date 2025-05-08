@@ -16,6 +16,8 @@
 #include <sstream>
 #include <algorithm>
 #include <filesystem>
+#include <string>
+
 
 /*
  * Includes in matrixObject.h:
@@ -65,6 +67,7 @@ private:
     int numOfRows;
     int numOfCols;
     int turns;
+    int maxTurns;
     int noBulletsCnt;
     bool isOddTurn;
     int numOfWalls;
