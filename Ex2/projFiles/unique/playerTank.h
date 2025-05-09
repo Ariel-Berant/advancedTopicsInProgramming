@@ -1,12 +1,12 @@
 #ifndef PLAYERTANK_H
 #define PLAYERTANK_H
 
-#include "tank.h"
+#include "PlayerTankAlgorithm.h"
 
 
-class p1Tank : public tank {
+class Player1TankAlgorithm : public PlayerTankAlgorithm {
 public:
-    p1Tank(int row, int col, orientation orient);
+    Player1TankAlgorithm(int row, int col, orientation orient);
     void updateTurn() override;
     objMove play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) override;
     vector<objMove> playCalc(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int tank2Loc[2], int numOfRows, int numOfCols);
@@ -14,11 +14,10 @@ public:
     bool checkIfOnSameLine(const int *otherLoc) const;
 };
 
-class p2Tank : public tank
-{
+class Player2TankAlgorithm : public PlayerTankAlgorithm{
     
 public:
-    p2Tank(int x, int y, orientation orient);
+    Player2TankAlgorithm(int x, int y, orientation orient);
     objMove play(const vector<vector<array<matrixObject*, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) override;
     array<int,4> searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRows, int inCols);
 };

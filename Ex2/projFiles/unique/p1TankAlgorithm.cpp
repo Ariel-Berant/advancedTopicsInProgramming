@@ -1,6 +1,6 @@
 #include "playerTank.h"
 
-void p1Tank::updateTurn() {
+void Player1TankAlgorithm::updateTurn() {
     if(turnsUntilNextShot > 0){
         turnsUntilNextShot--;
     }
@@ -13,9 +13,9 @@ void p1Tank::updateTurn() {
 
 
 
-p1Tank::p1Tank(int row, int col, orientation orient)  : tank(row, col, orient, P1T) {}
+Player1TankAlgorithm::Player1TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P1T) {}
 
-bool p1Tank::checkIfOnSameLine(const int *otherLoc) const {
+bool Player1TankAlgorithm::checkIfOnSameLine(const int *otherLoc) const {
     if(abs(location[0] - otherLoc[0]) == abs(location[1] - otherLoc[1])){ 
         // check if both tanks are on the same diagonal - linear function, bias cancels out, and slope is 1
         return true;
@@ -27,7 +27,7 @@ bool p1Tank::checkIfOnSameLine(const int *otherLoc) const {
 }
 
 
-objMove p1Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *otherLoc, int numOfCols,
+objMove Player1TankAlgorithm::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *otherLoc, int numOfCols,
                      int numOfRows) {
     objMove currAction;
 
@@ -78,7 +78,7 @@ objMove p1Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, 
     return currAction;
 }
 
-vector<objMove> p1Tank::playCalc(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc,
+vector<objMove> Player1TankAlgorithm::playCalc(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc,
                                  int numOfRows, int numOfCols) {
 
     vector<vector<bool>> visited(numOfRows, vector<bool>(numOfCols, false));
@@ -142,7 +142,7 @@ vector<objMove> p1Tank::playCalc(const vector<vector<array<matrixObject *, 3>>> 
     return handleSurrounded(gameBoard, tank2Loc); // Return empty path if no valid path found
 }
 
-vector<objMove> p1Tank::handleSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc) {
+vector<objMove> Player1TankAlgorithm::handleSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc) {
     vector<objMove> currMoves;
     if (isSurrounded(gameBoard, location)) {
         // Handle the case when the tank is surrounded

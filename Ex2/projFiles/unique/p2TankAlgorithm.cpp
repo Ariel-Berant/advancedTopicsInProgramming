@@ -1,6 +1,6 @@
 #include "playerTank.h"
 
-p2Tank::p2Tank(int row, int col, orientation orient)  : tank(row, col, orient, P2T) {}
+Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {}
 
 // Function to compute the direction from (row, col) offsets
 int getDirectionFromOffset(int rowOffset, int colOffset) {
@@ -43,7 +43,7 @@ int calculateFirstStepInRotate(int startOrient, int endOrient) {
 }
 
 // the return value is {x, y, distance, orientation}
-array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRow, int inCol){
+array<int,4> Player2TankAlgorithm::searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRow, int inCol){
     for(int i = 1; i<= 6 ; i++){
         int row = (gameBoard.size() + location[0] + i * inRow) % gameBoard.size();
         int col = (gameBoard[0].size() + location[1] + i * inCol) % gameBoard[0].size();
@@ -56,7 +56,7 @@ array<int,4> p2Tank::searchForBullets(const vector<vector<array<matrixObject *, 
 }
 
 
-objMove p2Tank::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
+objMove Player2TankAlgorithm::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
 
     int numOfBulletsChasing = 0;
     int closestBulletDist = 7;
