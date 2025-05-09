@@ -23,7 +23,6 @@ protected:
     int turnsUntilNextShot;
     int calcMoveRound;
     vector<objMove> moves;
-    TankAlgorithm algo;
     bool isSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc) const;
     pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
     int calculateTargetOrientation(int targetRow, int targetCol);

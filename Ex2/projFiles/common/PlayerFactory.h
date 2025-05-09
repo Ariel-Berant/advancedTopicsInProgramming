@@ -13,4 +13,4 @@ public:
                                       size_t max_steps, size_t num_shells ) const = 0;
 };
 
-#endif //ADVANCEDTOPICSINPROGRAMMING_PLAYERFACTORY_H
+#endif //PLAYERFACTORY_H
