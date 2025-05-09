@@ -74,6 +74,7 @@ private:
     int turns;
     int maxTurns;
     int noBulletsCnt;
+    int maxBullets;
     bool isOddTurn;
     int numOfWalls;
     int numOfMines;
@@ -93,6 +94,7 @@ private:
     bool isValidFile(const string &filename);
     void printCollisionsToLog(const movingObject &object1, const movingObject &object2) const;
     void moveBullets();
+    bool gameManager::parseGameInfo(const string line, const string description, int rowNum);
 
 public:
     gameManager(const string &filename);

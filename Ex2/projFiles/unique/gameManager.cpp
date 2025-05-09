@@ -18,9 +18,61 @@ bool gameManager::isValidFile(const string &filename) {
     return true;
 }
 
-bool gameManager::getRowsAndColsFromFile(const string &filename) {
-    int cols, rows;
+bool gameManager::parseGameInfo(const string line, const string description, int rowNum) {
+    string fileRow = line;
+    if (fileRow.empty()) {
+        writeToFile("Error: The file '" + description + "' is empty.\n", INP_ERR_FILE);
+        return false;
+    }
+
+    // Remove all whitespace characters from the string
+    fileRow.erase(remove_if(fileRow.begin(), 
+                              fileRow.end(),
+                              [](unsigned char x) { return std::isspace(x); }),
+               fileRow.end());
+
+    if (fileRow.find(description) != 0) {
+        writeToFile("Error: The row for \"" + description + "\" does not start with the expected description.\n", INP_ERR_FILE);
+        return false;
+    }
+
+    fileRow.erase(0, description.length());
+
+    // Check if the remaining string is a valid integer
+    if (!all_of(fileRow.begin(), fileRow.end(), ::isdigit)) {
+        writeToFile("Error: The row for \"" + description + "\" contains invalid characters.\nCorrect use is: "
+             + description + "<NUM>\n", INP_ERR_FILE);
+        return false;
+    }
+
+    int value = stoi(fileRow);
+    
+    switch (rowNum)
+    {
+    case 1:
+        maxTurns = value;
+        break;
+    case 2:
+        maxBullets = value;
+        break;
+    case 3:
+        numOfRows = value;
+        break;
+    case 4:
+        numOfCols = value;
+        break;
+    default:
+        // Not a valid row number
+        break;
+    }
+
+    return true;
+}
+
+bool gameManager::getRowsAndColsFromFile(const string &filename)
+{
     string line;
+    string descriptions[] = {"MaxSteps=", "NumShells=", "Rows=", "Cols="};
     bool gotDims = true;
 
     ifstream file1;
@@ -30,27 +82,24 @@ bool gameManager::getRowsAndColsFromFile(const string &filename) {
         writeToFile("Error: Could not open the file '" + filename + "'.\n", INP_ERR_FILE);
         return false;
     }
-
-    if (getline(file1, line))
+    
+    getline(file1, line); // Skip the first line with the map name
+    for (int i = 1; i < 5; ++i)
     {
-        istringstream iss(line);
-        if (iss >> rows >> cols)
+        if (getline(file1, line))
         {
-            numOfCols = cols;
-            numOfRows = rows;
+            if (parseGameInfo(line, descriptions[i - 1], i)){
+                gotDims = true;
+                break;
+            }
         }
         else
         {
-            writeToFile("Error: Failed to parse dimensions from line.\n", INP_ERR_FILE);
+            writeToFile("Error: Failed to read line from file.\n", INP_ERR_FILE);
             gotDims = false;
         }
+        file1.close();
     }
-    else
-    {
-        writeToFile("Error: Failed to read line from file.\n", INP_ERR_FILE);
-        gotDims = false;
-    }
-    file1.close();
 
     return gotDims;
 }
@@ -73,7 +122,7 @@ bool gameManager::createMap(const string &filename)
     file1.open(filename);
     if (!file1.is_open())
     {
-        cerr << "Error: Could not open the file '" << filename << "'." << endl;
+        cerr << "Error: Could not open the file '" << filename << "'." << std::endl;
         return false;
     }
 
@@ -698,7 +747,7 @@ turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numO
     }
     
     if (!createMap(filename)){
-        cerr << "Error: Failed to create map from file." << endl;
+        cerr << "Error: Failed to create map from file, detailes in input_errors.txt." << std::endl;
         exit(EXIT_FAILURE);
     }
     string fileStem = filesystem::path(filename).stem().string();
