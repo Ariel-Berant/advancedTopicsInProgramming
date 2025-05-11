@@ -106,8 +106,36 @@ bool gameManager::getRowsAndColsFromFile(const string &filename)
 
 // Function creates map from a given pathname.
 // If some critical error occurs(criticalErr==true), function fails and returns false(i.e return !criticalErr).
-bool gameManager::createMap(const string &filename)
+bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFactory)
 {
+    gameMapFileName = filename;
+    tanks.resize(2, nullptr);
+    numOfWalls = 0;
+    numOfMines = 0;
+    turns = 0;
+    noBulletsCnt = 0;
+    isOddTurn = false;
+    numOfWallsDestroyed = 0;
+    numOfMinesDestroyed = 0;
+
+    if (gameBoard != nullptr)
+    {
+        delete gameBoard;
+        gameBoard = nullptr;
+    }
+
+    if (tanks[0] != nullptr)
+    {
+        delete tanks[0];
+        tanks[0] = nullptr;
+    }
+    
+    if (tanks[1] != nullptr)
+    {
+        delete tanks[1];
+        tanks[1] = nullptr;
+    }
+
     if (!isValidFile(filename))
     {
         return false;
@@ -128,7 +156,7 @@ bool gameManager::createMap(const string &filename)
 
     int currRow = 0, currCol = 0;
     string line;
-    bool tank1appeared = false , tank2appeared = false;
+    int numOfP1Tanks = 0, numOfP2Tanks = 0;
 
 
     gameBoard = new vector<vector<array<matrixObject *, 3>>>(numOfRows, vector<array<matrixObject *, 3>>(numOfCols));
@@ -158,25 +186,33 @@ bool gameManager::createMap(const string &filename)
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
             case '1':
-                tank* myTank = TankAlgorithmFactory::create(currRow, currCol, L);
-                tanks[0] = new p1Tank;
-                (*gameBoard)[currRow][currCol][1] = tanks[0];
-                tank1appeared = true;
+                TankAlgorithm* newTank = tankFactory.create(1, numOfP1Tanks++).release();
+
+                if(!newTank){
+                    writeToFile("Error: Failed to create tank algorithm.\n", INP_ERR_FILE);
+                    return false;
+                }
+                
+                tanks.push_back(dynamic_cast<PlayerTankAlgorithm*>(newTank));
+                p1Tanks.push_back(dynamic_cast<Player1TankAlgorithm*>(newTank));
+
+                (*gameBoard)[currRow][currCol][1] = dynamic_cast<PlayerTankAlgorithm*>(newTank);
                 (*gameBoard)[currRow][currCol][0] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
             case '2':
-                if (!tanks[1])
-                {
-                    tanks[1] = new p2Tank(currRow, currCol, R);
-                    (*gameBoard)[currRow][currCol][1] = tanks[1];
-                    tank2appeared = true;
+
+                TankAlgorithm* newTank = tankFactory.create(2, numOfP2Tanks++).release();
+
+                if(!newTank){
+                    writeToFile("Error: Failed to create tank algorithm.\n", INP_ERR_FILE);
+                    return false;
                 }
-                else
-                {
-                    writeToFile("Error: More than one tank for player 2.\n", INP_ERR_FILE);
-                    (*gameBoard)[currRow][currCol][1] = nullptr;
-                }
+
+                tanks.push_back(dynamic_cast<PlayerTankAlgorithm*>(newTank));
+                p2Tanks.push_back(dynamic_cast<Player2TankAlgorithm*>(newTank));
+
+                (*gameBoard)[currRow][currCol][1] = dynamic_cast<PlayerTankAlgorithm*>(newTank);
                 (*gameBoard)[currRow][currCol][0] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
@@ -192,8 +228,7 @@ bool gameManager::createMap(const string &filename)
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
             default:
-                writeToFile("Error: unrecognized character, ASCII #'" + to_string(ch)
-                + "' in the map file.\n", INP_ERR_FILE);
+                writeToFile("Error: unrecognized character, ASCII #'" + to_string(ch) + "' in the map file.\n", INP_ERR_FILE);
                 (*gameBoard)[currRow][currCol][0] = nullptr;
                 (*gameBoard)[currRow][currCol][1] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
@@ -212,10 +247,16 @@ bool gameManager::createMap(const string &filename)
         currRow++;
         currCol = 0;
     }
-    if(!tank1appeared || !tank2appeared){
-        writeToFile("Error: There are missing tanks in the map file.\n", INP_ERR_FILE);
-        file1.close();
-        return false;
+    if(numOfP1Tanks == 0 || !numOfP2Tanks == 0){
+        if(numOfP1Tanks != 0){
+            // player 1 win
+        }
+        else if(numOfP2Tanks != 0){
+            // player 2 win
+        }
+        else{
+            // a tie
+        }
     }
     if (currRow < numOfRows)
     {
@@ -398,7 +439,7 @@ void gameManager::makeTankMoves()
     int *newLocation = nullptr;
 //    right now only two tanksArr are supported, but in future will be i < tanksArr.size(), and tanksArr[i].play() will be
 //    tanksArr[i].play(gameBoard, {tanksArr without i-th member}, numOfCols, numOfRows);
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < tanks.size(); i++)
     {
         tanks[i]->updateTurn();
         tanksMove = tanks[i]->play(*gameBoard, tanks[1 - i]->getLocation(), numOfCols, numOfRows);
@@ -437,6 +478,7 @@ void gameManager::makeTankMoves()
 
         else
         {
+            bool tankCanMove = canMakeMove(*tanks[i], tanksMove);
             switch (tanksMove)
             {
             case rotateEighthLeft:
@@ -455,7 +497,7 @@ void gameManager::makeTankMoves()
                 break;
             case moveForward:
             tanks[i]->setInBackwards(0);
-                if (canMakeMove(*tanks[i], tanksMove))
+                if (tankCanMove)
                 {
                     newLocation = tanks[i]->newLocation(numOfCols, numOfRows);
                     tanks[i]->setNewLocation(newLocation[0], newLocation[1]);
@@ -469,7 +511,7 @@ void gameManager::makeTankMoves()
                 }
                 break;
             case moveBackwards:
-                if (canMakeMove(*tanks[i], tanksMove))
+                if (tankCanMove)
                 {
                     if (tanks[i]->getInBack() >= 3) // if we have moved backwards last turn and want to move
                     {
@@ -494,7 +536,7 @@ void gameManager::makeTankMoves()
                 }
                 break;
             case shoot:
-                if (canMakeMove(*tanks[i], tanksMove))
+                if (tankCanMove)
                 {
                     newLocation = tanks[i]->newLocation(numOfCols, numOfRows);               // Get bullet location
                     bullet *b = new bullet(newLocation[0], newLocation[1], tanks[i]->getOrientation(), B); // Create bullet
@@ -637,7 +679,7 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
     return false;
 }
 
-bool gameManager::canMakeMove(tank &tankChoseTheMove, objMove moveChosen)
+bool gameManager::canMakeMove(PlayerTankAlgorithm &tankChoseTheMove, objMove moveChosen)
 {
     if (moveChosen == moveForward)
     {
@@ -734,7 +776,7 @@ void gameManager::playGame()
 }
 
 gameManager::gameManager(const std::string &filename) :  numOfRows(0), numOfCols(0),
-turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(array<tank*, 2>{nullptr, nullptr})
+turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(vector<PlayerTankAlgorithm*>{nullptr})
 {
     try
     {
@@ -745,8 +787,8 @@ turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numO
     {
         // Error in file deletion - not really critical, just continue
     }
-    
-    if (!createMap(filename)){
+    std::unique_ptr<TankAlgorithmFactory> tankFactory = std::make_unique<TankAlgorithmFactory>();
+    if (!createMap(filename, *tankFactory)){
         cerr << "Error: Failed to create map from file, detailes in input_errors.txt." << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -758,7 +800,7 @@ turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numO
 
 gameManager::~gameManager() {
     // Clean up tanks first to avoid double deletion
-    for (tank* t : tanks) {
+    for (PlayerTankAlgorithm* t : tanks) {
         if (t) {
             delete t;
             t = nullptr;

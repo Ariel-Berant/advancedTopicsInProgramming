@@ -24,10 +24,10 @@ public:
 
 std::unique_ptr<TankAlgorithm> create(int player_index, int tank_index) {
     if (player_index == 1) {
-        return std::make_unique<Player1TankAlgorithm>(nullptr, nullptr, L);
+        return std::make_unique<TankAlgorithm>(nullptr, nullptr, L);
     }
     else{
-        return std::make_unique<Player2TankAlgorithm>(nullptr, nullptr, R);
+        return std::make_unique<TankAlgorithm>(nullptr, nullptr, R);
     }
 }
 

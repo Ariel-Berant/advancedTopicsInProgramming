@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <string>
+#include "TAFactory.cpp"
 #include "../common/ActionRequest.h"
 #include "../common/Player.h"
 #include "../common/TankAlgorithm.h"
@@ -82,11 +83,13 @@ private:
     int numOfMinesDestroyed;
     vector<vector<array<matrixObject*, 3>>> *gameBoard;
     vector<bullet*> bullets; // Vector to store bullets in the air
-    array<tank*, 2> tanks; // Vector to store tanks on the board
+    vector<PlayerTankAlgorithm*> tanks; // Vector to store tanks on the board
+    vector<Player1TankAlgorithm*> p1Tanks;
+    vector<Player2TankAlgorithm*> p2Tanks;
     vector<movingObject*> currMovingObjects;
 
     bool makeAllMoves();
-    bool canMakeMove(tank& tankChoseTheMove, enum move moveChosen);
+    bool canMakeMove(PlayerTankAlgorithm& tankChoseTheMove, enum move moveChosen);
     void makeTankMoves();
     bool checkCollisions();
     bool getRowsAndColsFromFile(const string &filename);
@@ -99,7 +102,7 @@ private:
 public:
     gameManager(const string &filename);
     ~gameManager();
-    bool createMap(const string &filename);
+    bool createMap(const string &filename, TankAlgorithmFactory &tankFactory);
     void playGame();
 };
 
