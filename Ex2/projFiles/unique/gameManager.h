@@ -81,7 +81,7 @@ private:
     int numOfMines;
     int numOfWallsDestroyed;
     int numOfMinesDestroyed;
-    vector<vector<array<matrixObject*, 3>>> *gameBoard;
+    unique_ptr<vector<vector<array<matrixObject*, 3>>>> gameBoard;
     vector<bullet*> bullets; // Vector to store bullets in the air
     vector<PlayerTankAlgorithm*> tanks; // Vector to store tanks on the board
     vector<Player1TankAlgorithm*> p1Tanks;

@@ -120,7 +120,6 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
 
     if (gameBoard != nullptr)
     {
-        delete gameBoard;
         gameBoard = nullptr;
     }
 
@@ -159,7 +158,9 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
     int numOfP1Tanks = 0, numOfP2Tanks = 0;
 
 
-    gameBoard = new vector<vector<array<matrixObject *, 3>>>(numOfRows, vector<array<matrixObject *, 3>>(numOfCols));
+    gameBoard = std::make_unique<vector<vector<array<matrixObject*, 3>>>>(
+        numOfRows, vector<array<matrixObject*, 3>>(numOfCols)
+    );
 
     getline(file1, line); // Skip the first line with the dimensions
 
@@ -828,7 +829,6 @@ gameManager::~gameManager() {
                 }
             }
         }
-        delete gameBoard;
         gameBoard = nullptr;
     }
 
