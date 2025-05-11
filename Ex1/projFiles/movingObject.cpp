@@ -1,5 +1,8 @@
 #include "movingObject.h"
 
+movingObject::movingObject(int row, int col, objectType oType, orientation orient) : matrixObject(row, col, oType), orient(orient), oldLocation{row, col} {
+    // Constructor implementation
+}
 
 movingObject::~movingObject(){
     // Destructor implementation
