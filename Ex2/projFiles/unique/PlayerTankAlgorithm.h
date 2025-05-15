@@ -43,7 +43,7 @@ public:
     void useShot();
     int getInBack() const; // Returns the inBackwards status
     void setInBackwards(int inBack); // Sets the inBackwards status
-    virtual objMove play(const vector<vector<array<matrixObject*, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) = 0; // Pure virtual function
+    virtual objMove play(const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) = 0; // Pure virtual function
     bool isSafe(int x, int y, const vector<vector<array<matrixObject*, 3>>>& gameBoard, int numOfCols, int numOfRows, int movesAhead) const;
     vector<objMove> getRotations(orientation start, orientation desired) const;
     bool canSeeOtherTank(const int otherLoc[2], int numOfRows, int numOfCols) const;

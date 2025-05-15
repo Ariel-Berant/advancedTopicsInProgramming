@@ -8,6 +8,7 @@
 #include <queue>
 #include <unordered_set>
 #include <string>
+#include <memory>
 class matrixObject
 {
 protected:

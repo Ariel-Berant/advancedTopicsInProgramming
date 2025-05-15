@@ -34,6 +34,7 @@
  * #include <unordered_set>
  * #include <string>
  * #include <cmath>
+ * #include <memory>
  *
  */
 
@@ -84,8 +85,6 @@ private:
     unique_ptr<vector<vector<array<shared_ptr<matrixObject>, 3>>>> gameBoard;
     vector<shared_ptr<bullet>> bullets; // Vector to store bullets in the air
     vector<shared_ptr<PlayerTankAlgorithm>> tanks; // Vector to store tanks on the board
-    vector<shared_ptr<PlayerTankAlgorithm>> p1Tanks;
-    vector<shared_ptr<PlayerTankAlgorithm>> p2Tanks;
     vector<shared_ptr<movingObject>> currMovingObjects;
 
     bool makeAllMoves();

@@ -118,21 +118,14 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
     numOfWallsDestroyed = 0;
     numOfMinesDestroyed = 0;
 
-    if (gameBoard != nullptr)
+    if (gameBoard)
     {
         gameBoard = nullptr;
     }
 
-    if (tanks[0] != nullptr)
+    if (tanks.empty())
     {
-        delete tanks[0];
-        tanks[0] = nullptr;
-    }
-    
-    if (tanks[1] != nullptr)
-    {
-        delete tanks[1];
-        tanks[1] = nullptr;
+        tanks.clear();
     }
 
     if (!isValidFile(filename))
@@ -156,10 +149,11 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
     int currRow = 0, currCol = 0;
     string line;
     int numOfP1Tanks = 0, numOfP2Tanks = 0;
+    shared_ptr<TankAlgorithm> newTank;
 
 
-    gameBoard = std::make_unique<vector<vector<array<unique_ptr<matrixObject>, 3>>>>(
-        numOfRows, vector<array<unique_ptr<matrixObject>, 3>>(numOfCols)
+    gameBoard = std::make_unique<vector<vector<array<shared_ptr<matrixObject>, 3>>>>(
+        numOfRows, vector<array<shared_ptr<matrixObject>, 3>>(numOfCols)
     );
 
     getline(file1, line); // Skip the first line with the dimensions
@@ -181,44 +175,41 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
             switch (ch)
             {
             case '#':
-                (*gameBoard)[currRow][currCol][0] = new wall(currRow, currCol, W);
+                (*gameBoard)[currRow][currCol][0] = make_unique<wall>(currRow, currCol, W);
                 numOfWalls++;
                 (*gameBoard)[currRow][currCol][1] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
             case '1':
-                shared_ptr<TankAlgorithm> newTank = tankFactory.create(1, numOfP1Tanks++);
+                newTank = tankFactory.create(1, numOfP1Tanks++);
 
                 if(!newTank){
                     writeToFile("Error: Failed to create tank algorithm.\n", INP_ERR_FILE);
                     return false;
                 }
                 
-                p1Tanks.emplace_back(dynamic_cast<shared_ptr<Player1TankAlgorithm>>(newTank));
-                tanks.emplace_back(newTank);
+                tanks.emplace_back(dynamic_pointer_cast<PlayerTankAlgorithm>(newTank));
 
-                (*gameBoard)[currRow][currCol][1] = dynamic_cast<PlayerTankAlgorithm>(newTank);
+                (*gameBoard)[currRow][currCol][1] = dynamic_pointer_cast<PlayerTankAlgorithm>(newTank);
                 (*gameBoard)[currRow][currCol][0] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
             case '2':
-
-                TankAlgorithm* newTank = tankFactory.create(2, numOfP2Tanks++).release();
+                newTank = tankFactory.create(2, numOfP2Tanks++);
 
                 if(!newTank){
                     writeToFile("Error: Failed to create tank algorithm.\n", INP_ERR_FILE);
                     return false;
                 }
 
-                tanks.push_back(dynamic_cast<PlayerTankAlgorithm*>(newTank));
-                p2Tanks.push_back(dynamic_cast<Player2TankAlgorithm*>(newTank));
+                tanks.emplace_back(dynamic_pointer_cast<PlayerTankAlgorithm>(newTank));
 
-                (*gameBoard)[currRow][currCol][1] = dynamic_cast<PlayerTankAlgorithm*>(newTank);
+                (*gameBoard)[currRow][currCol][1] = dynamic_pointer_cast<PlayerTankAlgorithm>(newTank);
                 (*gameBoard)[currRow][currCol][0] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
             case '@':
-                (*gameBoard)[currRow][currCol][0] = new mine(currRow, currCol, M);
+                (*gameBoard)[currRow][currCol][0] = make_unique<mine>(currRow, currCol, M);
                 numOfMines++;
                 (*gameBoard)[currRow][currCol][1] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
@@ -293,12 +284,10 @@ std::string orientationToString(orientation o) {
 
 void gameManager::moveBullets()
 {
-    int *newLoc;
-    for (bullet *b : bullets){
+    unique_ptr<int[]> newLoc;
+    for (shared_ptr<bullet> b : bullets){
         newLoc = b->newLocation(numOfCols, numOfRows);
         b->setNewLocation(newLoc[0], newLoc[1]);
-        delete[] newLoc;
-        newLoc = nullptr;
     }
 }
 
@@ -437,7 +426,7 @@ void gameManager::makeTankMoves()
 {
     orientation ornt;
     objMove tanksMove;
-    int *newLocation = nullptr;
+    unique_ptr<int[]> newLocation = nullptr;
 //    right now only two tanksArr are supported, but in future will be i < tanksArr.size(), and tanksArr[i].play() will be
 //    tanksArr[i].play(gameBoard, {tanksArr without i-th member}, numOfCols, numOfRows);
     for (int i = 0; i < tanks.size(); i++)
@@ -540,11 +529,10 @@ void gameManager::makeTankMoves()
                 if (tankCanMove)
                 {
                     newLocation = tanks[i]->newLocation(numOfCols, numOfRows);               // Get bullet location
-                    bullet *b = new bullet(newLocation[0], newLocation[1], tanks[i]->getOrientation(), B); // Create bullet
-                    currMovingObjects.push_back(b);
-                    bullets.push_back(b);
+                    shared_ptr<bullet> b = make_unique<bullet>(newLocation[0], newLocation[1], tanks[i]->getOrientation(), B); // Create bullet
+                    currMovingObjects.emplace_back(b);
+                    bullets.emplace_back(b);
                     tanks[i]->useShot();
-                    delete[] newLocation;
                     newLocation = nullptr; // Set to nullptr to enter the else statement(at 430)
                     writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," + to_string(tanks[i]->getLocation()[1]))
                         + ") shot a bullet.\n", gameMapFileName);
@@ -560,10 +548,9 @@ void gameManager::makeTankMoves()
             }
         }
 
-        if (newLocation != nullptr)
+        if (newLocation != nullptr) // If the tank moved
         {
-            delete[] newLocation; // Free the memory allocated for newLocation
-            newLocation = nullptr; // Set it to nullptr to avoid dangling pointer
+            newLocation = nullptr; // Set it to nullptr to for next iteration
         }
         else
         {
@@ -589,9 +576,6 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
         {
             // if a tank stepped on a mine - they both destroyed
 
-            matrixObject *explodedMine = (*gameBoard)[objectNewRow][objectNewCol][0];
-            delete explodedMine;
-            explodedMine = nullptr;
             (*gameBoard)[objectNewRow][objectNewCol][0] = nullptr; // remove the mine from the board
 
             int tanksPlayer = currMovingObjects[i]->getType() == P1T ? 1 : 2;
@@ -622,13 +606,11 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
                         gameMapFileName);
 
             currMovingObjects[i]->takeAHit();
-            matrixObject *damagedWall = (*gameBoard)[objectNewRow][objectNewCol][0];
+            shared_ptr<matrixObject> damagedWall = (*gameBoard)[objectNewRow][objectNewCol][0];
             damagedWall->takeAHit();
 
             if (!damagedWall->getIsAlive())
             { // if the wall destroyed - remove from the board
-                delete damagedWall;
-                damagedWall = nullptr;
                 (*gameBoard)[objectNewRow][objectNewCol][0] = nullptr;
 
                 writeToFile("The wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
@@ -645,7 +627,7 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
             //          - The moving object is a tank, and it stepped on a mine
             //          - The moving object is a bullet, and it hit a wall
 
-            matrixObject *destroyedObject = (*gameBoard)[objectNewRow][objectNewCol][2];
+            shared_ptr<matrixObject> destroyedObject = (*gameBoard)[objectNewRow][objectNewCol][2];
             (*gameBoard)[objectNewRow][objectNewCol][2] = nullptr; // remove the object from the board
             currMovingObjects.erase(currMovingObjects.begin() + i);    // remove the object from the moving object1 vector
 
@@ -654,8 +636,7 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
                 bullets.erase(
                     std::remove(bullets.begin(), bullets.end(), destroyedObject),
                     bullets.end()); // delete the destroyed bullet from the bullets in the air vector
-                delete destroyedObject;
-                destroyedObject = nullptr;
+                    destroyedObject = nullptr;
             }
 
             --i;
@@ -682,30 +663,23 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
 
 bool gameManager::canMakeMove(PlayerTankAlgorithm &tankChoseTheMove, objMove moveChosen)
 {
+    unique_ptr<int[]> newLoc;
     if (moveChosen == moveForward)
     {
-        int *newLoc = tankChoseTheMove.newLocation(numOfCols, numOfRows);
+        newLoc = tankChoseTheMove.newLocation(numOfCols, numOfRows);
         if ((*gameBoard)[newLoc[0]][newLoc[1]][0] && (*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
         {
-            delete[] newLoc;
-            newLoc = nullptr;
             return false;
         }
-        delete[] newLoc;
-        newLoc = nullptr;
         return true;
     }
     else if (moveChosen == moveBackwards)
     {
-        int *newLoc = tankChoseTheMove.newLocation(numOfCols, numOfRows , true);
+        newLoc = tankChoseTheMove.newLocation(numOfCols, numOfRows , true);
         if ((*gameBoard)[newLoc[0]][newLoc[1]][0] && (*gameBoard)[newLoc[0]][newLoc[1]][0]->getType() == W)
         {
-            delete[] newLoc;
-            newLoc = nullptr;
             return false;
         }
-        delete[] newLoc;
-        newLoc = nullptr;
     }
     else if (moveChosen == shoot)
     {
@@ -777,7 +751,7 @@ void gameManager::playGame()
 }
 
 gameManager::gameManager(const std::string &filename) :  numOfRows(0), numOfCols(0),
-turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(vector<PlayerTankAlgorithm*>{nullptr})
+turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(vector<shared_ptr<PlayerTankAlgorithm>>{nullptr})
 {
     try
     {
@@ -799,40 +773,7 @@ turns(0), noBulletsCnt(40), isOddTurn(false), numOfWalls(0), numOfMines(0), numO
 
 }
 
-gameManager::~gameManager() {
-    // Clean up tanks first to avoid double deletion
-    for (PlayerTankAlgorithm* t : tanks) {
-        if (t) {
-            delete t;
-            t = nullptr;
-        }
-    }
-
-    for (bullet *b : bullets) {
-        if (b) {
-            delete b;
-            b = nullptr;
-        }
-    }
-    
-    
-    currMovingObjects.clear();
-    bullets.clear();
-    
-    // Clean up the game board
-    if (gameBoard) {
-        for (int i = 0; i < numOfRows; ++i) {
-            for (int j = 0; j < numOfCols; ++j) {
-                if ((*gameBoard)[i][j][0]) {
-                    delete (*gameBoard)[i][j][0];
-                    (*gameBoard)[i][j][0] = nullptr;
-                }
-            }
-        }
-        gameBoard = nullptr;
-    }
-
-}
+gameManager::~gameManager() = default;
 
 /*
  * # - wall
