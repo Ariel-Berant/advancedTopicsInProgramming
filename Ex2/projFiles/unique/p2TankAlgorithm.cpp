@@ -2,6 +2,17 @@
 
 Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {}
 
+ActionRequest Player1TankAlgorithm::getAction() {
+    // Implement the logic to get the action for Player 1's tank
+    // This is a placeholder implementation
+    return ActionRequest();
+}
+
+void Player1TankAlgorithm::updateBattleInfo(BattleInfo& info) {
+    // Implement the logic to update the battle information for Player 1's tank
+    // This is a placeholder implementation
+}
+
 // Function to compute the direction from (row, col) offsets
 int getDirectionFromOffset(int rowOffset, int colOffset) {
     if (rowOffset == -1 && colOffset == 0) return 0;  // U

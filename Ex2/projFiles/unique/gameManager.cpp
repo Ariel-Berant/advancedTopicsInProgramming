@@ -158,8 +158,8 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
     int numOfP1Tanks = 0, numOfP2Tanks = 0;
 
 
-    gameBoard = std::make_unique<vector<vector<array<matrixObject*, 3>>>>(
-        numOfRows, vector<array<matrixObject*, 3>>(numOfCols)
+    gameBoard = std::make_unique<vector<vector<array<unique_ptr<matrixObject>, 3>>>>(
+        numOfRows, vector<array<unique_ptr<matrixObject>, 3>>(numOfCols)
     );
 
     getline(file1, line); // Skip the first line with the dimensions
@@ -187,17 +187,17 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
             case '1':
-                TankAlgorithm* newTank = tankFactory.create(1, numOfP1Tanks++).release();
+                shared_ptr<TankAlgorithm> newTank = tankFactory.create(1, numOfP1Tanks++);
 
                 if(!newTank){
                     writeToFile("Error: Failed to create tank algorithm.\n", INP_ERR_FILE);
                     return false;
                 }
                 
-                tanks.push_back(dynamic_cast<PlayerTankAlgorithm*>(newTank));
-                p1Tanks.push_back(dynamic_cast<Player1TankAlgorithm*>(newTank));
+                p1Tanks.emplace_back(dynamic_cast<shared_ptr<Player1TankAlgorithm>>(newTank));
+                tanks.emplace_back(newTank);
 
-                (*gameBoard)[currRow][currCol][1] = dynamic_cast<PlayerTankAlgorithm*>(newTank);
+                (*gameBoard)[currRow][currCol][1] = dynamic_cast<PlayerTankAlgorithm>(newTank);
                 (*gameBoard)[currRow][currCol][0] = nullptr;
                 (*gameBoard)[currRow][currCol][2] = nullptr;
                 break;
