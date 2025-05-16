@@ -4,8 +4,8 @@ A repository for the course Advanced Topics in Programming in TAU.
 
 ## Names & IDs
 
-* Ariel Berant - 
-* Ido Zacharia - 
+* Ariel Berant -
+* Ido Zacharia -
 
 ## Formats
 
