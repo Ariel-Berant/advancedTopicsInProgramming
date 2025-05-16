@@ -10,9 +10,9 @@ public:
     ActionRequest getAction() override;
     void updateBattleInfo(BattleInfo &info) override;
     void updateTurn() override;
-    objMove play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) override;
-    vector<objMove> playCalc(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int tank2Loc[2], int numOfRows, int numOfCols);
-    vector<objMove> handleSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc);
+    objMove play(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int otherLoc[2], int numOfCols, int numOfRows);
+    vector<objMove> playCalc(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int tank2Loc[2], int numOfRows, int numOfCols);
+    vector<objMove> handleSurrounded(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *tank2Loc) const;
     bool checkIfOnSameLine(const int *otherLoc) const;
 };
 
@@ -22,8 +22,8 @@ public:
     ActionRequest getAction() override;
     void updateBattleInfo(BattleInfo &info) override;
     Player2TankAlgorithm(int x, int y, orientation orient);
-    objMove play(const vector<vector<array<matrixObject*, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) override;
-    array<int,4> searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRows, int inCols);
+    objMove play(const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows);
+    array<int,4> searchForBullets(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int inRows, int inCols) const;
 };
 
 #endif //PLAYERTANK_H

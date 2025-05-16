@@ -36,7 +36,7 @@ bool Player1TankAlgorithm::checkIfOnSameLine(const int *otherLoc) const {
 }
 
 
-objMove Player1TankAlgorithm::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *otherLoc, int numOfCols,
+objMove Player1TankAlgorithm::play(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *otherLoc, int numOfCols,
                      int numOfRows) {
     objMove currAction;
 
@@ -87,7 +87,7 @@ objMove Player1TankAlgorithm::play(const vector<vector<array<matrixObject *, 3>>
     return currAction;
 }
 
-vector<objMove> Player1TankAlgorithm::playCalc(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc,
+vector<objMove> Player1TankAlgorithm::playCalc(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *tank2Loc,
                                  int numOfRows, int numOfCols) {
 
     vector<vector<bool>> visited(numOfRows, vector<bool>(numOfCols, false));
@@ -151,7 +151,7 @@ vector<objMove> Player1TankAlgorithm::playCalc(const vector<vector<array<matrixO
     return handleSurrounded(gameBoard, tank2Loc); // Return empty path if no valid path found
 }
 
-vector<objMove> Player1TankAlgorithm::handleSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tank2Loc) {
+vector<objMove> Player1TankAlgorithm::handleSurrounded(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *tank2Loc) const {
     vector<objMove> currMoves;
     if (isSurrounded(gameBoard, location)) {
         // Handle the case when the tank is surrounded

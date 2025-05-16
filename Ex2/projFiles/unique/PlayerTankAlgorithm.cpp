@@ -46,9 +46,9 @@ void PlayerTankAlgorithm::updateTurn() {
     }
 }
 
-bool PlayerTankAlgorithm::isSafe(const int row, const int col, const vector<vector<array<matrixObject*, 3>>>& gameBoard,
+bool PlayerTankAlgorithm::isSafe(const int row, const int col, const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard,
                   const int numOfCols, const int numOfRows, const int movesAhead) const{
-    matrixObject* unmovingObj = gameBoard[row][col][0];
+    matrixObject* unmovingObj = gameBoard[row][col][0].get();
     matrixObject* bulletObj;
 
     // Check for walls or mines
@@ -80,7 +80,7 @@ bool PlayerTankAlgorithm::isSafe(const int row, const int col, const vector<vect
 
 
     for (array<int, 3> loc: possibleLocs) {
-        bulletObj = gameBoard[loc[0]][loc[1]][1];
+        bulletObj = gameBoard[loc[0]][loc[1]][1].get();
         if (bulletObj && dynamic_cast<bullet *>(bulletObj) && dynamic_cast<bullet *>(bulletObj)->getOrientation() == loc[2]) {
             bulletNotFound = false;
         }
@@ -176,7 +176,7 @@ bool PlayerTankAlgorithm::canSeeOtherTank(const int otherLoc[2], int numOfRows, 
 
 
 // Function to check if the tank is surrounded by walls, bullets or mines(if by tank, it will try to shoot it, not surrounded)
-bool PlayerTankAlgorithm::isSurrounded(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int *tankLoc) const {
+bool PlayerTankAlgorithm::isSurrounded(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *tankLoc) const {
     // Check if the tank is surrounded by walls or bullets
     for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
@@ -259,7 +259,7 @@ pair<objMove, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation
   }
 
 
-  pair<objMove, int> PlayerTankAlgorithm::findAdjSafe(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist){
+  pair<objMove, int> PlayerTankAlgorithm::findAdjSafe(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist){
     //search for a safest place among all the neighbors cells and return the fist move needed to get there 
     // int targetOrientation;
     for(int orien = 0 ;orien < 8 ; orien++){
