@@ -34,6 +34,7 @@
  * #include <unordered_set>
  * #include <string>
  * #include <cmath>
+ * #include <memory>
  *
  */
 
@@ -81,12 +82,10 @@ private:
     int numOfMines;
     int numOfWallsDestroyed;
     int numOfMinesDestroyed;
-    unique_ptr<vector<vector<array<matrixObject*, 3>>>> gameBoard;
-    vector<bullet*> bullets; // Vector to store bullets in the air
-    vector<PlayerTankAlgorithm*> tanks; // Vector to store tanks on the board
-    vector<Player1TankAlgorithm*> p1Tanks;
-    vector<Player2TankAlgorithm*> p2Tanks;
-    vector<movingObject*> currMovingObjects;
+    unique_ptr<vector<vector<array<shared_ptr<matrixObject>, 3>>>> gameBoard;
+    vector<shared_ptr<bullet>> bullets; // Vector to store bullets in the air
+    vector<shared_ptr<PlayerTankAlgorithm>> tanks; // Vector to store tanks on the board
+    vector<shared_ptr<movingObject>> currMovingObjects;
 
     bool makeAllMoves();
     bool canMakeMove(PlayerTankAlgorithm& tankChoseTheMove, enum move moveChosen);

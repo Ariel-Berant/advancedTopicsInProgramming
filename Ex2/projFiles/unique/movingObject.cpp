@@ -10,8 +10,10 @@ movingObject::~movingObject(){
     // The destructor is declared virtual in the base class to ensure proper cleanup of derived classes.
 }
 
-int *movingObject::newLocation(const int numOfCols, const int numOfRows, bool atReverse) const {
-    int *newLoc = new int[2]{location[0], location[1]};
+unique_ptr<int[]> movingObject::newLocation(int numOfCols, int numOfRows, bool atReverse) const {
+    auto newLoc = make_unique<int[]>(2);
+    newLoc[0] = location[0];
+    newLoc[1] = location[1];
     int i = atReverse == true ? -1 : 1; // Determine the direction of movement based on atReverse
     if(orient == U) {
         newLoc[0] = (numOfRows + location[0] - 1 * i) % numOfRows;

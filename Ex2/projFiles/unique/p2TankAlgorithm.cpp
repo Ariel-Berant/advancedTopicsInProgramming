@@ -2,6 +2,17 @@
 
 Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {}
 
+ActionRequest Player1TankAlgorithm::getAction() {
+    // Implement the logic to get the action for Player 1's tank
+    // This is a placeholder implementation
+    return ActionRequest();
+}
+
+void Player1TankAlgorithm::updateBattleInfo(BattleInfo& info) {
+    // Implement the logic to update the battle information for Player 1's tank
+    // This is a placeholder implementation
+}
+
 // Function to compute the direction from (row, col) offsets
 int getDirectionFromOffset(int rowOffset, int colOffset) {
     if (rowOffset == -1 && colOffset == 0) return 0;  // U
@@ -43,11 +54,11 @@ int calculateFirstStepInRotate(int startOrient, int endOrient) {
 }
 
 // the return value is {x, y, distance, orientation}
-array<int,4> Player2TankAlgorithm::searchForBullets(const vector<vector<array<matrixObject *, 3>>> &gameBoard, int inRow, int inCol){
+array<int,4> Player2TankAlgorithm::searchForBullets(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int inRow, int inCol) const{
     for(int i = 1; i<= 6 ; i++){
         int row = (gameBoard.size() + location[0] + i * inRow) % gameBoard.size();
         int col = (gameBoard[0].size() + location[1] + i * inCol) % gameBoard[0].size();
-        matrixObject* obj = gameBoard[row][col][1];
+        matrixObject* const obj = gameBoard[row][col][1].get();
         if(obj && obj->getType() == B && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inRow, -inCol)){
             return {row, col, i, getDirectionFromOffset(inRow, inCol)};
         }
@@ -56,7 +67,7 @@ array<int,4> Player2TankAlgorithm::searchForBullets(const vector<vector<array<ma
 }
 
 
-objMove Player2TankAlgorithm::play(const vector<vector<array<matrixObject *, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
+objMove Player2TankAlgorithm::play(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
 
     int numOfBulletsChasing = 0;
     int closestBulletDist = 7;
@@ -107,7 +118,7 @@ objMove Player2TankAlgorithm::play(const vector<vector<array<matrixObject *, 3>>
             return next.first;
         }
         else{
-            int* newLoc = newLocation(numOfCols, numOfRows);
+            unique_ptr<int[]> newLoc = newLocation(numOfCols, numOfRows);
             if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1) && next.first == moveForward){
                 // we don't need to change the move it's stay next.first
             }
@@ -126,8 +137,6 @@ objMove Player2TankAlgorithm::play(const vector<vector<array<matrixObject *, 3>>
                     }
                 }
             }
-            delete[] newLoc;
-            newLoc = nullptr;
             return next.first;
         }
     }
