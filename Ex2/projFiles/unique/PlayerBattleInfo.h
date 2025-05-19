@@ -8,7 +8,7 @@ class PlayerBattleInfo : BattleInfo{
 private:
     /* data */
 public:
-    PlayerBattleInfo(/* args */);
+    PlayerBattleInfo();
     ~PlayerBattleInfo();
 };
 

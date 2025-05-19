@@ -1,9 +1,9 @@
 #ifndef PLAYER2_H
 #define PLAYER2_H
 
-#include "../common/Player.h"
+#include "OurPlayer.h"
 
-class Player2 : public Player
+class Player2 : public OurPlayer
 {
 public:
     Player2();

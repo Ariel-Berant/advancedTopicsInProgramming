@@ -5,6 +5,7 @@
 #include "move.h"
 #include "bullet.h"
 #include "../common/TankAlgorithm.h"
+#include "../common/ActionRequest.h"
 
 using namespace std;
 
@@ -26,9 +27,9 @@ protected:
     vector<objMove> moves;
     bool isSurrounded(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *tank2Loc) const;
     pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
-    int calculateTargetOrientation(int targetRow, int targetCol);
+    int calculateTargetOrientation(int targetCol, int targetRow);
     pair<objMove, int> findAdjSafe(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist = 100);
-    pair<int, int> getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols);
+    pair<int, int> getNeighborPointGivenOrient(int orient, int numOfCols, int numOfRows);
     pair<int, int> getDirectionOffset(int dir);
     
 
@@ -38,15 +39,14 @@ public:
     ~PlayerTankAlgorithm() override;
     void setOrientation( orientation newOrient);
     bool canShoot() const;
-    // int* newLocationAtReverse( int numOfCols,  int numOfRows) const;
     virtual void updateTurn();
     void useShot();
     int getInBack() const; // Returns the inBackwards status
     void setInBackwards(int inBack); // Sets the inBackwards status
     virtual objMove play(const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) = 0; // Pure virtual function
-    bool isSafe(int x, int y, const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, int numOfCols, int numOfRows, int movesAhead) const;
+    bool isSafe(int col, int row, const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, int numOfCols, int numOfRows, int movesAhead) const;
     vector<objMove> getRotations(orientation start, orientation desired) const;
-    bool canSeeOtherTank(const int otherLoc[2], int numOfRows, int numOfCols) const;
+    bool canSeeOtherTank(const int otherLoc[2], int numOfCols, int numOfRows) const;
     bool hasBullets() const;
     int getNumOfShotsLeft() const;
 

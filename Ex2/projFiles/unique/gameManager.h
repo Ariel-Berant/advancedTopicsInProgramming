@@ -5,7 +5,7 @@
 #include "unmovingObject.h"
 #include "bullet.h"
 #include "move.h"
-#include "tank.h"
+#include "PlayerTankAlgorithm.h"
 #include "mine.h"
 #include "wall.h"
 #include "orientation.h"

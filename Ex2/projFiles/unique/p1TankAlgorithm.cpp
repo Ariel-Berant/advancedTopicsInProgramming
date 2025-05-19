@@ -65,7 +65,7 @@ objMove Player1TankAlgorithm::play(const vector<vector<array<shared_ptr<matrixOb
     }
 
     if (moves.empty() || calcMoveRound == 0) {
-        moves = playCalc(gameBoard, otherLoc, numOfRows, numOfCols);
+        moves = playCalc(gameBoard, otherLoc, numOfCols, numOfRows);
     }
 
     // If first move is noAction, couldn't find a path to the other tank.
@@ -73,12 +73,12 @@ objMove Player1TankAlgorithm::play(const vector<vector<array<shared_ptr<matrixOb
     if(!moves.empty() && moves[0] == noAction){
         // Try to be in the same row as the other tank
         int locationToCheck[2] = {otherLoc[0] , location[1]};
-        moves = playCalc(gameBoard, locationToCheck, numOfRows, numOfCols);
+        moves = playCalc(gameBoard, locationToCheck, numOfCols, numOfRows);
         if(moves.empty() || moves[0] == noAction){
             // Try to be in the same column as the other tank
             locationToCheck[0] = location[0];
             locationToCheck[1] = otherLoc[1];
-            moves = playCalc(gameBoard, locationToCheck, numOfRows, numOfCols); 
+            moves = playCalc(gameBoard, locationToCheck, numOfCols, numOfRows); 
         }
     }
     
@@ -88,9 +88,9 @@ objMove Player1TankAlgorithm::play(const vector<vector<array<shared_ptr<matrixOb
 }
 
 vector<objMove> Player1TankAlgorithm::playCalc(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *tank2Loc,
-                                 int numOfRows, int numOfCols) {
+                                 int numOfCols, int numOfRows) {
 
-    vector<vector<bool>> visited(numOfRows, vector<bool>(numOfCols, false));
+    vector<vector<bool>> visited(numOfCols, vector<bool>(numOfRows, false));
     queue<pair<pair<int,int>, vector<array<int, 3>>>> q;
 
     q.push({{location[0], location[1]}, {}}); // Start position
@@ -103,10 +103,10 @@ vector<objMove> Player1TankAlgorithm::playCalc(const vector<vector<array<shared_
 
         q.pop();
 
-        int row = current.first, col = current.second;
+        int col = current.first, row = current.second;
 
         // If we reach the target, return the path
-        if (row == tank2Loc[0] && col == tank2Loc[1]) {
+        if (col == tank2Loc[0] && row == tank2Loc[1]) {
             int shots = shotsLeft, sinceShot = turnsUntilNextShot;
             vector<objMove> moves, currRotations;
             orientation currOrient = orient;
@@ -114,7 +114,7 @@ vector<objMove> Player1TankAlgorithm::playCalc(const vector<vector<array<shared_
                 currRotations = getRotations(currOrient, (orientation)coords[2]);
                 for (objMove move : currRotations){
                     if (shots > 0 && sinceShot == 0
-                    && canSeeOtherTank(tank2Loc, numOfRows, numOfCols)) {
+                    && canSeeOtherTank(tank2Loc, numOfCols, numOfRows)) {
                         moves.push_back(shoot);
                         shots--;
                         sinceShot = 4;
@@ -131,20 +131,20 @@ vector<objMove> Player1TankAlgorithm::playCalc(const vector<vector<array<shared_
         }
 
         // Explore neighbors
-        vector<array<int, 3>> directions = {{-1, 0, U}, {1, 0, D}, {0, -1, L}, {0, 1, R},
-                                             {-1, -1, UL}, {-1, 1, UR}, {1, -1, DL}, {1, 1, DR}};
+        vector<array<int, 3>> directions = {{0, -1, U}, {0, 1, D}, {-1, 0, L}, {1, 0, R},
+                                             {-1, -1, UL}, {1, -1, UR}, {-1, 1, DL}, {1, 1, DR}};
         for (array<int, 3> coords: directions) {
-            int nRow = (row + coords[0] + numOfRows) % numOfRows; // Wrap around rows
-            int nCol = (col + coords[1] + numOfCols) % numOfCols; // Wrap around cols
+            int nRow = (row + coords[1] + numOfRows) % numOfRows; // Wrap around rows
+            int nCol = (col + coords[0] + numOfCols) % numOfCols; // Wrap around cols
 
-            if (!visited[nRow][nCol]
-            && isSafe(nRow, nCol, gameBoard, numOfCols, numOfRows, (int)path.size() + 1)) {
+            if (!visited[nCol][nRow]
+            && isSafe(nCol, nRow, gameBoard, numOfCols, numOfRows, (int)path.size() + 1)) {
                 vector<array<int, 3>> newPath = path;
-                array<int, 3> newCoords = {nRow, nCol, coords[2]};
+                array<int, 3> newCoords = {nCol, nRow, coords[2]};
                 newPath.push_back(newCoords); // Add new direction to path
-                q.push({{nRow, nCol}, newPath});
+                q.push({{nCol, nRow}, newPath});
             }
-            visited[nRow][nCol] = true;
+            visited[nCol][nRow] = true;
         }
     }
 
@@ -161,13 +161,13 @@ vector<objMove> Player1TankAlgorithm::handleSurrounded(const vector<vector<array
         if (isSurrounded(gameBoard, tank2Loc)) {
             // Handle the case when the other tank is surrounded
             // For example, you can rotate or move in a specific direction
-            vector<array<int, 3>> directions = {{-1, 0, U}, {1, 0, D}, {0, -1, L}, {0, 1, R},
-                                             {-1, -1, UL}, {-1, 1, UR}, {1, -1, DL}, {1, 1, DR}};
+            vector<array<int, 3>> directions = {{0, -1, U}, {0, 1, D}, {-1, 0, L}, {1, 0, R},
+                                             {-1, -1, UL}, {1, -1, UR}, {-1, 1, DL}, {1, 1, DR}};
             for (array<int, 3> coords: directions) {
-                int nRow = (location[0] + coords[0] + gameBoard.size()) % gameBoard.size(); // Wrap around rows
-                int nCol = (location[1] + coords[1] + gameBoard[0].size()) % gameBoard[0].size(); // Wrap around cols
+                int nRow = (location[1] + coords[1] + gameBoard[0].size()) % gameBoard[0].size(); // Wrap around rows
+                int nCol = (location[0] + coords[0] + gameBoard.size()) % gameBoard.size(); // Wrap around cols
 
-                if (isSafe(nRow, nCol, gameBoard, gameBoard[0].size(), gameBoard.size(), 1)) {
+                if (isSafe(nCol, nRow, gameBoard, gameBoard.size(), gameBoard[0].size(), 1)) {
                     vector<objMove> currRotations = getRotations(orient, (orientation)coords[2]);
                     for (objMove move : currRotations) {
                         currMoves.push_back(move);

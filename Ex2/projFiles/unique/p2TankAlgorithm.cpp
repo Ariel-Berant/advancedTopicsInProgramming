@@ -1,20 +1,22 @@
 #include "playerTank.h"
 
-Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {}
+Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {
+    battleInfo = std::make_unique<Player2BattleInfo>(0, 0, 0);
+}
 
-ActionRequest Player1TankAlgorithm::getAction() {
+ActionRequest Player2TankAlgorithm::getAction() {
     // Implement the logic to get the action for Player 1's tank
     // This is a placeholder implementation
     return ActionRequest();
 }
 
-void Player1TankAlgorithm::updateBattleInfo(BattleInfo& info) {
+void Player2TankAlgorithm::updateBattleInfo(BattleInfo& info) {
     // Implement the logic to update the battle information for Player 1's tank
     // This is a placeholder implementation
 }
 
-// Function to compute the direction from (row, col) offsets
-int getDirectionFromOffset(int rowOffset, int colOffset) {
+// Function to compute the direction from (col, row) offsets
+int getDirectionFromOffset(int colOffset, int rowOffset) {
     if (rowOffset == -1 && colOffset == 0) return 0;  // U
     if (rowOffset == -1 && colOffset == 1) return 1;  // UR
     if (rowOffset == 0 && colOffset == 1) return 2;   // R
@@ -54,13 +56,13 @@ int calculateFirstStepInRotate(int startOrient, int endOrient) {
 }
 
 // the return value is {x, y, distance, orientation}
-array<int,4> Player2TankAlgorithm::searchForBullets(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int inRow, int inCol) const{
+array<int,4> Player2TankAlgorithm::searchForBullets(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int inCol, int inRow) const{
     for(int i = 1; i<= 6 ; i++){
-        int row = (gameBoard.size() + location[0] + i * inRow) % gameBoard.size();
-        int col = (gameBoard[0].size() + location[1] + i * inCol) % gameBoard[0].size();
-        matrixObject* const obj = gameBoard[row][col][1].get();
-        if(obj && obj->getType() == B && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inRow, -inCol)){
-            return {row, col, i, getDirectionFromOffset(inRow, inCol)};
+        int row = (gameBoard.size() + location[1] + i * inRow) % gameBoard[0].size();
+        int col = (gameBoard[0].size() + location[0] + i * inCol) % gameBoard.size();
+        matrixObject* const obj = gameBoard[col][row][1].get();
+        if(obj && obj->getType() == B && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inCol, -inRow)){
+            return {col, row, i, getDirectionFromOffset(inCol, inRow)};
         }
     }
     return {0,0,0,0};

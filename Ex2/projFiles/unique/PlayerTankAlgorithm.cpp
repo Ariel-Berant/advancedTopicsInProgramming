@@ -46,9 +46,9 @@ void PlayerTankAlgorithm::updateTurn() {
     }
 }
 
-bool PlayerTankAlgorithm::isSafe(const int row, const int col, const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard,
+bool PlayerTankAlgorithm::isSafe(const int col, const int row, const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard,
                   const int numOfCols, const int numOfRows, const int movesAhead) const{
-    matrixObject* unmovingObj = gameBoard[row][col][0].get();
+    matrixObject* unmovingObj = gameBoard[col][row][0].get();
     matrixObject* bulletObj;
 
     // Check for walls or mines
@@ -60,22 +60,22 @@ bool PlayerTankAlgorithm::isSafe(const int row, const int col, const vector<vect
     bool bulletNotFound = true;
 
     vector<array<int, 3>> possibleLocs = {
-        {row,                                                  					(numOfCols + ((col - 2 * movesAhead) % numOfCols)) % numOfCols,          	R},
-        {row,                                                  					(numOfCols + col + 2 * movesAhead) % numOfCols,          	                L},
-        {(numOfRows + ((row - 2 * movesAhead) % numOfRows)) % numOfRows,    	col,                                                     	                D},
-        {(numOfRows + row + 2 * movesAhead) % numOfRows,       					col,                                                     	                U},
-        {(numOfRows + ((row - 2 * movesAhead) % numOfRows)) % numOfRows,    	(numOfCols + ((col - 2 * movesAhead) % numOfCols)) % numOfCols,          	DR},
-        {(numOfRows + row + 2 * movesAhead) % numOfRows,       					(numOfCols + ((col - 2 * movesAhead) % numOfCols)) % numOfCols,          	UR},
-        {(numOfRows + ((row - 2 * movesAhead) % numOfRows)) % numOfRows,    	(numOfCols + col + 2 * movesAhead) % numOfCols,          	                DL},
-        {(numOfRows + row + 2 * movesAhead) % numOfRows,       					(numOfCols + col + 2 * movesAhead) % numOfCols,         	                UL},
-        {row,                                                  					(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,      	R},
-        {row,                                                 					(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,      	L},
-        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,	col,                                                   		                D},
-        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	col,                                                  		   			    U},
-        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,      	DR},
-        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,    	    UR},
-        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,    	    DL},
-        {(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,  	(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,    	    UL}
+        {col,                                                  					(numOfRows + ((row - 2 * movesAhead) % numOfRows)) % numOfRows,          	U},
+        {col,                                                  					(numOfRows + row + 2 * movesAhead) % numOfRows,          	                D},
+        {(numOfCols + ((col - 2 * movesAhead) % numOfCols)) % numOfCols,    	row,                                                     	                L},
+        {(numOfCols + col + 2 * movesAhead) % numOfCols,       					row,                                                     	                R},
+        {(numOfCols + ((col - 2 * movesAhead) % numOfCols)) % numOfCols,    	(numOfRows + ((row - 2 * movesAhead) % numOfRows)) % numOfRows,          	UL},
+        {(numOfCols + col + 2 * movesAhead) % numOfCols,       					(numOfRows + ((row - 2 * movesAhead) % numOfRows)) % numOfRows,          	UR},
+        {(numOfCols + ((col - 2 * movesAhead) % numOfCols)) % numOfCols,    	(numOfRows + row + 2 * movesAhead) % numOfRows,          	                DL},
+        {(numOfCols + col + 2 * movesAhead) % numOfCols,       					(numOfRows + row + 2 * movesAhead) % numOfRows,         	                DR},
+        {col,                                                  					(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,      	U},
+        {(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,  	row,                                                  		   			    L},
+        {(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,  	(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,      	UL},
+        {(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,  	(numOfRows + ((row + 2 * movesAhead - 1) % numOfRows)) % numOfRows,    	    DL},
+        {(numOfCols + ((col + 2 * movesAhead - 1) % numOfCols)) % numOfCols,  	(numOfRows + row - 2 * movesAhead - 1) % numOfRows,          	            UR},
+        {(numOfCols + col + 2 * movesAhead - 1) % numOfCols,       			    (numOfRows + ((row + 2 * movesAhead - 1) % numOfRows)) % numOfRows,      	DR},
+        {(numOfCols + col + 2 * movesAhead - 1) % numOfCols,       			    row,                                                     	                R},
+        {col,                                                      			    (numOfRows + row + 2 * movesAhead - 1) % numOfRows,          	            D}
     };
 
 
@@ -126,46 +126,46 @@ vector<objMove> PlayerTankAlgorithm::getRotations(orientation curr, orientation 
     return rotations;
 }
 
-bool PlayerTankAlgorithm::canSeeOtherTank(const int otherLoc[2], int numOfRows, int numOfCols) const {
+bool PlayerTankAlgorithm::canSeeOtherTank(const int otherLoc[2], int numOfCols, int numOfRows) const {
     int move[2] = {0, 0}, currLoc[2] = {location[0], location[1]};
     // matrixObject* matObj;
     bool canSee = false;
     switch (orient){
         case UR:
-            move[1] = 1;
-            move[0] = -1;
+            move[0] = 1;
+            move[1] = -1;
             break;
         case U:
-            move[0] = -1;
+            move[1] = -1;
             break;
         case DL:
-            move[1] = -1;
-            move[0] = 1;
+            move[0] = -1;
+            move[1] = 1;
             break;
         case D:
-            move[0] = 1;
+            move[1] = 1;
             break;
         case UL:
-            move[1] = -1;
             move[0] = -1;
+            move[1] = -1;
             break;
         case L:
-            move[1] = -1;
+            move[0] = -1;
             break;
         case DR:
-            move[1] = 1;
             move[0] = 1;
+            move[1] = 1;
             break;
         case R:
-            move[1] = 1;
+            move[0] = 1;
             break;
         default:
             break;
     }
 
     do {
-        currLoc[0] = (currLoc[0] + move[0] + numOfRows) % numOfRows;
-        currLoc[1] = (currLoc[1] + move[1] + numOfCols) % numOfCols;
+        currLoc[0] = (currLoc[0] + move[0] + numOfCols) % numOfCols;
+        currLoc[1] = (currLoc[1] + move[1] + numOfRows) % numOfRows;
         if (currLoc[0] == otherLoc[0] && currLoc[1] == otherLoc[1]) {
             canSee = true; // Other tank found
             break;
@@ -181,13 +181,13 @@ bool PlayerTankAlgorithm::isSurrounded(const vector<vector<array<shared_ptr<matr
     for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
             if (i == 0 && j == 0) continue; // Skip the tank's own position
-            int newRow = (tankLoc[0] + i + gameBoard.size()) % gameBoard.size();
-            int newCol = (tankLoc[1] + j + gameBoard[0].size()) % gameBoard[0].size();
-            if (gameBoard[newRow][newCol][0] && gameBoard[newRow][newCol][0]->getType() != W) {
+            int newCol = (tankLoc[0] + i + gameBoard.size()) % gameBoard.size();
+            int newRow = (tankLoc[1] + j + gameBoard[0].size()) % gameBoard[0].size();
+            if (gameBoard[newCol][newRow][0] && gameBoard[newCol][newRow][0]->getType() != W) {
                 // No wall found
-                if (gameBoard[newRow][newCol][1] && gameBoard[newRow][newCol][1]->getType() != B) {
+                if (gameBoard[newCol][newRow][1] && gameBoard[newCol][newRow][1]->getType() != B) {
                     // No bullet found
-                    if (gameBoard[newRow][newCol][1] && gameBoard[newRow][newCol][1]->getType() != M) {
+                    if (gameBoard[newCol][newRow][1] && gameBoard[newCol][newRow][1]->getType() != M) {
                         // No mine found - free space
                         return false; 
                     }
@@ -200,10 +200,10 @@ bool PlayerTankAlgorithm::isSurrounded(const vector<vector<array<shared_ptr<matr
 
 
 // Function to calculate the target orientation based on position differences
-int PlayerTankAlgorithm::calculateTargetOrientation(int targetRow, int targetCol) {
+int PlayerTankAlgorithm::calculateTargetOrientation(int targetCol, int targetRow) {
     // Calculate the offset
-    int offsetRow = targetRow - location[0];
-    int offsetCol = targetCol - location[1];
+    int offsetRow = targetRow - location[1];
+    int offsetCol = targetCol - location[0];
 
     // Handle the edge case where start equals target
     if (offsetRow > 0 && offsetCol > 0) {
@@ -263,7 +263,7 @@ pair<objMove, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation
     //search for a safest place among all the neighbors cells and return the fist move needed to get there 
     // int targetOrientation;
     for(int orien = 0 ;orien < 8 ; orien++){
-        pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfRows, numOfCols);
+        pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfCols, numOfRows);
         // targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
         pair<objMove, int> movesPair =  determineNextMove(orient, orien);
         int numOfMoves = movesPair.second;
@@ -281,21 +281,21 @@ pair<objMove, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation
 // Function to get the row and col offsets based on the direction
 pair<int, int> PlayerTankAlgorithm::getDirectionOffset(int dir) {
     switch (dir) {
-        case 0: return {-1, 0};  // U
-        case 1: return {-1, 1};  // UR
-        case 2: return {0, 1};   // R
+        case 0: return {0, -1};  // U
+        case 1: return {1, -1};  // UR
+        case 2: return {1, 0};   // R
         case 3: return {1, 1};   // DR
-        case 4: return {1, 0};   // D
-        case 5: return {1, -1};  // DL
-        case 6: return {0, -1};  // L
+        case 4: return {0, 1};   // D
+        case 5: return {-1, 1};  // DL
+        case 6: return {-1, 0};  // L
         case 7: return {-1, -1}; // UL
         default: return {0, 0};  // Default case (invalid direction)
     }
 }
 
-pair<int, int> PlayerTankAlgorithm::getNeighborPointGivenOrient(int orient, int numOfROws, int numOfCols) {
+pair<int, int> PlayerTankAlgorithm::getNeighborPointGivenOrient(int orient, int numOfCols, int numOfROws) {
     pair<int, int> off = getDirectionOffset(orient);
-    off.first = (off.first + location[0] + numOfROws) % numOfROws;
-    off.second = (off.second + location[1] + numOfCols) % numOfCols;
+    off.first = (off.first + location[0] + numOfCols) % numOfCols;
+    off.second = (off.second + location[1] + numOfROws) % numOfROws;
     return off;
 }
