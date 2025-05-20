@@ -49,6 +49,7 @@ public:
     bool canSeeOtherTank(const int otherLoc[2], int numOfCols, int numOfRows) const;
     bool hasBullets() const;
     int getNumOfShotsLeft() const;
+    void updateBattleInfo(BattleInfo& info) override;
 
 };
 

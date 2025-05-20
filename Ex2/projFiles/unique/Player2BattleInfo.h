@@ -12,8 +12,10 @@ private:
     const size_t ClosestEnemyTankY;
     int TurnsUntillNextUpdate;
 public:
-    Player2BattleInfo::Player2BattleInfo(size_t closestEnemyTankX, size_t closestEnemyTankY, int turnsUntillNextUpdate)
-    : ClosestEnemyTankX(closestEnemyTankX), ClosestEnemyTankY(closestEnemyTankY), TurnsUntillNextUpdate(turnsUntillNextUpdate) {
+    Player2BattleInfo::Player2BattleInfo(size_t closestEnemyTankX, size_t closestEnemyTankY, int turnsUntillNextUpdate, 
+                                         vector<vector<array<shared_ptr<matrixObject>, 3>>> &tankGameBoard)
+        : PlayerBattleInfo(tankGameBoard), ClosestEnemyTankX(closestEnemyTankX), ClosestEnemyTankY(closestEnemyTankY),
+         TurnsUntillNextUpdate(turnsUntillNextUpdate) {
     }
 
     Player2BattleInfo(const Player2BattleInfo& other) = delete; // Disable copy constructor

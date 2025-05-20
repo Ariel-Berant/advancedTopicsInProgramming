@@ -6,9 +6,10 @@
 
 class PlayerBattleInfo : BattleInfo{
 private:
-    /* data */
+    vector<vector<array<shared_ptr<matrixObject>, 3>>> tankGameBoard;
 public:
-    PlayerBattleInfo();
+    PlayerBattleInfo(vector<vector<array<shared_ptr<matrixObject>, 3>>> &tankGameBoard): tankGameBoard(tankGameBoard) {
+    }
     ~PlayerBattleInfo();
 };
 
