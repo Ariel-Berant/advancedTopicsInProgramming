@@ -1,6 +1,6 @@
 #include "PlayerTankAlgorithm.h"
 
-PlayerTankAlgorithm::PlayerTankAlgorithm(int row, int col, orientation orient, objectType oType) : movingObject(row, col,oType , orient), shotsLeft(16), inBackwards(0), turnsUntilNextShot(0), calcMoveRound(0) {
+PlayerTankAlgorithm::PlayerTankAlgorithm(int row, int col, orientation orient, objectType oType) : movingObject(row, col,oType , orient), shotsLeft(-1), inBackwards(0), turnsUntilNextShot(0), calcMoveRound(0), currTurn(0) {
     // Constructor implementation
     // The member initializer list initializes the base class movingObject with x, y, and orientation.
     // It also initializes the tank_size, shotsLeft, and inBackwards members.
@@ -44,6 +44,9 @@ void PlayerTankAlgorithm::updateTurn() {
     if(turnsUntilNextShot > 0){
         turnsUntilNextShot--;
     }
+}
+int PlayerTankAlgorithm::getCurrTurn() const {
+    return currTurn;
 }
 
 bool PlayerTankAlgorithm::isSafe(const int col, const int row, const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard,
@@ -298,4 +301,8 @@ pair<int, int> PlayerTankAlgorithm::getNeighborPointGivenOrient(int orient, int 
     off.first = (off.first + location[0] + numOfCols) % numOfCols;
     off.second = (off.second + location[1] + numOfROws) % numOfROws;
     return off;
+}
+
+void PlayerTankAlgorithm::setNumOfShotsLeft(int numOfShots) {
+    shotsLeft = numOfShots;
 }

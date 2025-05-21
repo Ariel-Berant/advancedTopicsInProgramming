@@ -3,6 +3,7 @@
 
 #include "PlayerTankAlgorithm.h"
 #include "Player2BattleInfo.h"
+#include <memory>
 
 
 class Player1TankAlgorithm : public PlayerTankAlgorithm {

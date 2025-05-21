@@ -1,7 +1,7 @@
 #include "playerTank.h"
 
 Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {
-    battleInfo = std::make_unique<Player2BattleInfo>(0, 0, 0);
+    tankBattleInfo = make_unique<PlayerBattleInfo>(-1, -1, -1, nullptr);
 }
 
 ActionRequest Player2TankAlgorithm::getAction() {
@@ -70,7 +70,7 @@ array<int,4> Player2TankAlgorithm::searchForBullets(const vector<vector<array<sh
 
 
 objMove Player2TankAlgorithm::play(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
-
+    currTurn++;
     int numOfBulletsChasing = 0;
     int closestBulletDist = 7;
     array<int,4> closestLocation ={0};

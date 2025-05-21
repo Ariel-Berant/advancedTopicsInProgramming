@@ -9,6 +9,8 @@
 #include <unordered_set>
 #include <string>
 #include <memory>
+#include <iostream>
+#include <algorithm>
 class matrixObject
 {
 protected:

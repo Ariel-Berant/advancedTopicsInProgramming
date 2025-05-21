@@ -39,6 +39,7 @@ bool Player1TankAlgorithm::checkIfOnSameLine(const int *otherLoc) const {
 objMove Player1TankAlgorithm::play(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *otherLoc, int numOfCols,
                      int numOfRows) {
     objMove currAction;
+    currTurn++;
 
     // First check for immediate danger\moves - if the other tank is in the same line, or if threatened. Otherwise, play normally
 

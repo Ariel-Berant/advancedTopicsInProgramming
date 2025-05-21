@@ -6,6 +6,7 @@
 #include "bullet.h"
 #include "../common/TankAlgorithm.h"
 #include "../common/ActionRequest.h"
+#include "PlayerBattleInfo.h"
 
 using namespace std;
 
@@ -24,7 +25,9 @@ protected:
     int inBackwards;
     int turnsUntilNextShot;
     int calcMoveRound;
+    int currTurn;
     vector<objMove> moves;
+    unique_ptr<PlayerBattleInfo> tankBattleInfo;
     bool isSurrounded(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *tank2Loc) const;
     pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
     int calculateTargetOrientation(int targetCol, int targetRow);
@@ -50,6 +53,8 @@ public:
     bool hasBullets() const;
     int getNumOfShotsLeft() const;
     void updateBattleInfo(BattleInfo& info) override;
+    int getCurrTurn() const;
+    void setNumOfShotsLeft(int numOfShots);
 
 };
 

@@ -20,6 +20,11 @@ protected:
         int lastTurnMapUpdated;
         vector<vector<array<shared_ptr<matrixObject>, 3>>> playerGameBoard;
         vector<vector<array<shared_ptr<matrixObject>, 3>>> calculatePlayerGameBoard(SatelliteView& satellite_view, int playerIndex, PlayerTankAlgorithm& tank);
+        vector<movingObject> enemysTanks;
+        vector<movingObject> playerTanks;
+
+        
+        array<int, 3> findClosestEnemy(PlayerTankAlgorithm& tank) const;
         
 public:
     OurPlayer(int player_index,
