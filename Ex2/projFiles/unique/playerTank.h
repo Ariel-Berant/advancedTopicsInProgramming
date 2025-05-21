@@ -20,14 +20,16 @@ public:
 
 class Player2TankAlgorithm : public PlayerTankAlgorithm{
 private:
-    std::unique_ptr<Player2BattleInfo> battleInfo;
+    std::unique_ptr<PlayerBattleInfo> battleInfo;
+    objMove calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing);
+    objMove Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols, const int numOfRows);
     
 public:
     ActionRequest getAction() override;
     void updateBattleInfo(BattleInfo &info) override;
     Player2TankAlgorithm(int x, int y, orientation orient);
-    objMove play(const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows);
-    array<int,4> searchForBullets(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int inCols, int inRows) const;
+    objMove play(int numOfCols, int numOfRows);
+    array<int,4> searchForBullets(int inCols, int inRows) const;
 };
 
 #endif //PLAYERTANK_H

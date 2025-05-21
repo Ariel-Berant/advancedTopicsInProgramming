@@ -28,10 +28,10 @@ protected:
     int currTurn;
     vector<objMove> moves;
     unique_ptr<PlayerBattleInfo> tankBattleInfo;
-    bool isSurrounded(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *tank2Loc) const;
+    bool isSurrounded(const int *tank2Loc) const;
     pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
     int calculateTargetOrientation(int targetCol, int targetRow);
-    pair<objMove, int> findAdjSafe(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist = 100);
+    pair<objMove, int> findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist = 100);
     pair<int, int> getNeighborPointGivenOrient(int orient, int numOfCols, int numOfRows);
     pair<int, int> getDirectionOffset(int dir);
     
@@ -46,8 +46,8 @@ public:
     void useShot();
     int getInBack() const; // Returns the inBackwards status
     void setInBackwards(int inBack); // Sets the inBackwards status
-    virtual objMove play(const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, const int otherLoc[2], int numOfCols, int numOfRows) = 0; // Pure virtual function
-    bool isSafe(int col, int row, const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, int numOfCols, int numOfRows, int movesAhead) const;
+    virtual objMove play(const int otherLoc[2], int numOfCols, int numOfRows) = 0; // Pure virtual function
+    bool isSafe(int col, int row, int numOfCols, int numOfRows, int movesAhead) const;
     vector<objMove> getRotations(orientation start, orientation desired) const;
     bool canSeeOtherTank(const int otherLoc[2], int numOfCols, int numOfRows) const;
     bool hasBullets() const;

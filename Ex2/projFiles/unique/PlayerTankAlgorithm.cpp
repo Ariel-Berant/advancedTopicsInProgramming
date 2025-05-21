@@ -49,9 +49,9 @@ int PlayerTankAlgorithm::getCurrTurn() const {
     return currTurn;
 }
 
-bool PlayerTankAlgorithm::isSafe(const int col, const int row, const vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard,
+bool PlayerTankAlgorithm::isSafe(const int col, const int row,
                   const int numOfCols, const int numOfRows, const int movesAhead) const{
-    matrixObject* unmovingObj = gameBoard[col][row][0].get();
+    matrixObject* unmovingObj = tankBattleInfo->getGameBoard()[col][row][0].get();
     matrixObject* bulletObj;
 
     // Check for walls or mines
@@ -83,7 +83,7 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row, const vector<vect
 
 
     for (array<int, 3> loc: possibleLocs) {
-        bulletObj = gameBoard[loc[0]][loc[1]][1].get();
+        bulletObj = tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1].get();
         if (bulletObj && dynamic_cast<bullet *>(bulletObj) && dynamic_cast<bullet *>(bulletObj)->getOrientation() == loc[2]) {
             bulletNotFound = false;
         }
@@ -179,18 +179,20 @@ bool PlayerTankAlgorithm::canSeeOtherTank(const int otherLoc[2], int numOfCols, 
 
 
 // Function to check if the tank is surrounded by walls, bullets or mines(if by tank, it will try to shoot it, not surrounded)
-bool PlayerTankAlgorithm::isSurrounded(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int *tankLoc) const {
+bool PlayerTankAlgorithm::isSurrounded(const int *tankLoc) const {
     // Check if the tank is surrounded by walls or bullets
+    int numOfCols = tankBattleInfo->getGameBoard().size();
+    int numOfRows = tankBattleInfo->getGameBoard()[0].size();
     for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
             if (i == 0 && j == 0) continue; // Skip the tank's own position
-            int newCol = (tankLoc[0] + i + gameBoard.size()) % gameBoard.size();
-            int newRow = (tankLoc[1] + j + gameBoard[0].size()) % gameBoard[0].size();
-            if (gameBoard[newCol][newRow][0] && gameBoard[newCol][newRow][0]->getType() != W) {
+            int newCol = (tankLoc[0] + i + numOfCols) % numOfCols;
+            int newRow = (tankLoc[1] + j + numOfRows) % numOfRows;
+            if (tankBattleInfo->getGameBoard()[newCol][newRow][0] && tankBattleInfo->getGameBoard()[newCol][newRow][0]->getType() != W) {
                 // No wall found
-                if (gameBoard[newCol][newRow][1] && gameBoard[newCol][newRow][1]->getType() != B) {
+                if (tankBattleInfo->getGameBoard()[newCol][newRow][1] && tankBattleInfo->getGameBoard()[newCol][newRow][1]->getType() != B) {
                     // No bullet found
-                    if (gameBoard[newCol][newRow][1] && gameBoard[newCol][newRow][1]->getType() != M) {
+                    if (tankBattleInfo->getGameBoard()[newCol][newRow][1] && tankBattleInfo->getGameBoard()[newCol][newRow][1]->getType() != M) {
                         // No mine found - free space
                         return false; 
                     }
@@ -262,7 +264,7 @@ pair<objMove, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation
   }
 
 
-  pair<objMove, int> PlayerTankAlgorithm::findAdjSafe(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int numOfCols, int numOfRows, int closestBulletDist){
+  pair<objMove, int> PlayerTankAlgorithm::findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist){
     //search for a safest place among all the neighbors cells and return the fist move needed to get there 
     // int targetOrientation;
     for(int orien = 0 ;orien < 8 ; orien++){
@@ -270,8 +272,8 @@ pair<objMove, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation
         // targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
         pair<objMove, int> movesPair =  determineNextMove(orient, orien);
         int numOfMoves = movesPair.second;
-        if(isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves)
-                && isSafe(pointToCheck.first, pointToCheck.second, gameBoard, numOfCols, numOfRows, numOfMoves + 1)){
+        if(isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves)
+                && isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves + 1)){
             if(numOfMoves <= (closestBulletDist/2)){
                 return movesPair;
             }

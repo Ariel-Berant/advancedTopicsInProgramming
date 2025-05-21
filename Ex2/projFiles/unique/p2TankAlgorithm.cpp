@@ -56,91 +56,124 @@ int calculateFirstStepInRotate(int startOrient, int endOrient) {
 }
 
 // the return value is {x, y, distance, orientation}
-array<int,4> Player2TankAlgorithm::searchForBullets(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, int inCol, int inRow) const{
-    for(int i = 1; i<= 6 ; i++){
-        int row = (gameBoard.size() + location[1] + i * inRow) % gameBoard[0].size();
-        int col = (gameBoard[0].size() + location[0] + i * inCol) % gameBoard.size();
-        matrixObject* const obj = gameBoard[col][row][1].get();
-        if(obj && obj->getType() == B && dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inCol, -inRow)){
+array<int,4> Player2TankAlgorithm::searchForBullets(int inCol, int inRow) const{
+    int numOfCols = tankBattleInfo->getGameBoard().size();
+    int numOfRows = tankBattleInfo->getGameBoard()[0].size();
+
+    for(int i = 1; i<= 8 ; i++){
+
+        int row = (numOfRows + location[1] + i * inRow) % numOfRows;
+        int col = (numOfCols + location[0] + i * inCol) % numOfCols;
+
+        matrixObject* const obj = tankBattleInfo->getGameBoard()[col][row][1].get();
+
+        if(obj && obj->getType() == B && (dynamic_cast<bullet *>(obj)->getOrientation() == getDirectionFromOffset(-inCol, -inRow) || dynamic_cast<bullet *>(obj)->getOrientation() == UNKNOWN)){
             return {col, row, i, getDirectionFromOffset(inCol, inRow)};
         }
     }
     return {0,0,0,0};
 }
 
+objMove Player2TankAlgorithm::calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing) {
+    int calcMoveRound = 0;
+    int numOfTurnsToRotate = calculateTurnsToRotate(orient, closestBulletDetails[3]);
+    if(numOfTurnsToRotate + max(0, turnsUntilNextShot - numOfTurnsToRotate ) + 1 <= closestBulletDetails[2]/2 && numOfBulletsChasing <= 1) {
+        // if the tank can shoot the bullet before it gets to him there is only one bullet chasing him
+        if(numOfTurnsToRotate == 0){
+            return shoot;
+        }
+        else{
+            return determineNextMove(orient, calculateFirstStepInRotate(orient, closestBulletDetails[3])).first;//change the orientation in order to shoot
+        }
+    }
+    else{
+        objMove nextMove = findAdjSafe(numOfCols, numOfRows, closestBulletDetails[2]).first;
+        if(nextMove == noAction){
+            return shoot;
+        }
+        else{
+            return nextMove;
+        }
+    }
+}
 
-objMove Player2TankAlgorithm::play(const vector<vector<array<shared_ptr<matrixObject>, 3>>> &gameBoard, const int otherLoc[2], const int numOfCols, const int numOfRows){
+objMove Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols, const int numOfRows){
+
+    int targetOrientation = calculateTargetOrientation(tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow());
+    pair<objMove, int> next = determineNextMove(orient, targetOrientation);
+
+
+    if(next.first == moveForward && canShoot()){
+        // if the tank can shoot and in order to get to the other tank he needs to move forward- shoot
+        return shoot;
+    }
+
+    else if(next.first != moveForward && calcMoveRound == 0){
+        // if in order to get to the other tank he doesn't need to move forward- perform the move
+        return next.first;
+    }
+
+    else{
+        unique_ptr<int[]> newLoc = newLocation(numOfCols, numOfRows);
+
+        if(isSafe(newLoc[0], newLoc[1], numOfCols, numOfRows, 1) && next.first == moveForward){
+            // we don't need to change the move it's stay next.first
+        }
+
+        else{
+
+            if(next.first != moveForward && calcMoveRound == 0){
+                // we don't need to change the move it's stay next.first
+            }
+
+            else{
+                next = findAdjSafe(numOfCols, numOfRows);
+                if (calcMoveRound == 0) {
+                    calcMoveRound = next.second;
+                } 
+                else {
+                    calcMoveRound--;
+                }
+            }
+        }
+        return next.first;
+    }
+}
+
+objMove Player2TankAlgorithm::play(const int numOfCols, const int numOfRows){
     currTurn++;
+
     int numOfBulletsChasing = 0;
-    int closestBulletDist = 7;
+    int closestBulletDist = 9;
     array<int,4> closestLocation ={0};
+
     for(int dir=0; dir<8; dir++) {
         pair<int, int> offset = getDirectionOffset(dir);
-        array<int, 4> curLocation = searchForBullets(gameBoard, offset.first, offset.second);
-        if(curLocation[2] >=1){
+        array<int, 4> closestBulletDetails = searchForBullets(offset.first, offset.second);
+
+        if(closestBulletDetails[2] >=1){
             numOfBulletsChasing++;
-            if(curLocation[2] < closestBulletDist){
-                closestBulletDist = curLocation[2];
-                closestLocation = curLocation;
+            if(closestBulletDetails[2] < closestBulletDist){
+                closestBulletDist = closestBulletDetails[2];
+                closestLocation = closestBulletDetails;
             }
         }
     }
-    if(closestBulletDist != 7){//if there is a bullet chasing the tank
-        calcMoveRound = 0;
-        int numOfTurnsToRotate = calculateTurnsToRotate(orient, closestLocation[3]);
-        if(numOfTurnsToRotate + max(0, turnsUntilNextShot - numOfTurnsToRotate ) + 1 <= closestBulletDist/2 && numOfBulletsChasing <= 1) {
-            // if the tank can shoot the bullet before it gets to him there is only one bullet chasing him
-            if(numOfTurnsToRotate == 0){
-                return shoot;
-            }
-            else{
-                return determineNextMove(orient, calculateFirstStepInRotate(orient, closestLocation[3])).first;//change the orientation in order to shoot
-            }
-        }
-        else{
-            objMove nextMove = findAdjSafe(gameBoard, numOfCols, numOfRows, closestBulletDist).first;
-            if(nextMove == noAction){
-                return shoot;
-            }
-            else{
-                return nextMove;
-            }
-        }
+
+    if(tankBattleInfo->getTurnsUntillNextUpdate() + 1 == 0 || currTurn % 2 == 0){
+        //return GetBattleInfo;
+    }
+
+    tankBattleInfo->setTurnsUntillNextUpdate();
+    tankBattleInfo->setTurnsFromLastUpdate();
+
+    if(closestBulletDist != 9){//if there is a bullet chasing the tank
+        return calculateRun(closestLocation, numOfCols, numOfRows, numOfBulletsChasing);
     }
     
     else{// if there is no danger
-        int targetOrientation = calculateTargetOrientation(otherLoc[0], otherLoc[1]);
-        pair<objMove, int> next = determineNextMove(orient, targetOrientation);
-        if(next.first == moveForward && canShoot()){
-            // if the tank can shoot and in order to get to the other tank he needs to move forward- shoot
-            return shoot;
-        }
-        else if(next.first != moveForward && calcMoveRound == 0){
-            // if in order to get to the other tank he doesn't need to move forward- perform the move
-            return next.first;
-        }
-        else{
-            unique_ptr<int[]> newLoc = newLocation(numOfCols, numOfRows);
-            if(isSafe(newLoc[0], newLoc[1], gameBoard, numOfCols, numOfRows, 1) && next.first == moveForward){
-                // we don't need to change the move it's stay next.first
-            }
-            else{
-
-                if(next.first != moveForward && calcMoveRound == 0){
-                    // we don't need to change the move it's stay next.first
-                }
-                else{
-                    next = findAdjSafe(gameBoard, numOfCols, numOfRows);
-                    if (calcMoveRound == 0) {
-                        calcMoveRound = next.second;
-                    } 
-                    else {
-                        calcMoveRound--;
-                    }
-                }
-            }
-            return next.first;
-        }
+        return calculateNoDangerAction(numOfCols, numOfRows);
     }
+    
     return noAction;
 }
