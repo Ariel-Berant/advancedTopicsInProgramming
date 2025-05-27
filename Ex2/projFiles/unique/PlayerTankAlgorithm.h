@@ -11,7 +11,7 @@
 
 using namespace std;
 
-class PlayerTankAlgorithm : public movingObject , TankAlgorithm
+class PlayerTankAlgorithm : public movingObject , public TankAlgorithm
 {
     // The tank class inherits from movingObject, allowing it to use the properties and methods of movingObject.
     // This class represents a tank object in a 2D space.

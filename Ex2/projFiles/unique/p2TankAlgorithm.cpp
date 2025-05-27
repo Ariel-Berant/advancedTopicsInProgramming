@@ -98,7 +98,6 @@ ActionRequest Player2TankAlgorithm::calculateRun(array<int,4> closestBulletDetai
 }
 
 ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols, const int numOfRows){
-
     int targetOrientation = calculateTargetOrientation(tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow());
     pair<ActionRequest, int> next = determineNextMove(orient, targetOrientation);
 
@@ -119,7 +118,6 @@ ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols,
         if(isSafe(newLoc[0], newLoc[1], numOfCols, numOfRows, 1) && next.first == ActionRequest::MoveForward){
             // we don't need to change the move it's stay next.first
         }
-
         else{
 
             if(next.first != ActionRequest::MoveForward && calcMoveRound == 0){
@@ -142,7 +140,6 @@ ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols,
 
 ActionRequest Player2TankAlgorithm::getAction(){
     currTurn++;
-
     int numOfBulletsChasing = 0;
     int closestBulletDist = 9;
     array<int,4> closestLocation ={0};
@@ -167,21 +164,17 @@ ActionRequest Player2TankAlgorithm::getAction(){
             }
         }
     }
-
     if(tankBattleInfo->getTurnsUntillNextUpdate() + 1 == 0 || currTurn % 2 == 0){
         return ActionRequest::GetBattleInfo; // If it's time to update the battle info, return the request
     }
-
     tankBattleInfo->setTurnsUntillNextUpdate();
     tankBattleInfo->setTurnsFromLastUpdate();
 
     if(closestBulletDist != 9){//if there is a bullet chasing the tank
         return calculateRun(closestLocation, numOfCols, numOfRows, numOfBulletsChasing);
     }
-    
     else{// if there is no danger
         return calculateNoDangerAction(numOfCols, numOfRows);
     }
-    
     return ActionRequest::DoNothing; // Default action if something goes wrong
 }

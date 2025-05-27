@@ -9,26 +9,9 @@ OurPlayer::OurPlayer(int player_index, size_t x, size_t y,
 
 }
 
-
-
-// need to continue the implementation of this function (deduce directions, find a way to update only if a turn has been made)
-vector<vector<array<shared_ptr<matrixObject>, 3>>> OurPlayer::calculatePlayerGameBoard(SatelliteView& satellite_view, int playerIndex, PlayerTankAlgorithm& tank) {
-    if(tank.getNumOfShotsLeft() == -1){
-        tank.setNumOfShotsLeft(num_shells);
-    }
-    if(tank.getCurrTurn() == lastTurnMapUpdated){
-        for(movingObject & pTank : playerTanks){
-            if(satellite_view.getObjectAt(pTank.getLocation()[0], pTank.getLocation()[1]) == '%'){
-                tank.setLocation(pTank.getLocation()[0], pTank.getLocation()[1]);
-                break;
-            }
-        }
-        return playerGameBoard;
-    }
+void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank) {
     int currCol = 0, currRow = 0;
     char objType = satellite_view.getObjectAt(currCol, currRow);
-
-
     while (objType != '&') {
         while (objType != '&'){
             objType = satellite_view.getObjectAt(currCol, currRow);
@@ -67,8 +50,26 @@ vector<vector<array<shared_ptr<matrixObject>, 3>>> OurPlayer::calculatePlayerGam
         currRow = 0;
         objType = satellite_view.getObjectAt(currCol, currRow);
     }
-    lastTurnMapUpdated = tank.getCurrTurn();
-    return playerGameBoard;
+}
+
+
+// need to continue the implementation of this function (deduce directions, find a way to update only if a turn has been made)
+void OurPlayer::calculatePlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank) {
+    if(tank.getNumOfShotsLeft() == -1){
+        tank.setNumOfShotsLeft(num_shells);
+    }
+    if(tank.getCurrTurn() == lastTurnMapUpdated){
+        for(movingObject & pTank : playerTanks){
+            if(satellite_view.getObjectAt(pTank.getLocation()[0], pTank.getLocation()[1]) == '%'){
+                tank.setLocation(pTank.getLocation()[0], pTank.getLocation()[1]);
+                break;
+            }
+        }
+    }
+    else{
+        buildPlayerGameBoard(satellite_view, tank);
+        lastTurnMapUpdated = tank.getCurrTurn();
+    }
 }
 
 
@@ -76,9 +77,9 @@ void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& sat
     array<int, 3> closestEnemy;
     
     // Update the tank's game board with the satellite view
-    auto playerGameBoard = calculatePlayerGameBoard(satellite_view, 2, dynamic_cast<PlayerTankAlgorithm&>(tank));
+    calculatePlayerGameBoard(satellite_view, dynamic_cast<PlayerTankAlgorithm&>(tank));
     closestEnemy = findClosestEnemy(dynamic_cast<PlayerTankAlgorithm&>(tank));
-    PlayerBattleInfo tankBattleInfo(closestEnemy[0], closestEnemy[1], closestEnemy[2], playerGameBoard); // Initialize the battle info with the closest enemy coordinates and turns until next update
+    PlayerBattleInfo tankBattleInfo(closestEnemy[0], closestEnemy[1], closestEnemy[2], playerGameBoard, num_shells); // Initialize the battle info with the closest enemy coordinates and turns until next update
     tank.updateBattleInfo(tankBattleInfo); // Update the tank's battle info
 }
 

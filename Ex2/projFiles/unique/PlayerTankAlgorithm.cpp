@@ -80,15 +80,12 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row,
         {(numOfCols + col + 2 * movesAhead - 1) % numOfCols,       			    row,                                                     	                R},
         {col,                                                      			    (numOfRows + row + 2 * movesAhead - 1) % numOfRows,          	            D}
     };
-
-
     for (array<int, 3> loc: possibleLocs) {
         bulletObj = tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1].get();
         if (bulletObj && dynamic_cast<bullet *>(bulletObj) && dynamic_cast<bullet *>(bulletObj)->getOrientation() == loc[2]) {
             bulletNotFound = false;
         }
     }
-
     return bulletNotFound;
 }
 
@@ -165,7 +162,6 @@ bool PlayerTankAlgorithm::canSeeOtherTank(const int otherLoc[2], int numOfCols, 
         default:
             break;
     }
-
     do {
         currLoc[0] = (currLoc[0] + move[0] + numOfCols) % numOfCols;
         currLoc[1] = (currLoc[1] + move[1] + numOfRows) % numOfRows;

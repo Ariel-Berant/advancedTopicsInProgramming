@@ -1,7 +1,7 @@
 #include "OurSattelliteView.h"
 
 
-OurSatelliteView::OurSatelliteView(vector<vector<array<shared_ptr<matrixObject>, 3>>> gBoard, int numOfRows, int numOfCols, size_t tankX, size_t tankY):
+OurSattelliteView::OurSattelliteView(vector<vector<array<shared_ptr<matrixObject>, 3>>> gBoard, int numOfCols , int numOfRows, size_t tankX, size_t tankY):
  gameBoard(gBoard), numOfRows(numOfRows), numOfCols(numOfCols), tankX(tankX), tankY(tankY){
     // Initialize the game board with the provided shared pointer
     // The game board is a 2D vector of arrays, where each array contains three shared pointers to matrixObject.
@@ -10,7 +10,7 @@ OurSatelliteView::OurSatelliteView(vector<vector<array<shared_ptr<matrixObject>,
     
 }
 
-char OurSatelliteView::getObjectAt(size_t x, size_t y) const {
+char OurSattelliteView::getObjectAt(size_t x, size_t y) const {
     if(x > numOfCols || y > numOfRows){
         return '&'; // Error: Out of bounds
     }

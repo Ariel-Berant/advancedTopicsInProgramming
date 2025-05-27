@@ -4,6 +4,9 @@
 #include "matrixObject.h"
 #include "../common/Player.h"
 #include "PlayerTankAlgorithm.h"
+#include "PlayerBattleInfo.h"
+#include <climits>
+
 using namespace std;
 
 
@@ -19,9 +22,10 @@ protected:
         size_t num_shells;
         int lastTurnMapUpdated;
         vector<vector<array<shared_ptr<matrixObject>, 3>>> playerGameBoard;
-        vector<vector<array<shared_ptr<matrixObject>, 3>>> calculatePlayerGameBoard(SatelliteView& satellite_view, int playerIndex, PlayerTankAlgorithm& tank);
         vector<movingObject> enemysTanks;
         vector<movingObject> playerTanks;
+        void calculatePlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank);
+        void buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank);
 
         
         array<int, 3> findClosestEnemy(PlayerTankAlgorithm& tank) const;
@@ -31,8 +35,8 @@ public:
             size_t x, size_t y,
             size_t max_steps, size_t num_shells);
     ~OurPlayer();   
-    virtual void updateTankWithBattleInfo
-            (TankAlgorithm& tank, SatelliteView& satellite_view) = 0;
+    void updateTankWithBattleInfo
+            (TankAlgorithm& tank, SatelliteView& satellite_view);
 };
 
 #endif// OurPlayer.h

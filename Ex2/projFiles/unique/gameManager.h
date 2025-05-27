@@ -24,7 +24,8 @@
 #include "../common/TankAlgorithmFactory.h"
 #include "../common/PlayerFactory.h"
 #include "../common/BattleInfo.h"
-
+#include "OurPlayer.h"
+#include "OurSattelliteView.h"
 /*
  * Includes in matrixObject.h:
  *
@@ -90,7 +91,9 @@ private:
     vector<shared_ptr<bullet>> bullets; // Vector to store bullets in the air
     vector<shared_ptr<PlayerTankAlgorithm>> tanks; // Vector to store tanks on the board
     vector<shared_ptr<movingObject>> currMovingObjects;
-
+    shared_ptr<Player> player1;
+    shared_ptr<Player> player2;
+    
     bool makeAllMoves();
     bool canMakeMove(PlayerTankAlgorithm& tankChoseTheMove, enum ActionRequest moveChosen);
     void getMovesFromTanks();
@@ -113,12 +116,15 @@ private:
     void moveBackwardMove(bool tankCanMove ,ActionRequest tanksMove, int i);
     void shootMove(bool tankCanMove, ActionRequest tanksMove, int i);
     void getTheIthTankMove(int i, ActionRequest &tanksMove);
+    void actualymakeMoves();
+    void dealWithDamagedUnmovingObject(int i, const int objectNewCol, const int objectNewRow);
+    bool createMap(const string &filename, TankAlgorithmFactory &tankFactory);
+
 
 public:
     gameManager(const string &filename);
     ~gameManager();
-    bool createMap(const string &filename, TankAlgorithmFactory &tankFactory);
-    bool initializeGame(const string &filename, TankAlgorithmFactory &tankFactory);
+    bool initializeGame(const string &filename, TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory);
     void playGame();
 };
 

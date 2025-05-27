@@ -242,7 +242,7 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
 
 // Function initialize the game data from a given pathname.
 // If some critical error occurs(criticalErr==true), function fails and returns false(i.e return !criticalErr).
-bool gameManager::initializeGame(const string &filename, TankAlgorithmFactory &tankFactory)
+bool gameManager::initializeGame(const string &filename, TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory)
 {
     gameMapFileName = filename;
 
@@ -266,6 +266,8 @@ bool gameManager::initializeGame(const string &filename, TankAlgorithmFactory &t
         return false;
     }
 
+    player1 = playerFactory.create(1, numOfCols, numOfRows, maxTurns, maxBullets);
+    player2 = playerFactory.create(2, numOfCols, numOfRows, maxTurns, maxBullets);
     numOfP1Tanks = 0, numOfP2Tanks = 0;
     gameBoard = std::make_unique<vector<vector<array<shared_ptr<matrixObject>, 3>>>>(
         numOfCols, vector<array<shared_ptr<matrixObject>, 3>>(numOfRows));
@@ -552,48 +554,49 @@ void gameManager::shootMove(bool tankCanMove, ActionRequest tanksMove, int i){
 
 void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
     int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
-
-    if (tanks[i]->getInBack() > 0 && tanks[i]->getInBack() < 3)
-    {
+    if (tanks[i]->getInBack() > 0 && tanks[i]->getInBack() < 3){
         waitingforBackwordMove(tanksMove, i);
     }
-    else
-    {
+    else{
         printToLogVector[i] = ActionRequestToString(tanksMove); // we know the action 
         bool tankCanMove = canMakeMove(*tanks[i], tanksMove);
         if(!tankCanMove){
             printToLogVector[i] += " (ignored)";
         }
-        switch (tanksMove)
-        {
-        case ActionRequest::RotateLeft45:
-        case ActionRequest::RotateRight45:
-        case ActionRequest::RotateLeft90:
-        case ActionRequest::RotateRight90:
-            orientation ornt = tanks[i]->getOrientation();
-            tanks[i]->setOrientation(orientation((8 + tanks[i]->getOrientation() - 5 + tanksMove) % 8));
+        switch (tanksMove){
+            case ActionRequest::RotateLeft45:
+            case ActionRequest::RotateRight45:
+            case ActionRequest::RotateLeft90:
+            case ActionRequest::RotateRight90:
+                orientation ornt = tanks[i]->getOrientation();
+                tanks[i]->setOrientation(orientation((8 + tanks[i]->getOrientation() - 5 + tanksMove) % 8));
+                // writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," + to_string(tanks[i]->getLocation()[1]))
+                //             + ") turned from " + orientationToString(ornt) + " to " + orientationToString(tanks[i]->getOrientation()) + ".\n", gameMapFileName);
+                break;
+            case ActionRequest::DoNothing:
+                // writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," + to_string(tanks[i]->getLocation()[1]))
+                // + ") stayed in place.\n", gameMapFileName);
+                tanks[i]->setInBackwards(0);
+                break;
+            case ActionRequest::MoveForward:
+                moveForwardMove(tankCanMove, tanksMove, i);
+                break;
+            case ActionRequest::MoveBackward:
+                moveBackwardMove(tankCanMove, tanksMove, i);
+                break;
+            case ActionRequest::Shoot:
+                shootMove(tankCanMove, tanksMove, i);
+                break;
+            default:
+                break;
+        }
+        if(tanksMove == ActionRequest::GetBattleInfo){
+            OurSattelliteView satellite(*gameBoard, numOfCols , numOfRows, tanks[i]->getLocation()[0], tanks[i]->getLocation()[1]);
             // writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," + to_string(tanks[i]->getLocation()[1]))
-            //             + ") turned from " + orientationToString(ornt) + " to " + orientationToString(tanks[i]->getOrientation()) + ".\n", gameMapFileName);
-            break;
-        case ActionRequest::DoNothing:
-            // writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," + to_string(tanks[i]->getLocation()[1]))
-            // + ") stayed in place.\n", gameMapFileName);
-            tanks[i]->setInBackwards(0);
-            break;
-        case ActionRequest::MoveForward:
-            moveForwardMove(tankCanMove, tanksMove, i);
-            break;
-        case ActionRequest::MoveBackward:
-            moveBackwardMove(tankCanMove, tanksMove, i);
-            break;
-        case ActionRequest::Shoot:
-            shootMove(tankCanMove, tanksMove, i);
-            break;
-        default:
-            break;
+                //             + ") requested battle info.\n", gameMapFileName);
+            tanksPlayer == 1 ? player1->updateTankWithBattleInfo(*tanks[i], satellite) : player2->updateTankWithBattleInfo(*tanks[i], satellite);
         }
     }
-
 }
 
 
@@ -633,11 +636,65 @@ void gameManager::updateAboutNewDstroyedTanks(){
 }
 
 
-bool gameManager::makeAllMoves()//return true if the game is over and false otherwise
-{
-    for (size_t i = 0; i < currMovingObjects.size(); ++i)
-    {
+void gameManager::actualymakeMoves(){
+    for (size_t i = 0; i < currMovingObjects.size(); ++i){ // do the actual move to all the object1 that didn't get destroyed
+        if (currMovingObjects[i]->getType() == B && !isSamePoint(currMovingObjects[i]->getOldLocation(), currMovingObjects[i]->getLocation())){ // If a bullet moved (after the first turn)
+            // writeToFile("The bullet at (" + (to_string(currMovingObjects[i]->getOldLocation()[0]) + "," + to_string(currMovingObjects[i]->getOldLocation()[1]))
+            //         + ") moved to (" + to_string(currMovingObjects[i]->getLocation()[0]) + "," + to_string(currMovingObjects[i]->getLocation()[1]) + ").\n", gameMapFileName);
+        }
+        int objectNewRow = currMovingObjects[i]->getLocation()[1];
+        int objectNewCol = currMovingObjects[i]->getLocation()[0];
 
+        (*gameBoard)[objectNewCol][objectNewRow][2] = nullptr;
+        (*gameBoard)[objectNewCol][objectNewRow][1] = currMovingObjects[i];
+    }
+}
+
+
+void gameManager::dealWithDamagedUnmovingObject(int i, const int objectNewCol, const int objectNewRow){
+    if (checkIfTank(*currMovingObjects[i]) && (*gameBoard)[objectNewCol][objectNewRow][0]->getType() == M){
+        // if a tank stepped on a mine - they both destroyed
+        (*gameBoard)[objectNewCol][objectNewRow][0] = nullptr; // remove the mine from the board
+        int tanksPlayer = currMovingObjects[i]->getType() == P1T ? 1 : 2;
+
+        if (currMovingObjects[i]->getIsAlive()){
+            // writeToFile("The tank of player number " + to_string(tanksPlayer) 
+            // + " stepped on a mine at (" + to_string(objectNewCol) + "," + to_string(objectNewCol) +
+            //                 ") .\n",
+            //             gameMapFileName);
+            currMovingObjects[i]->takeAHit();
+        }
+        else{
+            // writeToFile("The mine at (" + to_string(objectNewCol) + "," + to_string(objectNewCol) +
+            //                 ") has been explode.\n",
+            //             gameMapFileName);
+            numOfMinesDestroyed++;
+        }
+    }
+    else if (currMovingObjects[i]->getType() == B && (*gameBoard)[objectNewCol][objectNewRow][0]->getType() == W){
+        // if a bullet hit a wall - the bullet is destroyed and the wall takes a hit
+
+        // writeToFile("A bullet hit a wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
+        //                 ") .\n",
+        //             gameMapFileName);
+
+        currMovingObjects[i]->takeAHit();
+        shared_ptr<matrixObject> damagedWall = (*gameBoard)[objectNewCol][objectNewRow][0];
+        damagedWall->takeAHit();
+
+        if (!damagedWall->getIsAlive()){ // if the wall destroyed - remove from the board
+            (*gameBoard)[objectNewCol][objectNewRow][0] = nullptr;
+
+            // writeToFile("The wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
+            //                 ") has been destroyed.\n",
+            //             gameMapFileName);
+            numOfWallsDestroyed++;
+        }
+    }
+}
+
+bool gameManager::makeAllMoves(){//return true if the game is over and false otherwise
+    for (size_t i = 0; i < currMovingObjects.size(); ++i){
         const int objectNewCol = currMovingObjects[i]->getLocation()[0];
         const int objectNewRow = currMovingObjects[i]->getLocation()[1];
 
@@ -645,58 +702,11 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
         (*gameBoard)[objectNewCol][objectNewRow][2] = currMovingObjects[i];
 
         if (!(*gameBoard)[objectNewCol][objectNewRow][0]){}
-        else if (checkIfTank(*currMovingObjects[i]) && (*gameBoard)[objectNewCol][objectNewRow][0]->getType() == M)
-        {
-            // if a tank stepped on a mine - they both destroyed
-
-            (*gameBoard)[objectNewCol][objectNewRow][0] = nullptr; // remove the mine from the board
-
-            int tanksPlayer = currMovingObjects[i]->getType() == P1T ? 1 : 2;
-
-            if (currMovingObjects[i]->getIsAlive())
-            {
-                // writeToFile("The tank of player number " + to_string(tanksPlayer) 
-                // + " stepped on a mine at (" + to_string(objectNewCol) + "," + to_string(objectNewCol) +
-                //                 ") .\n",
-                //             gameMapFileName);
-                currMovingObjects[i]->takeAHit();
-            }
-            else
-            {
-                // writeToFile("The mine at (" + to_string(objectNewCol) + "," + to_string(objectNewCol) +
-                //                 ") has been explode.\n",
-                //             gameMapFileName);
-                numOfMinesDestroyed++;
-            }
+        else{
+            dealWithDamagedUnmovingObject(i, objectNewCol, objectNewRow);
         }
-
-        else if (currMovingObjects[i]->getType() == B && (*gameBoard)[objectNewCol][objectNewRow][0]->getType() == W)
-        {
-            // if a bullet hit a wall - the bullet is destroyed and the wall takes a hit
-
-            // writeToFile("A bullet hit a wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
-            //                 ") .\n",
-            //             gameMapFileName);
-
-            currMovingObjects[i]->takeAHit();
-            shared_ptr<matrixObject> damagedWall = (*gameBoard)[objectNewCol][objectNewRow][0];
-            damagedWall->takeAHit();
-
-            if (!damagedWall->getIsAlive())
-            { // if the wall destroyed - remove from the board
-                (*gameBoard)[objectNewCol][objectNewRow][0] = nullptr;
-
-                // writeToFile("The wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +
-                //                 ") has been destroyed.\n",
-                //             gameMapFileName);
-                numOfWallsDestroyed++;
-            }
-        }
-
         updateAboutNewDstroyedTanks();
-
-        if (!currMovingObjects[i]->getIsAlive())
-        {
+        if (!currMovingObjects[i]->getIsAlive()){
             // Check if the moving object has been destroyed, happened if at least one of the following occur:
             //          - The moving object collides with another moving object
             //          - The moving object is a tank, and it stepped on a mine
@@ -717,22 +727,10 @@ bool gameManager::makeAllMoves()//return true if the game is over and false othe
             --i;
         }
     }
-    if (numOfP1Tanks == 0 || numOfP2Tanks == 0)
-    { // if at least one of the players doesn't have tanks left - the game over
+    if (numOfP1Tanks == 0 || numOfP2Tanks == 0){ // if at least one of the players doesn't have tanks left - the game over
         return true;
     }
-    for (size_t i = 0; i < currMovingObjects.size(); ++i)
-    { // do the actual move to all the object1 that didn't get destroyed
-        if (currMovingObjects[i]->getType() == B && !isSamePoint(currMovingObjects[i]->getOldLocation(), currMovingObjects[i]->getLocation())){ // If a bullet moved (after the first turn)
-            // writeToFile("The bullet at (" + (to_string(currMovingObjects[i]->getOldLocation()[0]) + "," + to_string(currMovingObjects[i]->getOldLocation()[1]))
-            //         + ") moved to (" + to_string(currMovingObjects[i]->getLocation()[0]) + "," + to_string(currMovingObjects[i]->getLocation()[1]) + ").\n", gameMapFileName);
-        }
-        int objectNewRow = currMovingObjects[i]->getLocation()[1];
-        int objectNewCol = currMovingObjects[i]->getLocation()[0];
-
-        (*gameBoard)[objectNewCol][objectNewRow][2] = nullptr;
-        (*gameBoard)[objectNewCol][objectNewRow][1] = currMovingObjects[i];
-    }
+    actualymakeMoves(); // do the actual move to all the objects that didn't get destroyed
     return false;
 }
 
