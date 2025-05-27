@@ -94,38 +94,38 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row,
 
 
 // Function to get the rotations needed to reach the desired orientation from the current orientation
-vector<objMove> PlayerTankAlgorithm::getRotations(orientation curr, orientation desired) const{
-    vector<objMove> rotations = vector<objMove>(0);
+vector<ActionRequest> PlayerTankAlgorithm::getRotations(orientation curr, orientation desired) const{
+    vector<ActionRequest> rotations = vector<ActionRequest>(0);
     int diff = (8 + curr - desired) % 8;
     switch (diff) {
         case 2:
-            rotations.push_back(rotateQuarterLeft);
+            rotations.push_back(ActionRequest::RotateLeft90);
             break;
         case 3:
-            rotations.push_back(rotateQuarterLeft);
-            rotations.push_back(rotateEighthLeft);
+            rotations.push_back(ActionRequest::RotateLeft90);
+            rotations.push_back(ActionRequest::RotateLeft45);
             break;
         case 1:
-            rotations.push_back(rotateEighthLeft);
+            rotations.push_back(ActionRequest::RotateLeft45);
             break;
         case 6:
-            rotations.push_back(rotateQuarterRight);
+            rotations.push_back(ActionRequest::RotateRight90);
             break;
         case 5:
-            rotations.push_back(rotateQuarterRight);
-            rotations.push_back(rotateEighthRight);
+            rotations.push_back(ActionRequest::RotateRight90);
+            rotations.push_back(ActionRequest::RotateRight45);
             break;
         case 7:
-            rotations.push_back(rotateEighthRight);
+            rotations.push_back(ActionRequest::RotateRight45);
             break;
         case 4:
-            rotations.push_back(rotateQuarterLeft);
-            rotations.push_back(rotateQuarterLeft);
+            rotations.push_back(ActionRequest::RotateLeft90);
+            rotations.push_back(ActionRequest::RotateLeft90);
             break;
         default:
             break;
     }
-    rotations.push_back(moveForward);
+    rotations.push_back(ActionRequest::MoveForward);
     return rotations;
 }
 
@@ -233,9 +233,9 @@ int PlayerTankAlgorithm::calculateTargetOrientation(int targetCol, int targetRow
 }
 
 // Function to determine the correct move to reach the target
-pair<objMove, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation, int targetOrientation) {
+pair<ActionRequest, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation, int targetOrientation) {
     if (targetOrientation == -1) {
-          return {noAction,0}; // No valid move if already at the target
+          return {ActionRequest::DoNothing,0}; // No valid move if already at the target
       }
   
       // Calculate the difference in orientation
@@ -243,34 +243,28 @@ pair<objMove, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation
   
       // Determine the next move based on the difference in orientation
       if (diff == 0) {
-          return {moveForward, 1}; // Already facing the target
+          return {ActionRequest::MoveForward, 1}; // Already facing the target
       } else if (diff == 1) {
-          return {rotateEighthRight,1}; // 1 step clockwise
-      } else if (diff == 2) {
-          return {rotateQuarterRight, 1}; // 2 steps clockwise
-      } else if (diff == 3) {
-          return {rotateQuarterRight, 2}; // 3 steps clockwise
-      } else if (diff == 4) {
-          return {rotateQuarterRight, 2}; // 4 steps clockwise (180-degree turn)
-      } else if (diff == 5) {
-          return {rotateQuarterLeft, 2}; // 3 steps counterclockwise (5/8ths clockwise equivalent)
-      } else if (diff == 6) {
-          return {rotateQuarterLeft, 1}; // 2 steps counterclockwise
-      } else if (diff == 7) {
-          return {rotateEighthLeft, 1}; // 1 step counterclockwise
+          return {ActionRequest::RotateRight45,1}; // 1 step clockwise
+      } else if (diff >= 2 && diff <= 4) {
+          return {ActionRequest::RotateRight90, 1}; // Beteen 2 to 4 steps clockwise
+      } else if (diff == 5 || diff == 6) {
+          return {ActionRequest::RotateLeft90, 2}; // 3 or 2 steps counterclockwise (5/8ths clockwise equivalent)
+      }else if (diff == 7) {
+          return {ActionRequest::RotateLeft45, 1}; // 1 step counterclockwise
       }
   
-      return {noAction,0}; // Default action if something goes wrong
+      return {ActionRequest::DoNothing,0}; // Default action if something goes wrong
   }
 
 
-  pair<objMove, int> PlayerTankAlgorithm::findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist){
+  pair<ActionRequest, int> PlayerTankAlgorithm::findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist){
     //search for a safest place among all the neighbors cells and return the fist move needed to get there 
     // int targetOrientation;
     for(int orien = 0 ;orien < 8 ; orien++){
         pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfCols, numOfRows);
         // targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
-        pair<objMove, int> movesPair =  determineNextMove(orient, orien);
+        pair<ActionRequest, int> movesPair =  determineNextMove(orient, orien);
         int numOfMoves = movesPair.second;
         if(isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves)
                 && isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves + 1)){
@@ -279,7 +273,7 @@ pair<objMove, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation
             }
         }
     }
-    return {noAction,0};
+    return {ActionRequest::DoNothing,0};
 }
 
 

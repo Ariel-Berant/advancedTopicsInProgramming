@@ -74,22 +74,22 @@ array<int,4> Player2TankAlgorithm::searchForBullets(int inCol, int inRow) const{
     return {0,0,0,0};
 }
 
-objMove Player2TankAlgorithm::calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing) {
+ActionRequest Player2TankAlgorithm::calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing) {
     int calcMoveRound = 0;
     int numOfTurnsToRotate = calculateTurnsToRotate(orient, closestBulletDetails[3]);
     if(numOfTurnsToRotate + max(0, turnsUntilNextShot - numOfTurnsToRotate ) + 1 <= closestBulletDetails[2]/2 && numOfBulletsChasing <= 1) {
         // if the tank can shoot the bullet before it gets to him there is only one bullet chasing him
         if(numOfTurnsToRotate == 0){
-            return shoot;
+            return ActionRequest::Shoot; // if the tank is already facing the bullet, just shoot
         }
         else{
             return determineNextMove(orient, calculateFirstStepInRotate(orient, closestBulletDetails[3])).first;//change the orientation in order to shoot
         }
     }
     else{
-        objMove nextMove = findAdjSafe(numOfCols, numOfRows, closestBulletDetails[2]).first;
-        if(nextMove == noAction){
-            return shoot;
+        ActionRequest nextMove = findAdjSafe(numOfCols, numOfRows, closestBulletDetails[2]).first;
+        if(nextMove == ActionRequest::DoNothing){
+            return ActionRequest::Shoot;
         }
         else{
             return nextMove;
@@ -97,18 +97,18 @@ objMove Player2TankAlgorithm::calculateRun(array<int,4> closestBulletDetails, in
     }
 }
 
-objMove Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols, const int numOfRows){
+ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols, const int numOfRows){
 
     int targetOrientation = calculateTargetOrientation(tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow());
-    pair<objMove, int> next = determineNextMove(orient, targetOrientation);
+    pair<ActionRequest, int> next = determineNextMove(orient, targetOrientation);
 
 
-    if(next.first == moveForward && canShoot()){
+    if(next.first == ActionRequest::MoveForward && canShoot()){
         // if the tank can shoot and in order to get to the other tank he needs to move forward- shoot
-        return shoot;
+        return ActionRequest::Shoot;
     }
 
-    else if(next.first != moveForward && calcMoveRound == 0){
+    else if(next.first != ActionRequest::MoveForward && calcMoveRound == 0){
         // if in order to get to the other tank he doesn't need to move forward- perform the move
         return next.first;
     }
@@ -116,13 +116,13 @@ objMove Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols, const
     else{
         unique_ptr<int[]> newLoc = newLocation(numOfCols, numOfRows);
 
-        if(isSafe(newLoc[0], newLoc[1], numOfCols, numOfRows, 1) && next.first == moveForward){
+        if(isSafe(newLoc[0], newLoc[1], numOfCols, numOfRows, 1) && next.first == ActionRequest::MoveForward){
             // we don't need to change the move it's stay next.first
         }
 
         else{
 
-            if(next.first != moveForward && calcMoveRound == 0){
+            if(next.first != ActionRequest::MoveForward && calcMoveRound == 0){
                 // we don't need to change the move it's stay next.first
             }
 
@@ -140,12 +140,20 @@ objMove Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols, const
     }
 }
 
-objMove Player2TankAlgorithm::play(const int numOfCols, const int numOfRows){
+ActionRequest Player2TankAlgorithm::getAction(){
     currTurn++;
 
     int numOfBulletsChasing = 0;
     int closestBulletDist = 9;
     array<int,4> closestLocation ={0};
+    if(tankBattleInfo->getTurnsFromLastUpdate() == -1){
+        return ActionRequest::GetBattleInfo; // If this is the first turn, we need to get the battle info
+    }
+    if(shotsLeft < 0){ // if the tank still din't know with how many bullets it started the game
+        shotsLeft = tankBattleInfo->getNumOfStartingTankBullets();
+    }
+    const int numOfCols = tankBattleInfo->getGameBoard().size(); 
+    const int numOfRows = tankBattleInfo->getGameBoard()[0].size();
 
     for(int dir=0; dir<8; dir++) {
         pair<int, int> offset = getDirectionOffset(dir);
@@ -161,7 +169,7 @@ objMove Player2TankAlgorithm::play(const int numOfCols, const int numOfRows){
     }
 
     if(tankBattleInfo->getTurnsUntillNextUpdate() + 1 == 0 || currTurn % 2 == 0){
-        //return GetBattleInfo;
+        return ActionRequest::GetBattleInfo; // If it's time to update the battle info, return the request
     }
 
     tankBattleInfo->setTurnsUntillNextUpdate();
@@ -175,5 +183,5 @@ objMove Player2TankAlgorithm::play(const int numOfCols, const int numOfRows){
         return calculateNoDangerAction(numOfCols, numOfRows);
     }
     
-    return noAction;
+    return ActionRequest::DoNothing; // Default action if something goes wrong
 }

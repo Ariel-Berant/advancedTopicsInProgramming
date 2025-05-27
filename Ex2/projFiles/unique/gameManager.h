@@ -82,14 +82,18 @@ private:
     int numOfMines;
     int numOfWallsDestroyed;
     int numOfMinesDestroyed;
+    int numOfP1Tanks;
+    int numOfP2Tanks;
+    int numOfBulletsLeft;
+    vector<string> printToLogVector; // Vector to store messages to print to the log file
     unique_ptr<vector<vector<array<shared_ptr<matrixObject>, 3>>>> gameBoard;
     vector<shared_ptr<bullet>> bullets; // Vector to store bullets in the air
     vector<shared_ptr<PlayerTankAlgorithm>> tanks; // Vector to store tanks on the board
     vector<shared_ptr<movingObject>> currMovingObjects;
 
     bool makeAllMoves();
-    bool canMakeMove(PlayerTankAlgorithm& tankChoseTheMove, enum move moveChosen);
-    void makeTankMoves();
+    bool canMakeMove(PlayerTankAlgorithm& tankChoseTheMove, enum ActionRequest moveChosen);
+    void getMovesFromTanks();
     bool checkCollisions();
     bool getRowsAndColsFromFile(const string &filename);
     void printSummeryToLog();
@@ -97,11 +101,24 @@ private:
     void printCollisionsToLog(const movingObject &object1, const movingObject &object2) const;
     void moveBullets();
     bool gameManager::parseGameInfo(const string line, const string description, int rowNum);
+    void updateAboutNewDstroyedTanks();
+    void printLastTurnToLog();
+    void printGameResultToLog();
+    bool addTankToMap(int playerNum, int row, int col, TankAlgorithmFactory &tankFactory);
+    bool addUnmovingObjectToMap(char UnmovingObjectType, int currCol, int currRow);
+    void completeColumns(int currCol, int currRow);
+    void completeRows(int currRow);
+    void waitingforBackwordMove(ActionRequest tanksMove, int i);
+    void moveForwardMove(bool tankCanMove ,ActionRequest tanksMove, int i);
+    void moveBackwardMove(bool tankCanMove ,ActionRequest tanksMove, int i);
+    void shootMove(bool tankCanMove, ActionRequest tanksMove, int i);
+    void getTheIthTankMove(int i, ActionRequest &tanksMove);
 
 public:
     gameManager(const string &filename);
     ~gameManager();
     bool createMap(const string &filename, TankAlgorithmFactory &tankFactory);
+    bool initializeGame(const string &filename, TankAlgorithmFactory &tankFactory);
     void playGame();
 };
 

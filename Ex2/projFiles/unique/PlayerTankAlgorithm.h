@@ -8,6 +8,7 @@
 #include "../common/ActionRequest.h"
 #include "PlayerBattleInfo.h"
 
+
 using namespace std;
 
 class PlayerTankAlgorithm : public movingObject , TankAlgorithm
@@ -26,12 +27,12 @@ protected:
     int turnsUntilNextShot;
     int calcMoveRound;
     int currTurn;
-    vector<objMove> moves;
+    vector<ActionRequest> moves;
     unique_ptr<PlayerBattleInfo> tankBattleInfo;
     bool isSurrounded(const int *tank2Loc) const;
-    pair<objMove, int> determineNextMove(int currentOrientation, int targetOrientation);
+    pair<ActionRequest, int> determineNextMove(int currentOrientation, int targetOrientation);
     int calculateTargetOrientation(int targetCol, int targetRow);
-    pair<objMove, int> findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist = 100);
+    pair<ActionRequest, int> findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist = 100);
     pair<int, int> getNeighborPointGivenOrient(int orient, int numOfCols, int numOfRows);
     pair<int, int> getDirectionOffset(int dir);
     
@@ -46,9 +47,9 @@ public:
     void useShot();
     int getInBack() const; // Returns the inBackwards status
     void setInBackwards(int inBack); // Sets the inBackwards status
-    virtual objMove play(const int otherLoc[2], int numOfCols, int numOfRows) = 0; // Pure virtual function
+    virtual ActionRequest getAction() = 0; // Pure virtual function
     bool isSafe(int col, int row, int numOfCols, int numOfRows, int movesAhead) const;
-    vector<objMove> getRotations(orientation start, orientation desired) const;
+    vector<ActionRequest> getRotations(orientation start, orientation desired) const;
     bool canSeeOtherTank(const int otherLoc[2], int numOfCols, int numOfRows) const;
     bool hasBullets() const;
     int getNumOfShotsLeft() const;
