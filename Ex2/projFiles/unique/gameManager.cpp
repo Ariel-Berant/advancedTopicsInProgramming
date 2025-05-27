@@ -612,7 +612,7 @@ void gameManager::getMovesFromTanks()
         }
         tanks[i]->updateTurn();
         tanksMove = tanks[i]->getAction();
-        getIthTankMove(i, tanksMove);
+        getTheIthTankMove(i, tanksMove);
 
         tanks[i]->setNewLocation(tanks[i]->getLocation()[0], tanks[i]->getLocation()[1]);
     }
