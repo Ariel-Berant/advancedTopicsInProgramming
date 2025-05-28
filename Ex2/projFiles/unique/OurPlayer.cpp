@@ -1,12 +1,11 @@
 #include "OurPlayer.h"
 
 
-OurPlayer::OurPlayer(int player_index, size_t x, size_t y,
-     size_t max_steps, size_t num_shells)
+OurPlayer::OurPlayer(int player_index, size_t x, size_t y, size_t max_steps, size_t num_shells)
         : Player(player_index, x, y, max_steps, num_shells), // Call base class constructor
           player_index(player_index), x(x), y(y), max_steps(max_steps), num_shells(num_shells), lastTurnMapUpdated(-1){
-
-
+            playerGameBoard = vector<vector<array<shared_ptr<matrixObject>, 3>>>(y, 
+                vector<array<shared_ptr<matrixObject>, 3>>(x, {nullptr, nullptr, nullptr}));
 }
 
 void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank) {
@@ -61,7 +60,10 @@ void OurPlayer::calculatePlayerGameBoard(SatelliteView& satellite_view, PlayerTa
     if(tank.getCurrTurn() == lastTurnMapUpdated){
         for(movingObject & pTank : playerTanks){
             if(satellite_view.getObjectAt(pTank.getLocation()[0], pTank.getLocation()[1]) == '%'){
-                tank.setLocation(pTank.getLocation()[0], pTank.getLocation()[1]);
+                bool locationChanged = pTank.getLocation()[0] != tank.getLocation()[0] || pTank.getLocation()[1] != tank.getLocation()[1];
+                if(locationChanged){
+                    tank.setLocation(pTank.getLocation()[0], pTank.getLocation()[1]);
+                }
                 break;
             }
         }
@@ -74,8 +76,13 @@ void OurPlayer::calculatePlayerGameBoard(SatelliteView& satellite_view, PlayerTa
 
 
 void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& satellite_view) {
-    array<int, 3> closestEnemy;
+    PlayerTankAlgorithm & tankRef = dynamic_cast<PlayerTankAlgorithm&>(tank); // Ensure the tank is of type PlayerTankAlgorithm
     
+    if(tankRef.getCurrTurn() == lastTurnMapUpdated){
+        enemysTanks.empty();
+        playerTanks.empty();
+    }
+    array<int, 3> closestEnemy;
     // Update the tank's game board with the satellite view
     calculatePlayerGameBoard(satellite_view, dynamic_cast<PlayerTankAlgorithm&>(tank));
     closestEnemy = findClosestEnemy(dynamic_cast<PlayerTankAlgorithm&>(tank));

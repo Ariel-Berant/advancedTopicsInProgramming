@@ -1,7 +1,7 @@
 #ifndef MOVINGOBJECT_H
 #define MOVINGOBJECT_H
-#include "matrixObject.h"
-#include "orientation.h"
+#include "MatrixObject.h"
+#include "Orientation.h"
 using namespace std;
 
 
@@ -16,6 +16,8 @@ protected:
 public:
     movingObject(int row, int col,objectType oType, orientation orient);
     virtual ~movingObject();
+
+    void setOrientation( orientation newOrient);
 
     unique_ptr<int[]> newLocation(int numOfCols, int numOfRows, bool atReverse = false) const;
     const int *getOldLocation() const;

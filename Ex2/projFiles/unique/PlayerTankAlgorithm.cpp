@@ -23,9 +23,6 @@ void PlayerTankAlgorithm::setInBackwards(int inBack) {
     inBackwards = inBack;
 }
 
-void PlayerTankAlgorithm::setOrientation(const orientation newOrient) {
-    orient = newOrient;
-}
 
 bool PlayerTankAlgorithm::canShoot() const {
     return shotsLeft > 0 && turnsUntilNextShot == 0;
@@ -41,6 +38,7 @@ void PlayerTankAlgorithm::useShot() {
 }
 
 void PlayerTankAlgorithm::updateTurn() {
+    currTurn += 2;
     if(turnsUntilNextShot > 0){
         turnsUntilNextShot--;
     }
@@ -58,6 +56,15 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row,
     if (unmovingObj && (unmovingObj->getType() == W || unmovingObj->getType() == M)) {
         return false;
     }
+
+    bulletObj = tankBattleInfo->getGameBoard()[col][row][1].get();
+    if (bulletObj) {
+        if (bulletObj->getType() == P1T || bulletObj->getType() == P2T) {
+            return false;
+        }        
+    }
+    
+    
 
     // Check for bullets
     bool bulletNotFound = true;
@@ -298,3 +305,126 @@ pair<int, int> PlayerTankAlgorithm::getNeighborPointGivenOrient(int orient, int 
 void PlayerTankAlgorithm::setNumOfShotsLeft(int numOfShots) {
     shotsLeft = numOfShots;
 }
+
+void PlayerTankAlgorithm::updateBattleInfo(BattleInfo& info){
+    PlayerBattleInfo & battleInfoRef = dynamic_cast<PlayerBattleInfo&>(info);
+}
+
+
+
+
+bool PlayerTankAlgorithm::canMakeMove(ActionRequest moveChosen, int numOfCols, int numOfRows){
+    unique_ptr<int[]> newLoc;
+    if (moveChosen == ActionRequest::MoveForward){
+        newLoc = newLocation(numOfCols, numOfRows);
+        if (tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][0] && tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][0]->getType() == W){
+            return false;
+        }
+        return true;
+    }
+    else if (moveChosen == ActionRequest::MoveBackward){
+        newLoc = newLocation(numOfCols, numOfRows , true);
+        if (tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][0] && tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][0]->getType() == W){
+            return false;
+        }
+    }
+    else if (moveChosen == ActionRequest::Shoot){
+        if (canShoot()){
+            return false;
+        }
+    }
+    return true;
+}
+
+
+void PlayerTankAlgorithm::waitingforBackwordMove(ActionRequest tanksMove, int numOfCols, int numOfRows){
+    unique_ptr<int[]> tankNewLocation = nullptr;
+    if(tanksMove == ActionRequest::MoveForward) {
+        setInBackwards(0);
+    }
+    else {
+        if (tanksMove != ActionRequest::DoNothing){
+        }
+        else { // If the tank is in backwards mode and tries to do nothing, we just increase the inBackwards counter
+            setInBackwards(getInBack() + 1);
+            if(getInBack() == 3){
+                tankNewLocation = newLocation(numOfCols, numOfRows, true);
+                tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = tankBattleInfo->getGameBoard()[location[0]][location[1]][1];
+                tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
+                setNewLocation(tankNewLocation[0], tankNewLocation[1]);
+            }
+        }
+    }
+}
+
+void PlayerTankAlgorithm::moveForwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows){
+    unique_ptr<int[]> tankNewLocation = nullptr;
+    setInBackwards(0);
+    if (tankCanMove){
+        tankNewLocation = newLocation(numOfCols, numOfRows);
+        tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = tankBattleInfo->getGameBoard()[location[0]][location[1]][1];
+        tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
+        setNewLocation(tankNewLocation[0], tankNewLocation[1]);
+    }
+}
+
+void PlayerTankAlgorithm::moveBackwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows){
+    unique_ptr<int[]> tankNewLocation = nullptr;
+    if (tankCanMove){
+        if (getInBack() >= 3){ // if we have moved backwards last turn and want to move
+            setInBackwards(getInBack() + 1);
+            tankNewLocation = newLocation(numOfCols, numOfRows, true);
+            tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = tankBattleInfo->getGameBoard()[location[0]][location[1]][1];
+            tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
+            setNewLocation(tankNewLocation[0], tankNewLocation[1]);
+        }
+        else{
+            setInBackwards(1);
+        }
+    }
+    else{
+        setInBackwards(0);
+    }
+}
+
+void PlayerTankAlgorithm::shootMove(bool tankCanMove){
+    if (tankCanMove){
+        useShot();
+    }
+}
+
+void PlayerTankAlgorithm::updateTankData(ActionRequest &tanksMove, int numOfCols, int numOfRows){
+    if (getInBack() > 0 && getInBack() < 3){
+        waitingforBackwordMove(tanksMove, numOfCols, numOfRows);
+    }
+    else{
+        bool tankCanMove = canMakeMove(tanksMove, numOfCols, numOfRows);
+        switch (tanksMove){
+            case ActionRequest::RotateLeft45:
+            case ActionRequest::RotateRight45:
+            case ActionRequest::RotateLeft90:
+            case ActionRequest::RotateRight90:
+                orientation ornt = getOrientation();
+                setOrientation(orientation((8 + getOrientation() - 5 + tanksMove) % 8));
+                break;
+            case ActionRequest::DoNothing:
+
+                setInBackwards(0);
+                break;
+            case ActionRequest::MoveForward:
+                moveForwardMove(tankCanMove, tanksMove, numOfCols, numOfRows);
+                break;
+            case ActionRequest::MoveBackward:
+                moveBackwardMove(tankCanMove, tanksMove, numOfCols, numOfRows);
+                break;
+            case ActionRequest::Shoot:
+                shootMove(tankCanMove);
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+
+

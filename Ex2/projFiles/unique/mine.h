@@ -1,6 +1,6 @@
 #ifndef MINE_h
 #define MINE_h
-#include "unmovingObject.h"
+#include "UnmovingObject.h"
 class mine : public unmovingObject
 {
 

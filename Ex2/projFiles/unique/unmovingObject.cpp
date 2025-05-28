@@ -1,4 +1,4 @@
-#include "unmovingObject.h"
+#include "UnmovingObject.h"
 
 unmovingObject::unmovingObject(int row, int col, objectType oType) : matrixObject(row, col, oType) {
     // Constructor implementation

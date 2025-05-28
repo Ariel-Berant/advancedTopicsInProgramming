@@ -1,9 +1,10 @@
 #ifndef OURPLAYER_H
 #define OURPLAYER_H
 
-#include "matrixObject.h"
+#include "MatrixObject.h"
 #include "../common/Player.h"
 #include "PlayerTankAlgorithm.h"
+#include "PlayerTank.h"
 #include "PlayerBattleInfo.h"
 #include <climits>
 

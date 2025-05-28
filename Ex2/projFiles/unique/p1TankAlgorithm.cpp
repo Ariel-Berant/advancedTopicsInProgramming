@@ -1,4 +1,4 @@
-#include "playerTank.h"
+#include "PlayerTank.h"
 
 void Player1TankAlgorithm::updateTurn() {
     if(turnsUntilNextShot > 0){

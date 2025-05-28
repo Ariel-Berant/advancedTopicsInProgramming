@@ -1,7 +1,7 @@
 #ifndef TANKSGAME_H
 #define TANKSGAME_H
 
-#include "gameManager.h"
+#include "GameManager.h"
 
 class tanksGame {
 

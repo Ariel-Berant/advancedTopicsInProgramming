@@ -2,7 +2,7 @@
 // Created by ariel on 4/23/2025.
 //
 
-#include "tanksGame.h"
+#include "TanksGame.h"
 
 int main(int argc, char const *argv[])
 {

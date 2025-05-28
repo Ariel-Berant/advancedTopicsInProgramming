@@ -1,6 +1,6 @@
 #ifndef WALL_H
 #define WALL_H
-#include "unmovingObject.h"
+#include "UnmovingObject.h"
 class wall : public unmovingObject
 {
 

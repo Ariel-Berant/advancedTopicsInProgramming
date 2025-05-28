@@ -20,6 +20,7 @@ public:
          TurnsUntillNextUpdate(turnsUntillNextUpdate), TurnsFromLastUpdate(-1), numOfStartingTankBullets(numOfStartingTankBullets) {
     }
     ~PlayerBattleInfo();
+    PlayerBattleInfo(const PlayerBattleInfo& other);
     int getClosestEnemyTankCol() const { return ClosestEnemyTankCol; }
     int getClosestEnemyTankRow() const { return ClosestEnemyTankRow; }
     int getTurnsUntillNextUpdate() const { return TurnsUntillNextUpdate; }

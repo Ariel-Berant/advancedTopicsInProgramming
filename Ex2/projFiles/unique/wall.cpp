@@ -1,4 +1,4 @@
-#include "wall.h"
+#include "Wall.h"
 
 wall::wall(int row, int col, objectType oType) : unmovingObject(row, col, oType) {
     hitsLeft = 2;

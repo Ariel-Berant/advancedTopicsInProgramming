@@ -1,4 +1,4 @@
-#include "mine.h"
+#include "Mine.h"
 
 mine::mine(int row, int col, objectType oType) : unmovingObject(row, col, oType) {
     // Constructor implementation

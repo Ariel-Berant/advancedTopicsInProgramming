@@ -1,6 +1,6 @@
 #ifndef UNMOVINGOBJECT_H
 #define UNMOVINGOBJECT_H
-#include "matrixObject.h"
+#include "MatrixObject.h"
 
 class unmovingObject : public matrixObject
 {

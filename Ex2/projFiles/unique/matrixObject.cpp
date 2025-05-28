@@ -1,4 +1,4 @@
-#include "matrixObject.h"
+#include "MatrixObject.h"
 
 matrixObject::matrixObject() : location{0, 0}
 {

@@ -1,4 +1,4 @@
-#include "bullet.h"
+#include "Bullet.h"
 
 bullet::bullet(int row, int col, orientation orient, objectType oType) : movingObject(row, col, oType, orient)
 {

@@ -1,4 +1,4 @@
-#include "movingObject.h"
+#include "MovingObject.h"
 
 movingObject::movingObject(int row, int col, objectType oType, orientation orient) : matrixObject(row, col, oType), orient(orient), oldLocation{row, col} {
     // Constructor implementation
@@ -60,3 +60,6 @@ orientation movingObject::getOrientation() const {
     return orient;
 }
 
+void movingObject::setOrientation(const orientation newOrient) {
+    orient = newOrient;
+}

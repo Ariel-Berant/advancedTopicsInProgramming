@@ -2,7 +2,7 @@
 #define MATRIXOBJECT_H
 #define _USE_MATH_DEFINES
 #include <cmath>
-#include "objectType.h"
+#include "ObjectType.h"
 #include <vector>
 #include <array>
 #include <queue>

@@ -1,9 +1,9 @@
 #ifndef PLAYERTANKALGORITHM_H
 #define PLAYERTANKALGORITHM_H
 
-#include "movingObject.h"
-#include "move.h"
-#include "bullet.h"
+#include "MovingObject.h"
+#include "Move.h"
+#include "Bullet.h"
 #include "../common/TankAlgorithm.h"
 #include "../common/ActionRequest.h"
 #include "PlayerBattleInfo.h"
@@ -35,13 +35,18 @@ protected:
     pair<ActionRequest, int> findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist = 100);
     pair<int, int> getNeighborPointGivenOrient(int orient, int numOfCols, int numOfRows);
     pair<int, int> getDirectionOffset(int dir);
+    void waitingforBackwordMove(ActionRequest tanksMove, int numOfCols, int numOfRows);
+    void moveForwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows);
+    void moveBackwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows);
+    void shootMove(bool tankCanMove);
+    void updateTankData(ActionRequest &tanksMove, int numOfCols, int numOfRows);
+    bool canMakeMove(ActionRequest moveChosen, int numOfCols, int numOfRows);
     
 
 
 public:
     PlayerTankAlgorithm(int row, int col, orientation orient, objectType oType);
     ~PlayerTankAlgorithm() override;
-    void setOrientation( orientation newOrient);
     bool canShoot() const;
     virtual void updateTurn();
     void useShot();

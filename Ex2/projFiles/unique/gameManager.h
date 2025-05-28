@@ -1,15 +1,15 @@
 #ifndef GAME_MANAGER_H
 #define GAME_MANAGER_H
-#include "matrixObject.h"
-#include "movingObject.h"
-#include "unmovingObject.h"
-#include "bullet.h"
-#include "move.h"
+#include "MatrixObject.h"
+#include "MovingObject.h"
+#include "UnmovingObject.h"
+#include "Bullet.h"
+#include "Move.h"
 #include "PlayerTankAlgorithm.h"
-#include "mine.h"
-#include "wall.h"
-#include "orientation.h"
-#include "playerTank.h"
+#include "Mine.h"
+#include "Wall.h"
+#include "Orientation.h"
+#include "PlayerTank.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <string>
-#include "TAFactory.cpp"
+#include "TaFactory.cpp"
 #include "../common/ActionRequest.h"
 #include "../common/Player.h"
 #include "../common/TankAlgorithm.h"
@@ -26,6 +26,7 @@
 #include "../common/BattleInfo.h"
 #include "OurPlayer.h"
 #include "OurSattelliteView.h"
+#include "PseudoTank.cpp"
 /*
  * Includes in matrixObject.h:
  *
@@ -89,13 +90,13 @@ private:
     vector<string> printToLogVector; // Vector to store messages to print to the log file
     unique_ptr<vector<vector<array<shared_ptr<matrixObject>, 3>>>> gameBoard;
     vector<shared_ptr<bullet>> bullets; // Vector to store bullets in the air
-    vector<shared_ptr<PlayerTankAlgorithm>> tanks; // Vector to store tanks on the board
+    vector<shared_ptr<PseudoTank>> tanks; // Vector to store tanks on the board
     vector<shared_ptr<movingObject>> currMovingObjects;
     shared_ptr<Player> player1;
     shared_ptr<Player> player2;
     
     bool makeAllMoves();
-    bool canMakeMove(PlayerTankAlgorithm& tankChoseTheMove, enum ActionRequest moveChosen);
+    bool canMakeMove(PseudoTank& tankChoseTheMove, enum ActionRequest moveChosen);
     void getMovesFromTanks();
     bool checkCollisions();
     bool getRowsAndColsFromFile(const string &filename);

@@ -3,7 +3,7 @@
 
 #include "OurPlayer.h"
 #include "Player2BattleInfo.h"
-#include "playerTank.h"
+#include "PlayerTank.h"
 
 
 class Player2 : public OurPlayer{

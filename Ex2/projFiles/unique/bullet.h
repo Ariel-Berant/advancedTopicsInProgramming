@@ -1,6 +1,6 @@
 #ifndef BULLET_H
 #define BULLET_H
-#include "movingObject.h"
+#include "MovingObject.h"
 
 class bullet : public movingObject
 {

@@ -2,8 +2,8 @@
 #define TAFACTORY_H
 
 #include "../common/TankAlgorithmFactory.h"
-#include "playerTank.h"
-#include "orientation.h"
+#include "PlayerTank.h"
+#include "Orientation.h"
 #include <iostream>
 
 

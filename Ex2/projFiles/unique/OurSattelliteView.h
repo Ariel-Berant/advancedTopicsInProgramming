@@ -3,9 +3,9 @@
 
 #include <cstddef>
 #include "../common/SattelliteView.h"
-#include "matrixObject.h"
-#include "objectType.h"
-#include "gameManager.h"
+#include "MatrixObject.h"
+#include "ObjectType.h"
+#include "GameManager.h"
 
 class OurSattelliteView : public SatelliteView {
 private:
