@@ -110,7 +110,8 @@ bool gameManager::getRowsAndColsFromFile(const string &filename){
 bool gameManager::addTankToMap(int playerNum, int currCol, int currRow, TankAlgorithmFactory &tankFactory){
     unique_ptr<TankAlgorithm> newTank = tankFactory.create(playerNum, playerNum == 1 ? numOfP1TanksLeft++ : numOfP2TanksLeft++);
     orientation ornt = playerNum == 1 ? L : R;
-    shared_ptr<PseudoTank> tank(currRow, currCol, playerNum == 1 ? P1T : P2T, ornt);
+    objectType type = playerNum == 1 ? P1T : P2T;
+    shared_ptr<PseudoTank> tank = make_shared<PseudoTank>(currRow, currCol, type, ornt);
     tank->tankAlg = std::move(newTank);
     if(!newTank){
         writeToFile("Error: Failed to create tank algorithm.\n", INP_ERR_FILE);
@@ -570,9 +571,15 @@ void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
         }
         if(tanksMove == ActionRequest::GetBattleInfo){
             OurSattelliteView satellite(*gameBoard, numOfCols , numOfRows, tanks[i]->getLocation()[0], tanks[i]->getLocation()[1]);
+<<<<<<< HEAD
             writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                         to_string(tanks[i]->getLocation()[1])) + ") requested battle info.\n", LOG_FILE);
             tanksPlayer == 1 ? player1->updateTankWithBattleInfo(*tanks[i]->tank, satellite) : player2->updateTankWithBattleInfo(*tanks[i]->tank, satellite);
+=======
+            // writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," + to_string(tanks[i]->getLocation()[1]))
+                //             + ") requested battle info.\n", gameMapFileName);
+            tanksPlayer == 1 ? player1->updateTankWithBattleInfo(*tanks[i]->tankAlg, satellite) : player2->updateTankWithBattleInfo(*tanks[i]->tankAlg, satellite);
+>>>>>>> refs/remotes/origin/main
         }
     }
 }
@@ -590,7 +597,7 @@ void gameManager::getMovesFromTanks(){
             continue;
         }
         tanks[i]->incrementTurnsFromLastShot();
-        tanksMove = tanks[i]->tank->getAction();
+        tanksMove = tanks[i]->tankAlg->getAction();
         getTheIthTankMove(i, tanksMove);
 
         tanks[i]->setNewLocation(tanks[i]->getLocation()[0], tanks[i]->getLocation()[1]);
