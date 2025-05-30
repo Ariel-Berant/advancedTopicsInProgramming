@@ -286,7 +286,7 @@ std::string ActionRequestToString(ActionRequest action) {
 
 void gameManager::moveBullets(){
     unique_ptr<int[]> newLoc;
-    for (bullet b : bullets) {
+    for (shared_ptr<bullet> b : bullets) {
         newLoc = b->newLocation(numOfCols, numOfRows);
         b->setNewLocation(newLoc[1], newLoc[0]);
     }
@@ -792,7 +792,7 @@ void gameManager::playGame()
 }
 
 gameManager::gameManager(const std::string &filename) :  numOfRows(0), numOfCols(0),
-turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(vector<shared_ptr<PlayerTankAlgorithm>>{nullptr})
+turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(vector<shared_ptr<PseudoTank>>{nullptr})
 {
     try
     {
