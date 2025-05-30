@@ -12,8 +12,7 @@ void Player1TankAlgorithm::updateTurn() {
 }
 
 ActionRequest Player1TankAlgorithm::getAction() {
-    // Implement the logic to get the action for Player 1's tank
-    // This is a placeholder implementation
+    
     return ActionRequest();
 }
 
