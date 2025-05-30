@@ -84,6 +84,8 @@ private:
     int numOfMines;
     int numOfWallsDestroyed;
     int numOfMinesDestroyed;
+    int numOfP1TanksLeft;
+    int numOfP2TanksLeft;
     int numOfP1Tanks;
     int numOfP2Tanks;
     int numOfBulletsLeft;
@@ -100,7 +102,7 @@ private:
     void getMovesFromTanks();
     bool checkCollisions();
     bool getRowsAndColsFromFile(const string &filename);
-    void printSummeryToLog();
+    void printSummeryToOurLog();
     bool isValidFile(const string &filename);
     void printCollisionsToLog(const movingObject &object1, const movingObject &object2) const;
     void moveBullets();
@@ -108,6 +110,7 @@ private:
     void updateAboutNewDstroyedTanks();
     void printLastTurnToLog();
     void printGameResultToLog();
+    void gameManager::printToOurLogGameResult();
     bool addTankToMap(int playerNum, int row, int col, TankAlgorithmFactory &tankFactory);
     bool addUnmovingObjectToMap(char UnmovingObjectType, int currCol, int currRow);
     void completeColumns(int currCol, int currRow);

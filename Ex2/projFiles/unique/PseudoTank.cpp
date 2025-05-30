@@ -14,6 +14,11 @@ public:
     PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal)
         : movingObject(row, col, PseudoTankType, orientVal), inBackwards(false), shotsLeft(0), turnsFromLastShot(0), turnsInBackwards(0) {};
     ~PseudoTank();
+
+    int getTankNum() const {
+        return (getType() == P1T) ? 1 : 2; // Assuming P1T is player 1's tank and P2T is player 2's tank
+    }
+
     // Getter and Setter for inBackwards
     int getInBackwards() const { return inBackwards; }
     void setInBackwards(int val) { inBackwards = val; }
