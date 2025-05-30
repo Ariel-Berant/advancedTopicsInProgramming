@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <string>
-#include "TaFactory.cpp"
+#include "TAFactory.cpp"
 #include "../common/ActionRequest.h"
 #include "../common/Player.h"
 #include "../common/TankAlgorithm.h"
