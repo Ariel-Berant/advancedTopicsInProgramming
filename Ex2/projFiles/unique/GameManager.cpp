@@ -571,15 +571,9 @@ void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
         }
         if(tanksMove == ActionRequest::GetBattleInfo){
             OurSattelliteView satellite(*gameBoard, numOfCols , numOfRows, tanks[i]->getLocation()[0], tanks[i]->getLocation()[1]);
-<<<<<<< HEAD
-            writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
-                        to_string(tanks[i]->getLocation()[1])) + ") requested battle info.\n", LOG_FILE);
-            tanksPlayer == 1 ? player1->updateTankWithBattleInfo(*tanks[i]->tank, satellite) : player2->updateTankWithBattleInfo(*tanks[i]->tank, satellite);
-=======
             // writeToFile("The tank of player " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," + to_string(tanks[i]->getLocation()[1]))
                 //             + ") requested battle info.\n", gameMapFileName);
             tanksPlayer == 1 ? player1->updateTankWithBattleInfo(*tanks[i]->tankAlg, satellite) : player2->updateTankWithBattleInfo(*tanks[i]->tankAlg, satellite);
->>>>>>> refs/remotes/origin/main
         }
     }
 }
