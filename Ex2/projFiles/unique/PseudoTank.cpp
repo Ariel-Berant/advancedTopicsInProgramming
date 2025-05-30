@@ -10,7 +10,7 @@ private:
     int turnsInBackwards = 0;
 
 public:
-    TankAlgorithm *tank;
+    unique_ptr<TankAlgorithm> tankAlg;
     PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal)
         : movingObject(row, col, PseudoTankType, orientVal), inBackwards(false), shotsLeft(0), turnsFromLastShot(0), turnsInBackwards(0) {};
     ~PseudoTank();
