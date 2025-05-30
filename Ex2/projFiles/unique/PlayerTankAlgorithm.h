@@ -25,22 +25,30 @@ protected:
     int shotsLeft;
     int inBackwards;
     int turnsUntilNextShot;
-    int calcMoveRound;
+    int calcMoveRound;// The number of moves the current operation should take
     int currTurn;
     vector<ActionRequest> moves;
     unique_ptr<PlayerBattleInfo> tankBattleInfo;
+    vector<unique_ptr<bullet>> bulletsTankShot; // Vector to store bullets the tank shot that currently in the air
+
+
     bool isSurrounded(const int *tank2Loc) const;
     pair<ActionRequest, int> determineNextMove(int currentOrientation, int targetOrientation);
     int calculateTargetOrientation(int targetCol, int targetRow);
     pair<ActionRequest, int> findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist = 100);
-    pair<int, int> getNeighborPointGivenOrient(int orient, int numOfCols, int numOfRows);
-    pair<int, int> getDirectionOffset(int dir);
+    pair<int, int> getNeighborPointGivenOrient(orientation dir, int numOfCols, int numOfRows);
+    pair<int, int> getDirectionOffset(orientation dir);
     void waitingforBackwordMove(ActionRequest tanksMove, int numOfCols, int numOfRows);
     void moveForwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows);
     void moveBackwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows);
     void shootMove(bool tankCanMove);
     void updateTankData(ActionRequest &tanksMove, int numOfCols, int numOfRows);
     bool canMakeMove(ActionRequest moveChosen, int numOfCols, int numOfRows);
+    void moveTankBullets(int numOfCols, int numOfRows);
+    bool checkIfBulletHitObject(int col, int row) const;
+    bool friendlyFireRisk(int numOfCols, int numOfRows); // Checks if the tank can shoot without hitting tanks from
+                                                                  // his own team (there are no tanks fire between him and the target), return false if it can shoot
+
     
 
 

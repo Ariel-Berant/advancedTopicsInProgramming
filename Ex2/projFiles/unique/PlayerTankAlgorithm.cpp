@@ -235,7 +235,7 @@ int PlayerTankAlgorithm::calculateTargetOrientation(int targetCol, int targetRow
     return 0; // Default case (should not happen)
 }
 
-// Function to determine the correct move to reach the target
+// Function to determine the correct move to face the target
 pair<ActionRequest, int> PlayerTankAlgorithm::determineNextMove(int currentOrientation, int targetOrientation) {
     if (targetOrientation == -1) {
           return {ActionRequest::DoNothing,0}; // No valid move if already at the target
@@ -246,7 +246,7 @@ pair<ActionRequest, int> PlayerTankAlgorithm::determineNextMove(int currentOrien
   
       // Determine the next move based on the difference in orientation
       if (diff == 0) {
-          return {ActionRequest::MoveForward, 1}; // Already facing the target
+          return {ActionRequest::MoveForward, 0}; // Already facing the target
       } else if (diff == 1) {
           return {ActionRequest::RotateRight45,1}; // 1 step clockwise
       } else if (diff >= 2 && diff <= 4) {
@@ -264,14 +264,14 @@ pair<ActionRequest, int> PlayerTankAlgorithm::determineNextMove(int currentOrien
   pair<ActionRequest, int> PlayerTankAlgorithm::findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist){
     //search for a safest place among all the neighbors cells and return the fist move needed to get there 
     // int targetOrientation;
-    for(int orien = 0 ;orien < 8 ; orien++){
-        pair<int,int> pointToCheck = getNeighborPointGivenOrient(orien, numOfCols, numOfRows);
+    for(int dir = 0 ;dir < 8 ; dir++){
+        pair<int,int> pointToCheck = getNeighborPointGivenOrient(orientation(dir), numOfCols, numOfRows);
         // targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
-        pair<ActionRequest, int> movesPair =  determineNextMove(orient, orien);
+        pair<ActionRequest, int> movesPair =  determineNextMove(orient, dir);
         int numOfMoves = movesPair.second;
         if(isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves)
                 && isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves + 1)){
-            if(numOfMoves <= (closestBulletDist/2)){
+            if(numOfMoves + 1 <= (closestBulletDist/2)){
                 return movesPair;
             }
         }
@@ -281,7 +281,7 @@ pair<ActionRequest, int> PlayerTankAlgorithm::determineNextMove(int currentOrien
 
 
 // Function to get the row and col offsets based on the direction
-pair<int, int> PlayerTankAlgorithm::getDirectionOffset(int dir) {
+pair<int, int> PlayerTankAlgorithm::getDirectionOffset(orientation dir){
     switch (dir) {
         case 0: return {0, -1};  // U
         case 1: return {1, -1};  // UR
@@ -295,8 +295,8 @@ pair<int, int> PlayerTankAlgorithm::getDirectionOffset(int dir) {
     }
 }
 
-pair<int, int> PlayerTankAlgorithm::getNeighborPointGivenOrient(int orient, int numOfCols, int numOfROws) {
-    pair<int, int> off = getDirectionOffset(orient);
+pair<int, int> PlayerTankAlgorithm::getNeighborPointGivenOrient(orientation dir, int numOfCols, int numOfROws) {
+    pair<int, int> off = getDirectionOffset(dir);
     off.first = (off.first + location[0] + numOfCols) % numOfCols;
     off.second = (off.second + location[1] + numOfROws) % numOfROws;
     return off;
@@ -308,6 +308,20 @@ void PlayerTankAlgorithm::setNumOfShotsLeft(int numOfShots) {
 
 void PlayerTankAlgorithm::updateBattleInfo(BattleInfo& info){
     PlayerBattleInfo & battleInfoRef = dynamic_cast<PlayerBattleInfo&>(info);
+    for(auto currBullet = bulletsTankShot.begin(); currBullet != bulletsTankShot.end();){
+        pair<int,int> bulletOffset = getDirectionOffset((*currBullet)->getOrientation());
+        // because bullets move twice as tanks and because we already calculated a new location
+        //which the real bullet didnt reached yet, we need to find his real location
+        int bulletRealLocation[2] = {(*currBullet)->getLocation()[0] + bulletOffset.first, (*currBullet)->getLocation()[1] + bulletOffset.second};
+        auto& boardCell = battleInfoRef.getGameBoard()[bulletRealLocation[0]][bulletRealLocation[1]][1];
+        if(!boardCell || boardCell->getType() != B){
+            // if the location the bullet supposed to be is empty or has tank in it than the bullet had been destroyed
+            currBullet = bulletsTankShot.erase(currBullet);
+        }
+        else {
+            ++currBullet;
+        }
+    }
 }
 
 
@@ -390,6 +404,14 @@ void PlayerTankAlgorithm::moveBackwardMove(bool tankCanMove ,ActionRequest tanks
 void PlayerTankAlgorithm::shootMove(bool tankCanMove){
     if (tankCanMove){
         useShot();
+        unique_ptr<int[]> bulletLocation = newLocation(tankBattleInfo->getGameBoard().size(), tankBattleInfo->getGameBoard()[0].size());
+        if(checkIfBulletHitObject(bulletLocation[0], bulletLocation[1])){
+            return; // If the bullet hit an object, do not add it to the bulletsTankShot vector
+        }
+        // Create a new bullet and add it to the bulletsTankShot vector
+        bulletsTankShot.push_back(make_unique<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B)));
+        // Place the bullet on the game board
+        tankBattleInfo->getGameBoard()[bulletLocation[0]][bulletLocation[1]][1] = make_shared<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B));
     }
 }
 
@@ -424,6 +446,66 @@ void PlayerTankAlgorithm::updateTankData(ActionRequest &tanksMove, int numOfCols
                 break;
         }
     }
+}
+
+bool PlayerTankAlgorithm::checkIfBulletHitObject(int col, int row) const {
+    // Check if the bullet hit an object
+    if (tankBattleInfo->getGameBoard()[col][row][0] && tankBattleInfo->getGameBoard()[col][row][0]->getType() == W) {
+        tankBattleInfo->getGameBoard()[col][row][0] = nullptr; // Remove the wall from the game board
+        return true; // Bullet hit a wall
+    }
+    else if(tankBattleInfo->getGameBoard()[col][row][1]){
+        // Check if the bullet hit a moving object
+        tankBattleInfo->getGameBoard()[col][row][1] = nullptr; // Remove the tank from the game board
+        return true; // Bullet hit a tank
+     }
+    return false; // No hit
+}
+
+
+void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows){
+    unique_ptr<int[]> newBulletLocation;
+    // Iterate through the bullets and move them
+    for (auto currBullet = bulletsTankShot.begin(); currBullet != bulletsTankShot.end();) {
+        newBulletLocation = (*currBullet)->newLocation(numOfCols, numOfRows);
+        if (checkIfBulletHitObject(newBulletLocation[0], newBulletLocation[1])) {
+            // Bullet hit a wall or tank, remove it from the game board
+            tankBattleInfo->getGameBoard()[(*currBullet)->getLocation()[0]][(*currBullet)->getLocation()[1]][1] = nullptr;
+            currBullet = bulletsTankShot.erase(currBullet);
+            currBullet++;
+            continue; // move to the next bullet
+        } 
+        else {
+            // Move the bullet to the new location
+            int oldCol= (*currBullet)->getLocation()[0];
+            int oldRow = (*currBullet)->getLocation()[1];
+            tankBattleInfo->getGameBoard()[newBulletLocation[0]][newBulletLocation[1]][1] = make_unique<bullet>((*currBullet));
+            tankBattleInfo->getGameBoard()[oldCol][oldRow][1] = nullptr;
+            (*currBullet)->setNewLocation(newBulletLocation[0], newBulletLocation[1]);
+        }
+    }
+}
+bool PlayerTankAlgorithm::friendlyFireRisk(int numOfCols, int numOfRows){
+    // Check if the tank can shoot without hitting tanks from his own team (there are no friendly tanks between him and the target)
+    int targetCol = tankBattleInfo->getClosestEnemyTankCol();
+    int targetRow = tankBattleInfo->getClosestEnemyTankRow();
+    if (targetCol == -1 || targetRow == -1) {
+        return false; // No enemy tank found
+    }
+    int currCol = location[0];
+    int currRow = location[1];
+    pair<int, int> offsetToCheck = getDirectionOffset(getOrientation());
+    while (currCol != targetCol || currRow != targetRow){
+            currCol = (currCol + offsetToCheck.first + numOfCols) % numOfCols; // Move in the direction of the target
+        currRow = (currRow + offsetToCheck.second + numOfRows) % numOfRows; // Move in the direction of the target
+        if (tankBattleInfo->getGameBoard()[currCol][currRow][1] && tankBattleInfo->getGameBoard()[currCol][currRow][1]->getType() == oType){
+            return true; // Friendly tank found in the way
+        }
+        if(tankBattleInfo->getGameBoard()[currCol][currRow][0] && tankBattleInfo->getGameBoard()[currCol][currRow][0]->getType() == W){
+            break; // Wall found in the way, cant hurt a friendly tank
+        }
+    }
+    return false; // Cannot shoot at the enemy tank
 }
 
 
