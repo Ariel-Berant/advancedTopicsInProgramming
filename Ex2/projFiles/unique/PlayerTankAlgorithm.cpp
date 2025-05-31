@@ -363,8 +363,8 @@ void PlayerTankAlgorithm::waitingforBackwordMove(ActionRequest tanksMove, int nu
             setInBackwards(getInBack() + 1);
             if(getInBack() == 3){
                 tankNewLocation = newLocation(numOfCols, numOfRows, true);
-                tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = tankBattleInfo->getGameBoard()[location[0]][location[1]][1];
-                tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
+                tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = std::move(tankBattleInfo->getGameBoard()[location[0]][location[1]][1]);
+                //tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
                 setNewLocation(tankNewLocation[0], tankNewLocation[1]);
             }
         }
@@ -376,8 +376,8 @@ void PlayerTankAlgorithm::moveForwardMove(bool tankCanMove ,ActionRequest tanksM
     setInBackwards(0);
     if (tankCanMove){
         tankNewLocation = newLocation(numOfCols, numOfRows);
-        tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = tankBattleInfo->getGameBoard()[location[0]][location[1]][1];
-        tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
+        tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = std::move(tankBattleInfo->getGameBoard()[location[0]][location[1]][1]);
+        //tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
         setNewLocation(tankNewLocation[0], tankNewLocation[1]);
     }
 }
@@ -388,8 +388,8 @@ void PlayerTankAlgorithm::moveBackwardMove(bool tankCanMove ,ActionRequest tanks
         if (getInBack() >= 3){ // if we have moved backwards last turn and want to move
             setInBackwards(getInBack() + 1);
             tankNewLocation = newLocation(numOfCols, numOfRows, true);
-            tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = tankBattleInfo->getGameBoard()[location[0]][location[1]][1];
-            tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
+            tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = std::move(tankBattleInfo->getGameBoard()[location[0]][location[1]][1]);
+            //tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
             setNewLocation(tankNewLocation[0], tankNewLocation[1]);
         }
         else{
@@ -411,7 +411,7 @@ void PlayerTankAlgorithm::shootMove(bool tankCanMove){
         // Create a new bullet and add it to the bulletsTankShot vector
         bulletsTankShot.push_back(make_unique<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B)));
         // Place the bullet on the game board
-        tankBattleInfo->getGameBoard()[bulletLocation[0]][bulletLocation[1]][1] = make_shared<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B));
+        tankBattleInfo->getGameBoard()[bulletLocation[0]][bulletLocation[1]][1] = make_unique<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B));
     }
 }
 

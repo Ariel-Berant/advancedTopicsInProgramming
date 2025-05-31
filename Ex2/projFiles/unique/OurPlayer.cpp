@@ -4,8 +4,8 @@
 OurPlayer::OurPlayer(int player_index, size_t x, size_t y, size_t max_steps, size_t num_shells)
         : Player(player_index, x, y, max_steps, num_shells), // Call base class constructor
           player_index(player_index), x(x), y(y), max_steps(max_steps), num_shells(num_shells), lastTurnMapUpdated(-1){
-            playerGameBoard = vector<vector<array<shared_ptr<matrixObject>, 3>>>(y, 
-                vector<array<shared_ptr<matrixObject>, 3>>(x, {nullptr, nullptr, nullptr}));
+            playerGameBoard = vector<vector<array<unique_ptr<matrixObject>, 2>>>(y, 
+                vector<array<unique_ptr<matrixObject>, 2>>(x, {nullptr, nullptr}));
 }
 
 void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank) {
@@ -14,31 +14,31 @@ void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAl
     while (objType != '&') {
         while (objType != '&'){
             objType = satellite_view.getObjectAt(currCol, currRow);
-            playerGameBoard[currCol][currRow] = {nullptr, nullptr, nullptr};
+            playerGameBoard[currCol][currRow] = {nullptr, nullptr};
             if (objType == ' ') {
                 continue;
             }
             else if (objType == '#') {
-                playerGameBoard[currCol][currRow][0] = make_shared<matrixObject>(currCol, currRow, W);
+                playerGameBoard[currCol][currRow][0] = make_unique<matrixObject>(currCol, currRow, W);
             }
             else if (objType == '@') {
-                playerGameBoard[currCol][currRow][0] = make_shared<matrixObject>(currCol, currRow, M);
+                playerGameBoard[currCol][currRow][0] = make_unique<matrixObject>(currCol, currRow, M);
             }
             else if (objType == '1') {
-                playerGameBoard[currCol][currRow][1] = make_shared<matrixObject>(currCol, currRow, P1T);
+                playerGameBoard[currCol][currRow][1] = make_unique<matrixObject>(currCol, currRow, P1T);
                 player_index == 1  ?  playerTanks.emplace_back(playerGameBoard[currCol][currRow][1]) : enemysTanks.emplace_back(playerGameBoard[currCol][currRow][1]);
             }
             else if (objType == '2') {
-                playerGameBoard[currCol][currRow][1] = make_shared<matrixObject>(currCol, currRow, P2T);
+                playerGameBoard[currCol][currRow][1] = make_unique<matrixObject>(currCol, currRow, P2T);
                 player_index == 1  ?  playerTanks.emplace_back(playerGameBoard[currCol][currRow][1]) : enemysTanks.emplace_back(playerGameBoard[currCol][currRow][1]);
 
             }
             else if (objType == '*') {
-                playerGameBoard[currCol][currRow][1] = make_shared<matrixObject>(currCol, currRow, B);
+                playerGameBoard[currCol][currRow][1] = make_unique<matrixObject>(currCol, currRow, B);
             }
             else{
                 objectType oType = player_index == 1 ? P1T : P2T;
-                playerGameBoard[currCol][currRow][1] = make_shared<matrixObject>(currCol, currRow, oType);
+                playerGameBoard[currCol][currRow][1] = make_unique<matrixObject>(currCol, currRow, oType);
                 playerTanks.emplace_back(playerGameBoard[currCol][currRow][1]);
                 tank.setLocation(currCol, currRow);
             }
