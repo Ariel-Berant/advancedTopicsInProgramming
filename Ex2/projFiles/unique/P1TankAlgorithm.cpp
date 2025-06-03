@@ -12,8 +12,7 @@ void Player1TankAlgorithm::updateTurn() {
 }
 
 ActionRequest Player1TankAlgorithm::getAction() {
-    
-    return ActionRequest();
+    return play();
 }
 
 void Player1TankAlgorithm::updateBattleInfo(BattleInfo& info) {
@@ -36,11 +35,23 @@ bool Player1TankAlgorithm::checkIfOnSameLine(const int *otherLoc) const {
 
 
 ActionRequest Player1TankAlgorithm::play(int numOfCols, int numOfRows) {
+    sinceLastUpdate++;
     ActionRequest currAction;
     currTurn++;
     const int closestEnemyLoc[2] = {tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow()}; 
 
     // First check for immediate danger\moves - if the other tank is in the same line, or if threatened. Otherwise, play normally
+
+    if (currTurn == 0)
+    {
+        return ActionRequest::GetBattleInfo; // First turn, just get battle info
+        sinceLastUpdate = 0; // Reset sinceLastUpdate for the first turn
+    }
+
+    if (!moves.empty() && moves[0] == ActionRequest::GetBattleInfo) {
+        moves.erase(moves.begin()); // Remove GetBattleInfo from the moves list
+        return ActionRequest::GetBattleInfo; // Return GetBattleInfo action
+    }
 
     // Check if current location is safe
     if(!isSafe(location[0], location[1], numOfCols, numOfRows, 1) || !isSafe(location[0], location[1], numOfCols, numOfRows, 2)
@@ -64,8 +75,15 @@ ActionRequest Player1TankAlgorithm::play(int numOfCols, int numOfRows) {
         }
     }
 
-    if (moves.empty() || calcMoveRound == 0) {
-        moves = playCalc(closestEnemyLoc, numOfCols, numOfRows);
+    if (moves.empty()) {
+        if (sinceLastUpdate == 1)
+        {
+            moves = playCalc(closestEnemyLoc, numOfCols, numOfRows);
+        }
+        else
+        {
+            moves.push_back(ActionRequest::GetBattleInfo); // If emptied moves, add GetBattleInfo action
+        }
     }
 
     // If first move is noAction, couldn't find a path to the other tank.
