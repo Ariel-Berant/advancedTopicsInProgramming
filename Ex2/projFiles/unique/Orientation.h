@@ -10,7 +10,7 @@ enum orientation {
     DL = 5, // Down-Left
     L = 6, // Left
     UL = 7, // Up-Left
-    UNKNOWN =8 // Unknown
+    UNKNOWN = 8 // Unknown
 };
 
 typedef enum orientation orientation;

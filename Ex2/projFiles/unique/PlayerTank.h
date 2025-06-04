@@ -7,6 +7,8 @@
 
 
 class Player1TankAlgorithm : public PlayerTankAlgorithm {
+private:
+    int sinceLastUpdate = 0; // Counter for turns since last update
 public:
     Player1TankAlgorithm(int row, int col, orientation orient);
     ActionRequest getAction() override;

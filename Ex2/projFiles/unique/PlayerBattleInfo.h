@@ -2,13 +2,14 @@
 #define PLAYERBATTLEINFO_H
 
 #include "../common/BattleInfo.h"
-#include "GameManager.h"
+#include "MatrixObject.h"
+#include "PlayerTankAlgorithm.h"
 
-
-
+using namespace std;
 
 class PlayerBattleInfo : public BattleInfo{
 private:
+    vector<vector<array<unique_ptr<matrixObject>, 2>>> tankGameBoard;
     vector<vector<array<unique_ptr<matrixObject>, 2>>> tankGameBoard;
     const int ClosestEnemyTankCol;
     const int ClosestEnemyTankRow;
@@ -31,6 +32,7 @@ public:
     void setTurnsFromLastUpdate() { TurnsFromLastUpdate++; }
     int getTurnsFromLastUpdate() const { return TurnsFromLastUpdate; }
     int getNumOfStartingTankBullets() const { return numOfStartingTankBullets; }
+    vector<vector<array<unique_ptr<matrixObject>, 2>>> getGameBoard() const { return tankGameBoard; }
     vector<vector<array<unique_ptr<matrixObject>, 2>>> getGameBoard() const { return tankGameBoard; }
         array<int, 3> findClosestEnemy(PlayerTankAlgorithm& tank) const;
 };

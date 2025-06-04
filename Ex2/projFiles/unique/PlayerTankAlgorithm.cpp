@@ -64,8 +64,6 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row,
         }        
     }
     
-    
-
     // Check for bullets
     bool bulletNotFound = true;
 
@@ -89,7 +87,7 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row,
     };
     for (array<int, 3> loc: possibleLocs) {
         bulletObj = tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1].get();
-        if (bulletObj && dynamic_cast<bullet *>(bulletObj) && dynamic_cast<bullet *>(bulletObj)->getOrientation() == loc[2]) {
+        if (bulletObj && dynamic_cast<bullet *>(bulletObj)) {
             bulletNotFound = false;
         }
     }
