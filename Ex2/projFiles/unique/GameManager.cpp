@@ -46,7 +46,7 @@ bool gameManager::parseGameInfo(const string line, const string description, int
     int value = stoi(fileRow);
     switch (rowNum){
     case 1:
-        maxTurns = value;
+        maxTurns = 2 * value;
         break;
     case 2:
         maxBullets = value;
@@ -100,12 +100,11 @@ bool gameManager::getRowsAndColsFromFile(const string &filename){
 
 
 bool gameManager::addTankToMap(int playerNum, int currCol, int currRow, TankAlgorithmFactory &tankFactory){
-    unique_ptr<TankAlgorithm> newTank = tankFactory.create(playerNum, playerNum == 1 ? numOfP1TanksLeft++ : numOfP2TanksLeft++);
     orientation ornt = playerNum == 1 ? L : R;
     objectType type = playerNum == 1 ? P1T : P2T;
     shared_ptr<PseudoTank> tank = make_shared<PseudoTank>(currRow, currCol, type, ornt);
-    tank->tankAlg = std::move(newTank);
-    if(!newTank){
+    tank->tankAlg = std::move(tankFactory.create(playerNum, playerNum == 1 ? numOfP1TanksLeft++ : numOfP2TanksLeft++));
+    if(!tank->tankAlg){
         writeToFile("Error: Failed to create tank algorithm.\n", INP_ERR_FILE);
         return false;
     }
@@ -792,7 +791,7 @@ void gameManager::printGameResultToLog(){
 }
 
 
-void gameManager::playGame()
+void gameManager::run()
 {
     writeToFile("Starting game\n", LOG_FILE);
     writeToFile("Player number 1 start with " + to_string(numOfP1TanksLeft) + " tanks.\n", LOG_FILE);
@@ -820,9 +819,7 @@ void gameManager::playGame()
     // destroyBoardAndObjects();
 }
 
-gameManager::gameManager(const std::string &filename) :  numOfRows(0), numOfCols(0),
-turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(vector<shared_ptr<PseudoTank>>{nullptr})
-{
+void gameManager::readBoard(const string &filename){
     try
     {
         filesystem::remove(INP_ERR_FILE);
@@ -832,15 +829,21 @@ turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0
     {
         // Error in file deletion - not really critical, just continue
     }
-    std::unique_ptr<TankAlgorithmFactory> tankFactory = std::make_unique<TankAlgorithmFactory>();
-    if (!createMap(filename, *tankFactory)){
+    
+    if (!initializeGame(filename, *tankAlgFactory, *playersFactory)){
         cerr << "Error: Failed to create map from file, detailes in input_errors.txt." << std::endl;
         exit(EXIT_FAILURE);
     }
     string fileStem = filesystem::path(filename).stem().string();
     gameMapFileName = filesystem::path(filename).replace_extension("").string();
     gameMapFileName.replace((gameMapFileName.length() - fileStem.length()), fileStem.length(), "output_" + fileStem + ".txt");
+}
 
+gameManager::gameManager(TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory) :  numOfRows(0), numOfCols(0),
+turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(vector<shared_ptr<PseudoTank>>{nullptr})
+{
+    tankAlgFactory = make_unique<TankAlgorithmFactory>(tankFactory);
+    playersFactory = make_unique<PlayerFactory>(playerFactory);
 }
 
 gameManager::~gameManager() = default;

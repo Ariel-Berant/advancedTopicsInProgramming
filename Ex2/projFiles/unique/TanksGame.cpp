@@ -1,7 +1,3 @@
-//
-// Created by ariel on 4/23/2025.
-//
-
 #include "TanksGame.h"
 
 int main(int argc, char const *argv[])
@@ -14,8 +10,11 @@ int main(int argc, char const *argv[])
     string mapFilePath = argv[1];
     try
     {
-        gameManager gm = gameManager(mapFilePath);
-        gm.playGame();
+        unique_ptr<TankAlgorithmFactory> ourTAFactory = make_unique<TAFactory>();
+        unique_ptr<PlayerFactory> ourPlayerFactory = make_unique<PFactory>();
+        gameManager gm(*ourTAFactory, *ourPlayerFactory);
+        gm.readBoard(mapFilePath);
+        gm.run();
     }
     catch(const std::exception& e)
     {

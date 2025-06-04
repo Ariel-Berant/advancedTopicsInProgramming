@@ -7,9 +7,10 @@
 
 using namespace std;
 
+class PlayerTankAlgorithm; // Forward declaration
+
 class PlayerBattleInfo : public BattleInfo{
 private:
-    vector<vector<array<unique_ptr<matrixObject>, 2>>> tankGameBoard;
     vector<vector<array<unique_ptr<matrixObject>, 2>>> tankGameBoard;
     const int ClosestEnemyTankCol;
     const int ClosestEnemyTankRow;
@@ -33,7 +34,6 @@ public:
     void resetTurnsFromLastUpdate() { TurnsFromLastUpdate = 0; }
     int getTurnsFromLastUpdate() const { return TurnsFromLastUpdate; }
     int getNumOfStartingTankBullets() const { return numOfStartingTankBullets; }
-    vector<vector<array<unique_ptr<matrixObject>, 2>>> getGameBoard() const { return tankGameBoard; }
     vector<vector<array<unique_ptr<matrixObject>, 2>>> getGameBoard() const { return tankGameBoard; }
         array<int, 3> findClosestEnemy(PlayerTankAlgorithm& tank) const;
 };

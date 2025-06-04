@@ -90,7 +90,7 @@ public:
     gameManager(const string &filename);
     ~gameManager();
     bool createMap(const string &filename);
-    void playGame();
+    void run();
 };
 
 #endif // GAME_MANAGER_H

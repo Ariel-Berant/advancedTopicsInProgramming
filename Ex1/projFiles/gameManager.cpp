@@ -642,7 +642,7 @@ void gameManager::printSummeryToLog(){
 }
 
 
-void gameManager::playGame()
+void gameManager::run()
 {
     writeToFile("Starting game\n", gameMapFileName);
     bool gameOver = false;

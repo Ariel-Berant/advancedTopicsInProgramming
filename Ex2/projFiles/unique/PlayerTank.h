@@ -21,7 +21,7 @@ class Player2TankAlgorithm : public PlayerTankAlgorithm{
 private:
     std::unique_ptr<PlayerBattleInfo> battleInfo;
     ActionRequest calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing);
-    ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols, const int numOfRows);
+    ActionRequest calculateNoDangerAction(const int numOfCols, const int numOfRows);
     pair<array<int,4>,int> searchForDangerObjects();
     
 public:

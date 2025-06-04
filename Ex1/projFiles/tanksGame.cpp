@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
     try
     {
         gameManager gm = gameManager(mapFilePath);
-        gm.playGame();
+        gm.run();
     }
     catch(const std::exception& e)
     {

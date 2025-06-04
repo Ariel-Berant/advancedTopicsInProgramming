@@ -5,11 +5,9 @@
 #include "UnmovingObject.h"
 #include "Bullet.h"
 #include "Move.h"
-#include "PlayerTankAlgorithm.h"
 #include "Mine.h"
 #include "Wall.h"
 #include "Orientation.h"
-#include "PlayerTank.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -17,14 +15,12 @@
 #include <algorithm>
 #include <filesystem>
 #include <string>
-#include "TAFactory.cpp"
 #include "../common/ActionRequest.h"
 #include "../common/Player.h"
 #include "../common/TankAlgorithm.h"
 #include "../common/TankAlgorithmFactory.h"
 #include "../common/PlayerFactory.h"
 #include "../common/BattleInfo.h"
-#include "OurPlayer.h"
 #include "OurSattelliteView.h"
 #include "PseudoTank.cpp"
 /*
@@ -72,6 +68,8 @@ inline bool writeToFile(const string &message, const string &filename)
 class gameManager
 {
 private:
+    unique_ptr<TankAlgorithmFactory> tankAlgFactory;
+    unique_ptr<PlayerFactory> playersFactory;
     string gameMapFileName;
     int numOfRows;
     int numOfCols;
@@ -127,11 +125,12 @@ private:
 
 
 public:
-    gameManager(const string &filename);
+    gameManager(TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory);
     ~gameManager();
     gameManager(const gameManager &) = delete; // Disable copy constructor
     bool initializeGame(const string &filename, TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory);
-    void playGame();
+    void readBoard(const string &filename);
+    void run();
 };
 
 #endif // GAME_MANAGER_H
