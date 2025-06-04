@@ -167,6 +167,9 @@ pair<array<int,4>,int> Player2TankAlgorithm::searchForDangerObjects(){
 
 
 ActionRequest Player2TankAlgorithm::getAction(){
+    if(currTurn == 0){
+        return ActionRequest::GetBattleInfo;
+    }
     updateTurn();
     moveTankBullets(tankBattleInfo->getGameBoard().size(), tankBattleInfo->getGameBoard()[0].size());
     const int numOfCols = tankBattleInfo->getGameBoard().size(); 

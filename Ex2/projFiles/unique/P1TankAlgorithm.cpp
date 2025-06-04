@@ -4,7 +4,7 @@ void Player1TankAlgorithm::updateTurn() {
     if(turnsUntilNextShot > 0){
         turnsUntilNextShot--;
     }
-    if(calcMoveRound < 7){
+    if(calcMoveRound < 4){
         calcMoveRound++;
     } else{
         calcMoveRound = 0;
@@ -16,8 +16,7 @@ ActionRequest Player1TankAlgorithm::getAction() {
 }
 
 void Player1TankAlgorithm::updateBattleInfo(BattleInfo& info) {
-    // Implement the logic to update the battle information for Player 1's tank
-    // This is a placeholder implementation
+    this->tankBattleInfo = make_unique<PlayerBattleInfo>(dynamic_cast<PlayerBattleInfo&>(info));
 }
 
 Player1TankAlgorithm::Player1TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P1T) {}
@@ -34,8 +33,10 @@ bool Player1TankAlgorithm::checkIfOnSameLine(const int *otherLoc) const {
 }
 
 
-ActionRequest Player1TankAlgorithm::play(int numOfCols, int numOfRows) {
-    sinceLastUpdate++;
+ActionRequest Player1TankAlgorithm::play() {
+    const int numOfCols = tankBattleInfo->getGameBoard().size(); 
+    const int numOfRows = tankBattleInfo->getGameBoard()[0].size();
+    tankBattleInfo->setTurnsFromLastUpdate();
     ActionRequest currAction;
     currTurn++;
     const int closestEnemyLoc[2] = {tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow()}; 
@@ -45,7 +46,7 @@ ActionRequest Player1TankAlgorithm::play(int numOfCols, int numOfRows) {
     if (currTurn == 0)
     {
         return ActionRequest::GetBattleInfo; // First turn, just get battle info
-        sinceLastUpdate = 0; // Reset sinceLastUpdate for the first turn
+        tankBattleInfo->resetTurnsFromLastUpdate(); // Reset tankBattleInfo->turnsFromLastUpdate for the first turn
     }
 
     if (!moves.empty() && moves[0] == ActionRequest::GetBattleInfo) {
@@ -76,7 +77,7 @@ ActionRequest Player1TankAlgorithm::play(int numOfCols, int numOfRows) {
     }
 
     if (moves.empty()) {
-        if (sinceLastUpdate == 1)
+        if (tankBattleInfo->getTurnsFromLastUpdate() == 1)
         {
             moves = playCalc(closestEnemyLoc, numOfCols, numOfRows);
         }
@@ -132,7 +133,8 @@ vector<ActionRequest> Player1TankAlgorithm::playCalc(const int *tank2Loc,
                 currRotations = getRotations(currOrient, (orientation)coords[2]);
                 for (ActionRequest move : currRotations){
                     if (shots > 0 && sinceShot == 0
-                    && canSeeOtherTank(tank2Loc, numOfCols, numOfRows)) {
+                    && canSeeOtherTank(tank2Loc, numOfCols, numOfRows)
+                    && !friendlyFireRisk(numOfCols, numOfRows)) {
                         moves.push_back(ActionRequest::Shoot);
                         shots--;
                         sinceShot = 4;

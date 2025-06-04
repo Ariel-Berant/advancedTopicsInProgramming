@@ -487,7 +487,7 @@ void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows){
             currBullet = bulletsTankShot.erase(currBullet);
             currBullet++;
             continue; // move to the next bullet
-        } 
+        }
         else {
             // Move the bullet to the new location
             int oldCol= (*currBullet)->getLocation()[0];
@@ -498,6 +498,7 @@ void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows){
         }
     }
 }
+
 bool PlayerTankAlgorithm::friendlyFireRisk(int numOfCols, int numOfRows){
     // Check if the tank can shoot without hitting tanks from his own team (there are no friendly tanks between him and the target)
     int targetCol = tankBattleInfo->getClosestEnemyTankCol();
@@ -509,7 +510,7 @@ bool PlayerTankAlgorithm::friendlyFireRisk(int numOfCols, int numOfRows){
     int currRow = location[1];
     pair<int, int> offsetToCheck = getDirectionOffset(getOrientation());
     while (currCol != targetCol || currRow != targetRow){
-            currCol = (currCol + offsetToCheck.first + numOfCols) % numOfCols; // Move in the direction of the target
+        currCol = (currCol + offsetToCheck.first + numOfCols) % numOfCols; // Move in the direction of the target
         currRow = (currRow + offsetToCheck.second + numOfRows) % numOfRows; // Move in the direction of the target
         if (tankBattleInfo->getGameBoard()[currCol][currRow][1] && tankBattleInfo->getGameBoard()[currCol][currRow][1]->getType() == oType){
             return true; // Friendly tank found in the way
@@ -518,7 +519,7 @@ bool PlayerTankAlgorithm::friendlyFireRisk(int numOfCols, int numOfRows){
             break; // Wall found in the way, cant hurt a friendly tank
         }
     }
-    return false; // Cannot shoot at the enemy tank
+    return false; // Can shoot at the enemy tank
 }
 
 

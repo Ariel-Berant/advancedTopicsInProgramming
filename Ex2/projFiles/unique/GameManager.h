@@ -129,6 +129,7 @@ private:
 public:
     gameManager(const string &filename);
     ~gameManager();
+    gameManager(const gameManager &) = delete; // Disable copy constructor
     bool initializeGame(const string &filename, TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory);
     void playGame();
 };

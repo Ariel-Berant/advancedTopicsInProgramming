@@ -30,6 +30,7 @@ public:
     int getTurnsUntillNextUpdate() const { return TurnsUntillNextUpdate; }
     void setTurnsUntillNextUpdate() { TurnsUntillNextUpdate--; }
     void setTurnsFromLastUpdate() { TurnsFromLastUpdate++; }
+    void resetTurnsFromLastUpdate() { TurnsFromLastUpdate = 0; }
     int getTurnsFromLastUpdate() const { return TurnsFromLastUpdate; }
     int getNumOfStartingTankBullets() const { return numOfStartingTankBullets; }
     vector<vector<array<unique_ptr<matrixObject>, 2>>> getGameBoard() const { return tankGameBoard; }

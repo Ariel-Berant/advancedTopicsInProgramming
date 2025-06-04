@@ -27,31 +27,24 @@ bool gameManager::parseGameInfo(const string line, const string description, int
         writeToFile("Error: The file '" + description + "' is empty.\n", INP_ERR_FILE);
         return false;
     }
-
     // Remove all whitespace characters from the string
     fileRow.erase(remove_if(fileRow.begin(), 
                               fileRow.end(),
                               [](unsigned char x) { return std::isspace(x); }),
                fileRow.end());
-
     if (fileRow.find(description) != 0) {
         writeToFile("Error: The row for \"" + description + "\" does not start with the expected description.\n", INP_ERR_FILE);
         return false;
     }
-
     fileRow.erase(0, description.length());
-
     // Check if the remaining string is a valid integer
     if (!all_of(fileRow.begin(), fileRow.end(), ::isdigit)) {
         writeToFile("Error: The row for \"" + description + "\" contains invalid characters.\nCorrect use is: "
              + description + "<NUM>\n", INP_ERR_FILE);
         return false;
     }
-
     int value = stoi(fileRow);
-    
-    switch (rowNum)
-    {
+    switch (rowNum){
     case 1:
         maxTurns = value;
         break;
@@ -68,7 +61,6 @@ bool gameManager::parseGameInfo(const string line, const string description, int
         // Not a valid row number
         break;
     }
-
     return true;
 }
 
@@ -119,9 +111,9 @@ bool gameManager::addTankToMap(int playerNum, int currCol, int currRow, TankAlgo
     }
     printToLogVector.emplace_back(nullptr);
 
-    tanks.emplace_back(tank);
+    tanks.push_back(tank);
 
-    currMovingObjects.emplace_back(tank);
+    currMovingObjects.push_back(tank);
 
     (*gameBoard)[currCol][currRow][1] = tank;
     return true;
@@ -150,28 +142,20 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
         cerr << "Error: Could not open the file '" << filename << "'." << std::endl;
         return false;
     }
-
     for(int i = 0 ; i < 4 ; i++){
         getline(file1, line); // Skip the first 5 lines
     }
-
-    while (getline(file1, line))
-    {
-        if (currRow == numOfRows)
-        {
+    while (getline(file1, line)){
+        if (currRow == numOfRows){
             writeToFile("Error: Too many rows in the map file.\n", INP_ERR_FILE);
             break;
         }
-        for (char ch : line)
-        {
-            if (currCol == numOfCols)
-            {
+        for (char ch : line) {
+            if (currCol == numOfCols){
                 writeToFile("Error: Too many columns in row " + to_string(currRow) + ".\n", INP_ERR_FILE);
                 continue;
             }
-
-            switch (ch)
-            {
+            switch (ch) {
             case '#':
                 addUnmovingObjectToMap('@', currCol, currRow);
                 break;
@@ -195,19 +179,15 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
             }
             currCol++;
         }
-        if (currCol < numOfCols)
-        {
+        if (currCol < numOfCols){
             writeToFile("Error: Not enough columns in row " + to_string(currRow) + ".\n", INP_ERR_FILE);
         }
         currRow++;
         currCol = 0;
     }
-
-    if (currRow < numOfRows)
-    {
+    if (currRow < numOfRows){
         writeToFile("Error: Not enough rows in the map file.\n", INP_ERR_FILE);
     }
-
     file1.close();
 }
 
@@ -292,7 +272,7 @@ void gameManager::moveBullets(){
     unique_ptr<int[]> newLoc;
     for (shared_ptr<bullet> b : bullets) {
         newLoc = b->newLocation(numOfCols, numOfRows);
-        b->setNewLocation(newLoc[1], newLoc[0]);
+        b->setNewLocation(newLoc[0], newLoc[1]);
     }
 }
 

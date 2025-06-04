@@ -18,7 +18,8 @@ private:
     // The first element represents the wall, the second element represents the tank, and the third element represents the bullet
 public:
     OurSattelliteView(const vector<vector<array<shared_ptr<matrixObject>, 3>>> gBoard, int numOfCols, int numOfRows, size_t tankX, size_t tankY);
-    ~OurSattelliteView() {}
+    ~OurSattelliteView() = default; // Default destructor
+    OurSattelliteView(const OurSattelliteView&) = delete; // Disable copy constructor
     char getObjectAt(size_t x, size_t y)const override;
 };
 

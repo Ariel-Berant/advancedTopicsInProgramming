@@ -6,14 +6,12 @@
 
 
 class Player1TankAlgorithm : public PlayerTankAlgorithm {
-private:
-    int sinceLastUpdate = 0; // Counter for turns since last update
 public:
     Player1TankAlgorithm(int row, int col, orientation orient);
     ActionRequest getAction() override;
     void updateBattleInfo(BattleInfo &info) override;
     void updateTurn() override;
-    ActionRequest play(int numOfCols, int numOfRows);
+    ActionRequest play();
     vector<ActionRequest> playCalc(const int tank2Loc[2], int numOfRows, int numOfCols);
     vector<ActionRequest> handleSurrounded(const int *tank2Loc) const;
     bool checkIfOnSameLine(const int *otherLoc) const;

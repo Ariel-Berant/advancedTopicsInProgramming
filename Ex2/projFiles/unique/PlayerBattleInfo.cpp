@@ -22,6 +22,9 @@ PlayerBattleInfo::PlayerBattleInfo(const PlayerBattleInfo& other)
                 if (other.tankGameBoard[i][j][k]) {
                     tankGameBoard[i][j][k] = std::make_unique<matrixObject>(*other.tankGameBoard[i][j][k]);
                 }
+                else{
+                    tankGameBoard[i][j][k] = nullptr; // Ensure null pointers are preserved
+                }
             }
         }
     }

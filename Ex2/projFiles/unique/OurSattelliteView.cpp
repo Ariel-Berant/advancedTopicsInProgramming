@@ -1,7 +1,7 @@
 #include "OurSattelliteView.h"
 
 
-OurSattelliteView::OurSattelliteView(vector<vector<array<shared_ptr<matrixObject>, 3>>> gBoard, int numOfCols , int numOfRows, size_t tankX, size_t tankY):
+OurSattelliteView::OurSattelliteView(const vector<vector<array<shared_ptr<matrixObject>, 3>>> gBoard, int numOfCols, int numOfRows, size_t tankX, size_t tankY):
  gameBoard(gBoard), numOfRows(numOfRows), numOfCols(numOfCols), tankX(tankX), tankY(tankY){
     // Initialize the game board with the provided shared pointer
     // The game board is a 2D vector of arrays, where each array contains three shared pointers to matrixObject.
