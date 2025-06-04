@@ -413,6 +413,21 @@ void PlayerTankAlgorithm::shootMove(bool tankCanMove){
     }
 }
 
+orientation PlayerTankAlgorithm::calculateNewOrientation(ActionRequest &tanksMove){
+    if(tanksMove == ActionRequest::RotateLeft45){
+        return orientation((getOrientation()+ 7) % 8);
+    }
+    else if(tanksMove == ActionRequest::RotateRight45){
+        return orientation((getOrientation() + 1) % 8);
+    }
+    else if(tanksMove == ActionRequest::RotateLeft90){
+        return orientation((getOrientation() + 6) % 8);
+    }
+    else{//(tanksMove == ActionRequest::RotateRight90)
+        return orientation((getOrientation() + 2) % 8);
+    }
+}
+
 void PlayerTankAlgorithm::updateTankData(ActionRequest &tanksMove, int numOfCols, int numOfRows){
     if (getInBack() > 0 && getInBack() < 3){
         waitingforBackwordMove(tanksMove, numOfCols, numOfRows);
@@ -425,7 +440,7 @@ void PlayerTankAlgorithm::updateTankData(ActionRequest &tanksMove, int numOfCols
             case ActionRequest::RotateLeft90:
             case ActionRequest::RotateRight90:
                 orientation ornt = getOrientation();
-                setOrientation(orientation((8 + getOrientation() - 5 + tanksMove) % 8));
+                setOrientation(calculateNewOrientation(tanksMove));
                 break;
             case ActionRequest::DoNothing:
 

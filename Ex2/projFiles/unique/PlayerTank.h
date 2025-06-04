@@ -2,7 +2,6 @@
 #define PLAYERTANK_H
 
 #include "PlayerTankAlgorithm.h"
-#include "Player2BattleInfo.h"
 #include <memory>
 
 

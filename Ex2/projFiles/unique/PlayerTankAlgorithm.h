@@ -38,6 +38,7 @@ protected:
     pair<ActionRequest, int> findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist = 100);
     pair<int, int> getNeighborPointGivenOrient(orientation dir, int numOfCols, int numOfRows);
     pair<int, int> getDirectionOffset(orientation dir);
+    orientation PlayerTankAlgorithm::calculateNewOrientation(ActionRequest &tanksMove);
     void waitingforBackwordMove(ActionRequest tanksMove, int numOfCols, int numOfRows);
     void moveForwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows);
     void moveBackwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows);

@@ -123,6 +123,7 @@ private:
     void actualymakeMoves();
     void dealWithDamagedUnmovingObject(int i, const int objectNewCol, const int objectNewRow);
     bool createMap(const string &filename, TankAlgorithmFactory &tankFactory);
+    orientation gameManager::calculateNewOrientation(ActionRequest &tanksMove, int i);
 
 
 public:

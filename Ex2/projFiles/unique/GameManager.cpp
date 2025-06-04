@@ -530,6 +530,23 @@ void gameManager::shootMove(bool tankCanMove, ActionRequest tanksMove, int i){
     }
 }
 
+
+orientation gameManager::calculateNewOrientation(ActionRequest &tanksMove, int i){
+    if(tanksMove == ActionRequest::RotateLeft45){
+        return orientation((tanks[i]->getOrientation()+ 7) % 8);
+    }
+    else if(tanksMove == ActionRequest::RotateRight45){
+        return orientation((tanks[i]->getOrientation() + 1) % 8);
+    }
+    else if(tanksMove == ActionRequest::RotateLeft90){
+        return orientation((tanks[i]->getOrientation() + 6) % 8);
+    }
+    else{//(tanksMove == ActionRequest::RotateRight90)
+        return orientation((tanks[i]->getOrientation() + 2) % 8);
+    }
+}
+
+
 void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
     int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
     int tankNum = tanks[i]->getTankNum();
@@ -548,7 +565,7 @@ void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
             case ActionRequest::RotateLeft90:
             case ActionRequest::RotateRight90:
                 orientation ornt = tanks[i]->getOrientation();
-                tanks[i]->setOrientation(orientation((8 + tanks[i]->getOrientation() - 5 + tanksMove) % 8));
+                tanks[i]->setOrientation(calculateNewOrientation(tanksMove, i));
                 writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                         to_string(tanks[i]->getLocation()[1])) + ") turned from " + orientationToString(ornt) + " to " + orientationToString(tanks[i]->getOrientation()) + ".\n", LOG_FILE);
                 break;
