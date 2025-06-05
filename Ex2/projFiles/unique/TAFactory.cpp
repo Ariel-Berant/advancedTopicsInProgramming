@@ -1,7 +1,7 @@
 #include "TAFactory.h"
 
-unique_ptr<TankAlgorithm> create(int player_index, int tank_index) {
-    unique_ptr<TankAlgorithm> newTankAlgorithm;
+std::unique_ptr<TankAlgorithm> create(int player_index, int tank_index) {
+    std::unique_ptr<TankAlgorithm> newTankAlgorithm;
     if (player_index == 1) {
         newTankAlgorithm = make_unique<Player1TankAlgorithm>(nullptr, nullptr, L);
     }

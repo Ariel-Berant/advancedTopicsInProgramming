@@ -4,8 +4,8 @@
 OurPlayer::OurPlayer(int player_index, size_t x, size_t y, size_t max_steps, size_t num_shells)
         : Player(player_index, x, y, max_steps, num_shells), // Call base class constructor
           player_index(player_index), x(x), y(y), max_steps(max_steps), num_shells(num_shells), lastTurnMapUpdated(-1){
-            playerGameBoard = vector<vector<array<unique_ptr<matrixObject>, 2>>>(y, 
-                vector<array<unique_ptr<matrixObject>, 2>>(x, {nullptr, nullptr}));
+            playerGameBoard = vector<vector<array<shared_ptr<matrixObject>, 2>>>(y, 
+                vector<array<shared_ptr<matrixObject>, 2>>(x, {nullptr, nullptr}));
 }
 
 void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank) {
@@ -19,27 +19,29 @@ void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAl
                 continue;
             }
             else if (objType == '#') {
-                playerGameBoard[currCol][currRow][0] = make_unique<matrixObject>(currCol, currRow, W);
+                playerGameBoard[currCol][currRow][0] = make_shared<matrixObject>(currCol, currRow, W);
             }
             else if (objType == '@') {
-                playerGameBoard[currCol][currRow][0] = make_unique<matrixObject>(currCol, currRow, M);
+                playerGameBoard[currCol][currRow][0] = make_shared<matrixObject>(currCol, currRow, M);
             }
             else if (objType == '1') {
-                playerGameBoard[currCol][currRow][1] = make_unique<matrixObject>(currCol, currRow, P1T);
-                player_index == 1  ?  playerTanks.emplace_back(playerGameBoard[currCol][currRow][1]) : enemysTanks.emplace_back(playerGameBoard[currCol][currRow][1]);
+                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currCol, currRow, P1T, UNKNOWN);
+                player_index == 1  ?  playerTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1])) 
+                                    : enemysTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1]));
             }
             else if (objType == '2') {
-                playerGameBoard[currCol][currRow][1] = make_unique<matrixObject>(currCol, currRow, P2T);
-                player_index == 1  ?  playerTanks.emplace_back(playerGameBoard[currCol][currRow][1]) : enemysTanks.emplace_back(playerGameBoard[currCol][currRow][1]);
+                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currCol, currRow, P2T, UNKNOWN);
+                player_index == 1  ?  playerTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1])) 
+                                    : enemysTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1]));
 
             }
             else if (objType == '*') {
-                playerGameBoard[currCol][currRow][1] = make_unique<matrixObject>(currCol, currRow, B);
+                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currCol, currRow, B, UNKNOWN);
             }
             else{
                 objectType oType = player_index == 1 ? P1T : P2T;
-                playerGameBoard[currCol][currRow][1] = make_unique<matrixObject>(currCol, currRow, oType);
-                playerTanks.emplace_back(playerGameBoard[currCol][currRow][1]);
+                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currCol, currRow, oType, UNKNOWN);
+                playerTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1]));
                 tank.setLocation(currCol, currRow);
             }
             currRow++;
@@ -58,11 +60,11 @@ void OurPlayer::calculatePlayerGameBoard(SatelliteView& satellite_view, PlayerTa
         tank.setNumOfShotsLeft(num_shells);
     }
     if(tank.getCurrTurn() == lastTurnMapUpdated){
-        for(movingObject & pTank : playerTanks){
-            if(satellite_view.getObjectAt(pTank.getLocation()[0], pTank.getLocation()[1]) == '%'){
-                bool locationChanged = pTank.getLocation()[0] != tank.getLocation()[0] || pTank.getLocation()[1] != tank.getLocation()[1];
+        for(shared_ptr<movingObject> pTank : playerTanks){
+            if(satellite_view.getObjectAt(pTank->getLocation()[0], pTank->getLocation()[1]) == '%'){
+                bool locationChanged = pTank->getLocation()[0] != tank.getLocation()[0] || pTank->getLocation()[1] != tank.getLocation()[1];
                 if(locationChanged){
-                    tank.setLocation(pTank.getLocation()[0], pTank.getLocation()[1]);
+                    tank.setLocation(pTank->getLocation()[0], pTank->getLocation()[1]);
                 }
                 break;
             }
@@ -77,10 +79,18 @@ void OurPlayer::calculatePlayerGameBoard(SatelliteView& satellite_view, PlayerTa
 
 void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& satellite_view) {
     PlayerTankAlgorithm & tankRef = dynamic_cast<PlayerTankAlgorithm&>(tank); // Ensure the tank is of type PlayerTankAlgorithm
-    
+    int worked;    
+
     if(tankRef.getCurrTurn() == lastTurnMapUpdated){
-        enemysTanks.empty();
-        playerTanks.empty();
+        worked = enemysTanks.empty();
+        if (!worked)
+        {
+            cerr << "Ah fuck." << endl;
+            return; // Exit if the game board has not been updated for the current turn
+        }
+        
+        worked = playerTanks.empty();
+        
     }
     array<int, 3> closestEnemy;
     // Update the tank's game board with the satellite view
@@ -95,9 +105,9 @@ array<int, 3> OurPlayer::findClosestEnemy(PlayerTankAlgorithm& tank) const {
     int enemyRow = -1;
     int minDistance = INT_MAX;
     array<int, 3> closestEnemy = {-1, -1, -1}; // Initialize closest enemy coordinates and distance
-    for(movingObject enemy : enemysTanks){
-        enemyCol = enemy.getLocation()[0];
-        enemyRow = enemy.getLocation()[1];
+    for(shared_ptr<movingObject> enemy : enemysTanks){
+        enemyCol = enemy->getLocation()[0];
+        enemyRow = enemy->getLocation()[1];
         int distance = abs(tank.getLocation()[0] - enemyCol) + abs(tank.getLocation()[1] - enemyRow); // Calculate the Manhattan distance
         if(distance < minDistance) {
             minDistance = distance; // Update the minimum distance

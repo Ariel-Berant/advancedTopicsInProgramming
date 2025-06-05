@@ -3,7 +3,6 @@
 
 #include "../common/BattleInfo.h"
 #include "MatrixObject.h"
-#include "PlayerTankAlgorithm.h"
 
 using namespace std;
 
@@ -11,7 +10,7 @@ class PlayerTankAlgorithm; // Forward declaration
 
 class PlayerBattleInfo : public BattleInfo{
 private:
-    vector<vector<array<unique_ptr<matrixObject>, 2>>> tankGameBoard;
+    vector<vector<array<shared_ptr<matrixObject>, 2>>> tankGameBoard;
     const int ClosestEnemyTankCol;
     const int ClosestEnemyTankRow;
     int TurnsUntillNextUpdate;
@@ -20,7 +19,7 @@ private:
 
 public:
     PlayerBattleInfo(int ClosestEnemyTankCol, int ClosestEnemyTankRow, int turnsUntillNextUpdate, 
-                                         vector<vector<array<unique_ptr<matrixObject>, 2>>> &tankGameBoard, int numOfStartingTankBullets)
+                                         vector<vector<array<shared_ptr<matrixObject>, 2>>> &tankGameBoard, int numOfStartingTankBullets)
         : tankGameBoard(tankGameBoard), ClosestEnemyTankCol(ClosestEnemyTankCol), ClosestEnemyTankRow(ClosestEnemyTankRow),
          TurnsUntillNextUpdate(turnsUntillNextUpdate), TurnsFromLastUpdate(-1), numOfStartingTankBullets(numOfStartingTankBullets) {
     }
@@ -34,7 +33,7 @@ public:
     void resetTurnsFromLastUpdate() { TurnsFromLastUpdate = 0; }
     int getTurnsFromLastUpdate() const { return TurnsFromLastUpdate; }
     int getNumOfStartingTankBullets() const { return numOfStartingTankBullets; }
-    vector<vector<array<unique_ptr<matrixObject>, 2>>> getGameBoard() const { return tankGameBoard; }
+    vector<vector<array<shared_ptr<matrixObject>, 2>>> getGameBoard() const { return tankGameBoard; }
         array<int, 3> findClosestEnemy(PlayerTankAlgorithm& tank) const;
 };
 

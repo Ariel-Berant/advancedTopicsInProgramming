@@ -10,8 +10,8 @@
 class OurSattelliteView : public SatelliteView {
 private:
     vector<vector<array<shared_ptr<matrixObject>, 3>>> gameBoard;
-    int numOfRows;
-    int numOfCols;
+    size_t numOfRows;
+    size_t numOfCols;
     size_t tankX;
     size_t tankY;
     // The gameBoard is a 2D vector of arrays, where each array contains three shared pointers to matrixObject.

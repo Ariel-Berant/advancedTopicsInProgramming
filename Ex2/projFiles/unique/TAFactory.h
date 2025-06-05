@@ -13,7 +13,7 @@ public:
     TAFactory(/* args */);
     ~TAFactory();
 
-    unique_ptr<TankAlgorithm> create(
+    std::unique_ptr<TankAlgorithm> create(
             int player_index, int tank_index) const override;
     
 };

@@ -68,8 +68,8 @@ inline bool writeToFile(const string &message, const string &filename)
 class gameManager
 {
 private:
-    unique_ptr<TankAlgorithmFactory> tankAlgFactory;
-    unique_ptr<PlayerFactory> playersFactory;
+    TankAlgorithmFactory &tankAlgFactory;
+    PlayerFactory &playersFactory;
     string gameMapFileName;
     int numOfRows;
     int numOfCols;
@@ -104,24 +104,24 @@ private:
     bool isValidFile(const string &filename);
     void printCollisionsToLog(const movingObject &object1, const movingObject &object2) const;
     void moveBullets();
-    bool gameManager::parseGameInfo(const string line, const string description, int rowNum);
+    bool parseGameInfo(const string line, const string description, int rowNum);
     void updateAboutNewDstroyedTanks();
     void printLastTurnToLog();
     void printGameResultToLog();
-    void gameManager::printToOurLogGameResult();
+    void printToOurLogGameResult();
     bool addTankToMap(int playerNum, int row, int col, TankAlgorithmFactory &tankFactory);
-    bool addUnmovingObjectToMap(char UnmovingObjectType, int currCol, int currRow);
+    void addUnmovingObjectToMap(char UnmovingObjectType, int currCol, int currRow);
     void completeColumns(int currCol, int currRow);
     void completeRows(int currRow);
     void waitingforBackwordMove(ActionRequest tanksMove, int i);
-    void moveForwardMove(bool tankCanMove ,ActionRequest tanksMove, int i);
-    void moveBackwardMove(bool tankCanMove ,ActionRequest tanksMove, int i);
-    void shootMove(bool tankCanMove, ActionRequest tanksMove, int i);
+    void moveForwardMove(bool tankCanMove ,/* ActionRequest tanksMove,  */int i);
+    void moveBackwardMove(bool tankCanMove ,/* ActionRequest tanksMove,  */int i);
+    void shootMove(bool tankCanMove,/*  ActionRequest tanksMove,  */int i);
     void getTheIthTankMove(int i, ActionRequest &tanksMove);
     void actualymakeMoves();
     void dealWithDamagedUnmovingObject(int i, const int objectNewCol, const int objectNewRow);
     bool createMap(const string &filename, TankAlgorithmFactory &tankFactory);
-    orientation gameManager::calculateNewOrientation(ActionRequest &tanksMove, int i);
+    orientation calculateNewOrientation(ActionRequest &tanksMove, int i);
 
 
 public:

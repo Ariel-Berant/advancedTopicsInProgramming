@@ -369,7 +369,7 @@ void PlayerTankAlgorithm::waitingforBackwordMove(ActionRequest tanksMove, int nu
     }
 }
 
-void PlayerTankAlgorithm::moveForwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows){
+void PlayerTankAlgorithm::moveForwardMove(bool tankCanMove ,/* ActionRequest tanksMove, */ int numOfCols, int numOfRows){
     unique_ptr<int[]> tankNewLocation = nullptr;
     setInBackwards(0);
     if (tankCanMove){
@@ -380,7 +380,7 @@ void PlayerTankAlgorithm::moveForwardMove(bool tankCanMove ,ActionRequest tanksM
     }
 }
 
-void PlayerTankAlgorithm::moveBackwardMove(bool tankCanMove ,ActionRequest tanksMove, int numOfCols, int numOfRows){
+void PlayerTankAlgorithm::moveBackwardMove(bool tankCanMove ,/* ActionRequest tanksMove, */ int numOfCols, int numOfRows){
     unique_ptr<int[]> tankNewLocation = nullptr;
     if (tankCanMove){
         if (getInBack() >= 3){ // if we have moved backwards last turn and want to move
@@ -434,12 +434,12 @@ void PlayerTankAlgorithm::updateTankData(ActionRequest &tanksMove, int numOfCols
     }
     else{
         bool tankCanMove = canMakeMove(tanksMove, numOfCols, numOfRows);
+        [[maybe_unused]] orientation ornt = getOrientation();
         switch (tanksMove){
             case ActionRequest::RotateLeft45:
             case ActionRequest::RotateRight45:
             case ActionRequest::RotateLeft90:
             case ActionRequest::RotateRight90:
-                orientation ornt = getOrientation();
                 setOrientation(calculateNewOrientation(tanksMove));
                 break;
             case ActionRequest::DoNothing:
@@ -447,10 +447,10 @@ void PlayerTankAlgorithm::updateTankData(ActionRequest &tanksMove, int numOfCols
                 setInBackwards(0);
                 break;
             case ActionRequest::MoveForward:
-                moveForwardMove(tankCanMove, tanksMove, numOfCols, numOfRows);
+                moveForwardMove(tankCanMove, /* tanksMove, */ numOfCols, numOfRows);
                 break;
             case ActionRequest::MoveBackward:
-                moveBackwardMove(tankCanMove, tanksMove, numOfCols, numOfRows);
+                moveBackwardMove(tankCanMove, /* tanksMove, */ numOfCols, numOfRows);
                 break;
             case ActionRequest::Shoot:
                 shootMove(tankCanMove);

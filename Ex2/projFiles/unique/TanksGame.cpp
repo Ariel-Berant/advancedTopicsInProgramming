@@ -10,8 +10,8 @@ int main(int argc, char const *argv[])
     string mapFilePath = argv[1];
     try
     {
-        unique_ptr<TankAlgorithmFactory> ourTAFactory = make_unique<TAFactory>();
-        unique_ptr<PlayerFactory> ourPlayerFactory = make_unique<PFactory>();
+        std::unique_ptr<TankAlgorithmFactory> ourTAFactory = make_unique<TAFactory>();
+        std::unique_ptr<PlayerFactory> ourPlayerFactory = make_unique<PFactory>();
         gameManager gm(*ourTAFactory, *ourPlayerFactory);
         gm.readBoard(mapFilePath);
         gm.run();

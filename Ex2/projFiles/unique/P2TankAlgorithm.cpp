@@ -1,18 +1,12 @@
 #include "PlayerTank.h"
 
 Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {
-    tankBattleInfo = make_unique<PlayerBattleInfo>(-1, -1, -1, nullptr);
-}
-
-ActionRequest Player2TankAlgorithm::getAction() {
-    // Implement the logic to get the action for Player 1's tank
-    // This is a placeholder implementation
-    return ActionRequest();
+    static vector<vector<array<shared_ptr<matrixObject>, 2>>> dummyBoard;
+    tankBattleInfo = make_unique<PlayerBattleInfo>(-1, -1, -1, dummyBoard, 0);
 }
 
 void Player2TankAlgorithm::updateBattleInfo(BattleInfo& info) {
-    // Implement the logic to update the battle information for Player 1's tank
-    // This is a placeholder implementation
+    tankBattleInfo = make_unique<PlayerBattleInfo>(dynamic_cast<PlayerBattleInfo&>(info));
 }
 
 // Function to compute the direction from (col, row) offsets
@@ -82,7 +76,6 @@ array<int,4> Player2TankAlgorithm::searchForBullets(int inCol, int inRow) const{
 }
 
 ActionRequest Player2TankAlgorithm::calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing) {
-    int calcMoveRound = 0;
     int numOfTurnsToRotate = calculateTurnsToRotate(orient, closestBulletDetails[3]);
     if(numOfTurnsToRotate + max(0, turnsUntilNextShot - numOfTurnsToRotate ) + 1 <= closestBulletDetails[2]/2 && numOfBulletsChasing <= 1) {
         // if the tank can shoot the bullet before it gets to him there is only one bullet chasing him
@@ -148,8 +141,6 @@ pair<array<int,4>,int> Player2TankAlgorithm::searchForDangerObjects(){
     int numOfBulletsChasing = 0;
     int closestBulletDist = 9;
     array<int,4> closestBulletDetails ={0};
-    const int numOfCols = tankBattleInfo->getGameBoard().size(); 
-    const int numOfRows = tankBattleInfo->getGameBoard()[0].size();
     for(int dir=0; dir<8; dir++) {
         pair<int, int> offset = getDirectionOffset(orientation(dir));
         array<int, 4> currentBulletDetails = searchForBullets(offset.first, offset.second);

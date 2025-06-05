@@ -22,9 +22,9 @@ protected:
         size_t max_steps;
         size_t num_shells;
         int lastTurnMapUpdated;
-        vector<vector<array<unique_ptr<matrixObject>, 2>>> playerGameBoard;
-        vector<movingObject> enemysTanks;
-        vector<movingObject> playerTanks;
+        vector<vector<array<shared_ptr<matrixObject>, 2>>> playerGameBoard;
+        vector<shared_ptr<movingObject>> enemysTanks;
+        vector<shared_ptr<movingObject>> playerTanks;
         void calculatePlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank);
         void buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank);
 
