@@ -30,14 +30,14 @@ protected:
 
         
         array<int, 3> findClosestEnemy(PlayerTankAlgorithm& tank) const;
-        
+
 public:
     OurPlayer(int player_index,
             size_t x, size_t y,
             size_t max_steps, size_t num_shells);
     ~OurPlayer();   
     void updateTankWithBattleInfo
-            (TankAlgorithm& tank, SatelliteView& satellite_view);
+            (TankAlgorithm& tank, SatelliteView& satellite_view) override;
 };
 
 #endif// OurPlayer.h
