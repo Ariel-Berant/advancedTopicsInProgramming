@@ -29,7 +29,7 @@ protected:
     int currTurn;
     vector<ActionRequest> moves;
     unique_ptr<PlayerBattleInfo> tankBattleInfo;
-    vector<unique_ptr<bullet>> bulletsTankShot; // Vector to store bullets the tank shot that currently in the air
+    vector<shared_ptr<bullet>> bulletsTankShot; // Vector to store bullets the tank shot that currently in the air
 
 
     bool isSurrounded(const int *tank2Loc) const;

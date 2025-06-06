@@ -14,7 +14,7 @@ public:
     ~TAFactory();
 
     std::unique_ptr<TankAlgorithm> create(
-            int player_index, int tank_index) const override;
+            int player_index, [[maybe_unused]] int tank_index) const override;
     
 };
 

@@ -492,10 +492,12 @@ void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows){
             // Move the bullet to the new location
             int oldCol= (*currBullet)->getLocation()[0];
             int oldRow = (*currBullet)->getLocation()[1];
-            tankBattleInfo->getGameBoard()[newBulletLocation[0]][newBulletLocation[1]][1] = make_unique<bullet>((*currBullet));
+            shared_ptr<bullet> currBulletPtr = *currBullet;
+            tankBattleInfo->getGameBoard()[newBulletLocation[0]][newBulletLocation[1]][1] = currBulletPtr;
             tankBattleInfo->getGameBoard()[oldCol][oldRow][1] = nullptr;
             (*currBullet)->setNewLocation(newBulletLocation[0], newBulletLocation[1]);
         }
+        ++currBullet; // Move to the next bullet
     }
 }
 
