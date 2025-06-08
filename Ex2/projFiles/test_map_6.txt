@@ -1,8 +1,0 @@
-6-Extra rows/cols
-MaxSteps=1000
-NumShells=10
-Rows=2
-Cols=3
-###extra
-#1 #extra
-extra row

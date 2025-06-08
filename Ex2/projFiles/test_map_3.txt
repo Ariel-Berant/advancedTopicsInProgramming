@@ -1,8 +1,0 @@
-3-Only player 1
-MaxSteps=1000
-NumShells=10
-Rows=3
-Cols=5
-#####
-# 1 #
-#####

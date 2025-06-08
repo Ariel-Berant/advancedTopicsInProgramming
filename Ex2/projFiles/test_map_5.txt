@@ -1,8 +1,0 @@
-5-No tanks
-MaxSteps=1000
-NumShells=10
-Rows=3
-Cols=5
-#####
-#   #
-#####
