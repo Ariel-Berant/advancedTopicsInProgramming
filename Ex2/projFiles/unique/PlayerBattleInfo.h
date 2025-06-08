@@ -21,7 +21,7 @@ public:
     PlayerBattleInfo(int ClosestEnemyTankCol, int ClosestEnemyTankRow, int turnsUntillNextUpdate, 
                                          vector<vector<array<shared_ptr<matrixObject>, 2>>> &tankGameBoard, int numOfStartingTankBullets)
         : tankGameBoard(tankGameBoard), ClosestEnemyTankCol(ClosestEnemyTankCol), ClosestEnemyTankRow(ClosestEnemyTankRow),
-         TurnsUntillNextUpdate(turnsUntillNextUpdate), TurnsFromLastUpdate(-1), numOfStartingTankBullets(numOfStartingTankBullets) {
+         TurnsUntillNextUpdate(turnsUntillNextUpdate), TurnsFromLastUpdate(0), numOfStartingTankBullets(numOfStartingTankBullets) {
     }
     ~PlayerBattleInfo();
     PlayerBattleInfo(const PlayerBattleInfo& other);

@@ -24,7 +24,7 @@ public:
     matrixObject(int row, int col, objectType objectType);
     virtual ~matrixObject(); // Destructor
     const int *getLocation() const;       // Returns a pointer to the location array
-    void setLocation(int row, int col); // Sets the location of the object
+    void setLocation(int col, int row); // Sets the location of the object
     bool getIsAlive() const;        // Returns whether the object has been destroyed or not
     void takeAHit();
     objectType getType() const;

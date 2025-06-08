@@ -6,5 +6,3 @@ Cols=3
 ###extra
 #1 #extra
 extra row
-Tie, both players have zero shells for 40 steps
-

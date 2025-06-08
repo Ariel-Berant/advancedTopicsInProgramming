@@ -1,6 +1,6 @@
 #include "MovingObject.h"
 
-movingObject::movingObject(int row, int col, objectType oType, orientation orient) : matrixObject(row, col, oType), orient(orient), oldLocation{row, col} {
+movingObject::movingObject(int row, int col, objectType oType, orientation orient) : matrixObject(row, col, oType), orient(orient), oldLocation{col, row} {
     // Constructor implementation
 }
 
@@ -33,7 +33,7 @@ unique_ptr<int[]> movingObject::newLocation(int numOfCols, int numOfRows, bool a
         newLoc[0] = (numOfCols + location[0] + 1 * i) % numOfCols;
     }
     else if(orient == UR) {
-        newLoc[0] = (numOfCols +  location[0] + 1) * i % numOfCols;
+        newLoc[0] = (numOfCols +  location[0] + 1 * i) % numOfCols;
         newLoc[1] = (numOfRows + location[1] - 1 * i) % numOfRows;
     }
     else if(orient == U) {

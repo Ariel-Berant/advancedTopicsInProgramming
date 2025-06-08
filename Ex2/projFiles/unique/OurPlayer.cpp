@@ -16,28 +16,28 @@ void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAl
             objType = satellite_view.getObjectAt(currCol, currRow);
             playerGameBoard[currCol][currRow] = {nullptr, nullptr};
             if (objType == '#') {
-                playerGameBoard[currCol][currRow][0] = make_shared<matrixObject>(currCol, currRow, W);
+                playerGameBoard[currCol][currRow][0] = make_shared<matrixObject>(currRow, currCol, W);
             }
             else if (objType == '@') {
-                playerGameBoard[currCol][currRow][0] = make_shared<matrixObject>(currCol, currRow, M);
+                playerGameBoard[currCol][currRow][0] = make_shared<matrixObject>(currRow, currCol, M);
             }
             else if (objType == '1') {
-                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currCol, currRow, P1T, UNKNOWN);
+                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currRow, currCol, P1T, UNKNOWN);
                 player_index == 1  ?  playerTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1])) 
                                     : enemysTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1]));
             }
             else if (objType == '2') {
-                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currCol, currRow, P2T, UNKNOWN);
+                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currRow, currCol, P2T, UNKNOWN);
                 player_index == 1  ?  playerTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1])) 
                                     : enemysTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1]));
 
             }
             else if (objType == '*') {
-                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currCol, currRow, B, UNKNOWN);
+                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currRow, currCol, B, UNKNOWN);
             }
             else{
                 objectType oType = player_index == 1 ? P1T : P2T;
-                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currCol, currRow, oType, UNKNOWN);
+                playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currRow, currCol, oType, UNKNOWN);
                 playerTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1]));
                 tank.setLocation(currCol, currRow);
             }

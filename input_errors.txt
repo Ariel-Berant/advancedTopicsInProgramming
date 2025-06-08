@@ -1,2 +1,0 @@
-Error: The file 'test_map_1.txt' does not exist.
-

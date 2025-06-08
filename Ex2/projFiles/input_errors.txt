@@ -1,0 +1,5 @@
+Error: Too many columns in row 0.
+Error: Too many columns in row 0.
+Error: Too many columns in row 3.
+Error: Too many columns in row 3.
+Error: Too many rows in the map file.

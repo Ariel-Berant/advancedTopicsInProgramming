@@ -33,6 +33,7 @@ protected:
 
 
     bool isSurrounded(const int *tank2Loc) const;
+    bool checkIfOnSameLine(const int *otherLoc) const ;
     pair<ActionRequest, int> determineNextMove(int currentOrientation, int targetOrientation);
     int calculateTargetOrientation(int targetCol, int targetRow);
     pair<ActionRequest, int> findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist = 100);

@@ -21,22 +21,11 @@ void Player1TankAlgorithm::updateBattleInfo(BattleInfo& info) {
 
 Player1TankAlgorithm::Player1TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P1T) {}
 
-bool Player1TankAlgorithm::checkIfOnSameLine(const int *otherLoc) const {
-    if(abs(location[0] - otherLoc[0]) == abs(location[1] - otherLoc[1])){ 
-        // check if both tanks are on the same diagonal - linear function, bias cancels out, and slope is 1
-        return true;
-    }
-    if (location[0] == otherLoc[0] || location[1] == otherLoc[1]) { //check if both tanks are on the same row or column
-        return true;
-    }
-    return false;
-}
-
 
 ActionRequest Player1TankAlgorithm::play() {
     // First check for immediate danger\moves - if the other tank is in the same line, or if threatened. Otherwise, play normally
-
-    if (currTurn == 0){
+    currTurn++;
+    if (currTurn == 1){
         return ActionRequest::GetBattleInfo; // First turn, just get battle info
     }
 
@@ -44,7 +33,6 @@ ActionRequest Player1TankAlgorithm::play() {
     const int numOfRows = tankBattleInfo->getGameBoard()[0].size();
     tankBattleInfo->setTurnsFromLastUpdate();
     ActionRequest currAction;
-    currTurn++;
     const int closestEnemyLoc[2] = {tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow()}; 
 
     if (!moves.empty() && moves[0] == ActionRequest::GetBattleInfo) {

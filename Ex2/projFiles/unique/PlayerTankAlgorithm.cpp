@@ -38,7 +38,7 @@ void PlayerTankAlgorithm::useShot() {
 }
 
 void PlayerTankAlgorithm::updateTurn() {
-    currTurn += 2;
+    currTurn++;
     if(turnsUntilNextShot > 0){
         turnsUntilNextShot--;
     }
@@ -341,7 +341,7 @@ bool PlayerTankAlgorithm::canMakeMove(ActionRequest moveChosen, int numOfCols, i
         }
     }
     else if (moveChosen == ActionRequest::Shoot){
-        if (canShoot()){
+        if (!canShoot()){
             return false;
         }
     }
@@ -526,3 +526,13 @@ bool PlayerTankAlgorithm::friendlyFireRisk(int numOfCols, int numOfRows){
 
 
 
+bool PlayerTankAlgorithm::checkIfOnSameLine(const int *otherLoc) const {
+    if(abs(location[0] - otherLoc[0]) == abs(location[1] - otherLoc[1])){ 
+        // check if both tanks are on the same diagonal - linear function, bias cancels out, and slope is 1
+        return true;
+    }
+    if (location[0] == otherLoc[0] || location[1] == otherLoc[1]) { //check if both tanks are on the same row or column
+        return true;
+    }
+    return false;
+}

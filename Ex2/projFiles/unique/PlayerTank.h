@@ -14,7 +14,6 @@ public:
     ActionRequest play();
     vector<ActionRequest> playCalc(const int tank2Loc[2], int numOfRows, int numOfCols);
     vector<ActionRequest> handleSurrounded(const int *tank2Loc) const;
-    bool checkIfOnSameLine(const int *otherLoc) const;
 };
 
 class Player2TankAlgorithm : public PlayerTankAlgorithm{

@@ -47,7 +47,7 @@ inline bool writeToFile(const string &message, const string &filename)
     {
         try
         {
-            fileToWrite << message << endl;
+            fileToWrite << message;
             fileToWrite.close();
             return true;
         }

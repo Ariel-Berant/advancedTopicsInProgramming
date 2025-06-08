@@ -5,17 +5,21 @@ class PseudoTank : public movingObject
 {
 private:
     int inBackwards = 0; 
-    int shotsLeft = 0;
-    int turnsFromLastShot = 0;
+    int shotsLeft;
+    int turnsUntilNextShot = 0;
     int turnsInBackwards = 0;
+    int tankIndex; // This will be the serial number of the tank in his team (1 or 2)
 
 public:
     std::unique_ptr<TankAlgorithm> tankAlg;
-    PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal)
-        : movingObject(row, col, PseudoTankType, orientVal), inBackwards(false), shotsLeft(0), turnsFromLastShot(0), turnsInBackwards(0) {};
+    PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal, int numOfShots, int tankIndex)
+        : movingObject(row, col, PseudoTankType, orientVal), inBackwards(false), shotsLeft(numOfShots), turnsUntilNextShot(0), turnsInBackwards(0), tankIndex(tankIndex) {};
     ~PseudoTank() = default;
 
-    int getTankNum() const {
+    int getTankIndex() const {
+        return tankIndex;
+    }
+    int getPlayerTankNum() const {
         return (getType() == P1T) ? 1 : 2; // Assuming P1T is player 1's tank and P2T is player 2's tank
     }
 
@@ -27,21 +31,20 @@ public:
 
     // Getter and Setter for shotsLeft
     int getShotsLeft() const { return shotsLeft; }
-    void setShotsLeft(int val) { shotsLeft = val; }
-    void updateShotsLeft(int delta) { shotsLeft += delta; }
-    void incrementShotsLeft() { ++shotsLeft; }
-    void useShot() { --shotsLeft; turnsFromLastShot = 0; }
+    void useShot() { --shotsLeft; turnsUntilNextShot = 4; }
  
     // Getter and Setter for turnsFromLastShot
-    int getTurnsFromLastShot() const { return turnsFromLastShot; }
-    void setTurnsFromLastShot(int val) { turnsFromLastShot = val; }
-    void updateTurnsFromLastShot(int delta) { turnsFromLastShot += delta; }
-    void incrementTurnsFromLastShot() { ++turnsFromLastShot; }
+    void decrementTurnsFromLastShot() { 
+        if(turnsUntilNextShot > 0) 
+            --turnsUntilNextShot; 
+        else 
+            turnsUntilNextShot = 0;
+    }
 
     // Getter and Setter for orientation (using inherited orient member)
     orientation getOrientation() const { return orient; }
     void setOrientation(int orientVal) { orient = static_cast<orientation>(orientVal); }
 
     // canShoot function
-    bool canShoot() const { return shotsLeft > 0 && turnsFromLastShot > 4; }
+    bool canShoot() const { return shotsLeft > 0 && turnsUntilNextShot == 0; }
 };
