@@ -1,0 +1,30 @@
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
