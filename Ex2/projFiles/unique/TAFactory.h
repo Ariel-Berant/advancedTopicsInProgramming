@@ -10,8 +10,8 @@ class TAFactory : public TankAlgorithmFactory{
 private:
     /* data */
 public:
-    TAFactory(/* args */);
-    ~TAFactory();
+    TAFactory();
+    ~TAFactory() override;
 
     std::unique_ptr<TankAlgorithm> create(
             int player_index, [[maybe_unused]] int tank_index) const override;
