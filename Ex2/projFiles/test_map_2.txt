@@ -8,3 +8,4 @@ Cols=12
 # 1 @ #  2  
 ############ 3
 012345678901
+Tie, both players have zero tanks

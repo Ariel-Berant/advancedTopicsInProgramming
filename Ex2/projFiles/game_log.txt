@@ -28,3 +28,407 @@ Player number 2 start with 0 tanks.
 
 Turn number 1:
 
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+
+Starting game
+
+Player number 1 start with 0 tanks.
+
+Player number 2 start with 0 tanks.
+
+
+
+Turn number 1:
+
+
+
+Game summary:
+
+Turns played: 1
+
+Player number 1 has 0 tanks left out of 0.
+
+Player number 2 has 0 tanks left out of 0.
+
+0 out of 0 walls were destroyed
+
+0 out of 0 mines were destroyed
+
+Game result: A tie because both players have zero tanks.
+

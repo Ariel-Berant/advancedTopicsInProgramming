@@ -218,7 +218,7 @@ bool gameManager::initializeGame(const string &filename, TankAlgorithmFactory &t
     if(createMap(filename, tankFactory) == false){
         return false;
     }
-    if(numOfP1TanksLeft == 0 || !numOfP2TanksLeft == 0){
+    if(numOfP1TanksLeft == 0 || numOfP2TanksLeft == 0){
         printGameResultToLog();
     }
     numOfP1Tanks = numOfP1TanksLeft; // Store the initial number of tanks for player 1
@@ -841,7 +841,7 @@ void gameManager::readBoard(const string &filename){
 }
 
 gameManager::gameManager(TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory) :  tankAlgFactory(tankFactory), playersFactory(playerFactory), numOfRows(0), numOfCols(0),
-turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(vector<shared_ptr<PseudoTank>>{nullptr})
+turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(std::vector<std::shared_ptr<PseudoTank>>())
 {
 }
 
