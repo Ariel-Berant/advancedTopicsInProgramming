@@ -11,7 +11,7 @@ OurSattelliteView::OurSattelliteView(const vector<vector<array<shared_ptr<matrix
 }
 
 char OurSattelliteView::getObjectAt(size_t x, size_t y) const {
-    if(x > numOfCols || y > numOfRows){
+    if(x >= numOfCols || y >= numOfRows){
         return '&'; // Error: Out of bounds
     }
     if(x == tankX && y == tankY){

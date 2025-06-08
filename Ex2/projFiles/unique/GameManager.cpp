@@ -201,7 +201,7 @@ bool gameManager::initializeGame(const string &filename, TankAlgorithmFactory &t
     if (gameBoard){
         gameBoard = nullptr;
     }
-    if (tanks.empty()){
+    if (!tanks.empty()){
         tanks.clear();
     }
     if (!isValidFile(filename)){
@@ -572,9 +572,7 @@ void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
             OurSattelliteView satellite(*gameBoard, numOfCols , numOfRows, tanks[i]->getLocation()[0], tanks[i]->getLocation()[1]);
             writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                         to_string(tanks[i]->getLocation()[1])) + ") requested battle info.\n", LOG_FILE);
-            writeToFile("befeore updateTankWithBattleInfo.\n", LOG_FILE);
             tanksPlayer == 1 ? player1->updateTankWithBattleInfo(*tanks[i]->tankAlg, satellite) : player2->updateTankWithBattleInfo(*tanks[i]->tankAlg, satellite);
-            writeToFile("after updateTankWithBattleInfo.\n", LOG_FILE);
         }
     }
 }

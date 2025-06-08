@@ -4,8 +4,8 @@
 OurPlayer::OurPlayer(int player_index, size_t x, size_t y, size_t max_steps, size_t num_shells)
         : Player(player_index, x, y, max_steps, num_shells), // Call base class constructor
           player_index(player_index), x(x), y(y), max_steps(max_steps), num_shells(num_shells), lastTurnMapUpdated(-1){
-            playerGameBoard = vector<vector<array<shared_ptr<matrixObject>, 2>>>(y, 
-                vector<array<shared_ptr<matrixObject>, 2>>(x, {nullptr, nullptr}));
+            playerGameBoard = vector<vector<array<shared_ptr<matrixObject>, 2>>>(x, 
+                vector<array<shared_ptr<matrixObject>, 2>>(y, {nullptr, nullptr}));
 }
 
 void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAlgorithm& tank) {
@@ -15,10 +15,7 @@ void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAl
         while (objType != '&'){
             objType = satellite_view.getObjectAt(currCol, currRow);
             playerGameBoard[currCol][currRow] = {nullptr, nullptr};
-            if (objType == ' ') {
-                continue;
-            }
-            else if (objType == '#') {
+            if (objType == '#') {
                 playerGameBoard[currCol][currRow][0] = make_shared<matrixObject>(currCol, currRow, W);
             }
             else if (objType == '@') {
@@ -83,7 +80,8 @@ void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& sat
     
     if(tankRef.getCurrTurn() == lastTurnMapUpdated){
         worked = enemysTanks.empty();
-        if (!worked)
+
+        if (worked)
         {
             cerr << "Ah fuck." << endl;
             return; // Exit if the game board has not been updated for the current turn
@@ -91,6 +89,11 @@ void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& sat
         
         worked = playerTanks.empty();
         
+        if (worked)
+        {
+            cerr << "Ah fuck." << endl;
+            return; // Exit if the game board has not been updated for the current turn
+        }
     }
     array<int, 3> closestEnemy;
     // Update the tank's game board with the satellite view

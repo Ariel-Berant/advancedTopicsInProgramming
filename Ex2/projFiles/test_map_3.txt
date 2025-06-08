@@ -1,0 +1,10 @@
+3-Only player 1
+MaxSteps=1000
+NumShells=10
+Rows=3
+Cols=5
+#####
+# 1 #
+#####
+Tie, both players have zero shells for 40 steps
+
