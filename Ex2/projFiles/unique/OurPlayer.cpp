@@ -80,7 +80,7 @@ void OurPlayer::calculatePlayerGameBoard(SatelliteView& satellite_view, PlayerTa
 void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& satellite_view) {
     PlayerTankAlgorithm & tankRef = dynamic_cast<PlayerTankAlgorithm&>(tank); // Ensure the tank is of type PlayerTankAlgorithm
     int worked;    
-
+    
     if(tankRef.getCurrTurn() == lastTurnMapUpdated){
         worked = enemysTanks.empty();
         if (!worked)

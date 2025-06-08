@@ -82,8 +82,8 @@ bool gameManager::getRowsAndColsFromFile(const string &filename){
     {
         if (getline(file1, line))
         {
-            if (parseGameInfo(line, descriptions[i - 1], i)){
-                gotDims = true;
+            if (!parseGameInfo(line, descriptions[i - 1], i)){
+                gotDims = false;
                 break;
             }
         }
@@ -92,14 +92,15 @@ bool gameManager::getRowsAndColsFromFile(const string &filename){
             writeToFile("Error: Failed to read line from file.\n", INP_ERR_FILE);
             gotDims = false;
         }
-        file1.close();
     }
+    file1.close();
 
     return gotDims;
 }
 
 
 bool gameManager::addTankToMap(int playerNum, int currCol, int currRow, TankAlgorithmFactory &tankFactory){
+    writeToFile("Adding tank for player " + to_string(playerNum) + " .\n", LOG_FILE);
     orientation ornt = playerNum == 1 ? L : R;
     objectType type = playerNum == 1 ? P1T : P2T;
     shared_ptr<PseudoTank> tank = make_shared<PseudoTank>(currRow, currCol, type, ornt);
@@ -108,7 +109,7 @@ bool gameManager::addTankToMap(int playerNum, int currCol, int currRow, TankAlgo
         writeToFile("Error: Failed to create tank algorithm.\n", INP_ERR_FILE);
         return false;
     }
-    printToLogVector.emplace_back(nullptr);
+    printToLogVector.emplace_back("");
 
     tanks.push_back(tank);
 
@@ -141,7 +142,7 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
         cerr << "Error: Could not open the file '" << filename << "'." << std::endl;
         return false;
     }
-    for(int i = 0 ; i < 4 ; i++){
+    for(int i = 0 ; i < 5 ; i++){
         getline(file1, line); // Skip the first 5 lines
     }
     while (getline(file1, line)){
@@ -571,7 +572,9 @@ void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
             OurSattelliteView satellite(*gameBoard, numOfCols , numOfRows, tanks[i]->getLocation()[0], tanks[i]->getLocation()[1]);
             writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                         to_string(tanks[i]->getLocation()[1])) + ") requested battle info.\n", LOG_FILE);
+            writeToFile("befeore updateTankWithBattleInfo.\n", LOG_FILE);
             tanksPlayer == 1 ? player1->updateTankWithBattleInfo(*tanks[i]->tankAlg, satellite) : player2->updateTankWithBattleInfo(*tanks[i]->tankAlg, satellite);
+            writeToFile("after updateTankWithBattleInfo.\n", LOG_FILE);
         }
     }
 }
@@ -582,6 +585,7 @@ void gameManager::getMovesFromTanks(){
     unique_ptr<int[]> newLocation = nullptr;
     ActionRequest tanksMove;
     for (size_t i = 0; i < tanks.size(); i++){
+        writeToFile("currently handling tank " + to_string(i) + ".\n", LOG_FILE);
         if(!tanks[i]->getIsAlive()) // If the tank is not alive, skip it
         {
             printToLogVector[i] = "killed";
@@ -633,7 +637,7 @@ void gameManager::dealWithDamagedUnmovingObject(int i, const int objectNewCol, c
 
         if (currMovingObjects[i]->getIsAlive()){
             writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " stepped on a mine at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
-                        to_string(tanks[i]->getLocation()[1])) + ") requested battle info.\n", LOG_FILE);
+                        to_string(tanks[i]->getLocation()[1])) + ").\n", LOG_FILE);
             currMovingObjects[i]->takeAHit();
         }
         else{
@@ -841,13 +845,11 @@ void gameManager::readBoard(const string &filename){
 }
 
 gameManager::gameManager(TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory) :  tankAlgFactory(tankFactory), playersFactory(playerFactory), numOfRows(0), numOfCols(0),
-<<<<<<< HEAD
 turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(std::vector<std::shared_ptr<PseudoTank>>())
-=======
-turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(vector<shared_ptr<PseudoTank>>{})
->>>>>>> refs/remotes/origin/main
 {
+
 }
+
 
 gameManager::~gameManager() = default;
 

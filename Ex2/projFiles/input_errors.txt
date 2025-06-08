@@ -1,2 +1,4 @@
-Error: Too many rows in the map file.
+Error: Not enough columns in row 1.
+
+Error: Not enough columns in row 2.
 

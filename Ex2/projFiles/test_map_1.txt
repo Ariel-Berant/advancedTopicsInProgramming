@@ -7,4 +7,3 @@ Cols =10
 # 1  @   
 #   2    
           
-Tie, both players have zero tanks

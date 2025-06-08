@@ -34,20 +34,18 @@ bool Player1TankAlgorithm::checkIfOnSameLine(const int *otherLoc) const {
 
 
 ActionRequest Player1TankAlgorithm::play() {
+    // First check for immediate danger\moves - if the other tank is in the same line, or if threatened. Otherwise, play normally
+
+    if (currTurn == 0){
+        return ActionRequest::GetBattleInfo; // First turn, just get battle info
+    }
+
     const int numOfCols = tankBattleInfo->getGameBoard().size(); 
     const int numOfRows = tankBattleInfo->getGameBoard()[0].size();
     tankBattleInfo->setTurnsFromLastUpdate();
     ActionRequest currAction;
     currTurn++;
     const int closestEnemyLoc[2] = {tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow()}; 
-
-    // First check for immediate danger\moves - if the other tank is in the same line, or if threatened. Otherwise, play normally
-
-    if (currTurn == 0)
-    {
-        return ActionRequest::GetBattleInfo; // First turn, just get battle info
-        tankBattleInfo->resetTurnsFromLastUpdate(); // Reset tankBattleInfo->turnsFromLastUpdate for the first turn
-    }
 
     if (!moves.empty() && moves[0] == ActionRequest::GetBattleInfo) {
         moves.erase(moves.begin()); // Remove GetBattleInfo from the moves list

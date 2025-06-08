@@ -5,4 +5,3 @@ Rows=4
 Cols=6
 #1  #
 # 2 #
-Tie, both players have zero tanks
