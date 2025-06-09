@@ -87,7 +87,7 @@ ActionRequest Player2TankAlgorithm::calculateRun(array<int,4> closestBulletDetai
         }
     }
     else{
-        ActionRequest nextMove = findAdjSafe(numOfCols, numOfRows, closestBulletDetails[2]).first;
+        ActionRequest nextMove = findAdjSafe(numOfCols, numOfRows, P2T, closestBulletDetails[2]).first;
         if(nextMove == ActionRequest::DoNothing){
             return ActionRequest::DoNothing;
         }
@@ -119,7 +119,7 @@ ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols,
 
     else{
         unique_ptr<int[]> newLoc = newLocation(numOfCols, numOfRows);
-        if(isSafe(newLoc[0], newLoc[1], numOfCols, numOfRows, 1) && next.first == ActionRequest::MoveForward){
+        if(isSafe(newLoc[0], newLoc[1], numOfCols, numOfRows, 1, P2T) && next.first == ActionRequest::MoveForward){
             // we don't need to change the move it's stay next.first
         }
         else{
@@ -131,19 +131,19 @@ ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols,
             int targetOrientation = calculateTargetOrientation(targetLocInCol[0], targetLocInCol[1]);
             next = determineNextMove(orient, targetOrientation);
 
-            if(isSafe(targetLocInCol[0] + 1, targetLocInCol[1], numOfCols, numOfRows, 1) && isSafe(targetLocInCol[0] + 1, targetLocInCol[1], numOfCols, numOfRows, 2)){
+            if(isSafe(targetLocInCol[0] + 1, targetLocInCol[1], numOfCols, numOfRows, 1, P2T) && isSafe(targetLocInCol[0] + 1, targetLocInCol[1], numOfCols, numOfRows, 2, P2T)){
                 return next.first; // if the tank can move forward to the target location, do it
             }
-            else if(isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 1) && isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 2)){
+            else if(isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 1, P2T) && isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 2, P2T)){
                 next = determineNextMove(orient, calculateTargetOrientation(targetLocInRow[0], targetLocInRow[1]));
             }
             else{
                 int targetOrientation = calculateTargetOrientation(targetLocInRow[0], targetLocInRow[1]);
                 next = determineNextMove(orient, targetOrientation);
-                if(isSafe(targetLocInRow[0], targetLocInRow[1] + 1, numOfCols, numOfRows, 1) && isSafe(targetLocInRow[0], targetLocInRow[1] + 1, numOfCols, numOfRows, 2)){
+                if(isSafe(targetLocInRow[0], targetLocInRow[1] + 1, numOfCols, numOfRows, 1, P2T) && isSafe(targetLocInRow[0], targetLocInRow[1] + 1, numOfCols, numOfRows, 2, P2T)){
                     next = determineNextMove(orient, targetOrientation);
                 }
-                else if(isSafe(targetLocInRow[0], targetLocInRow[1] - 1, numOfCols, numOfRows, 1) && isSafe(targetLocInRow[0], targetLocInRow[1] - 1, numOfCols, numOfRows, 2)){
+                else if(isSafe(targetLocInRow[0], targetLocInRow[1] - 1, numOfCols, numOfRows, 1, P2T) && isSafe(targetLocInRow[0], targetLocInRow[1] - 1, numOfCols, numOfRows, 2, P2T)){
                     next = determineNextMove(orient, targetOrientation);
                 }
             }

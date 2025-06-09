@@ -36,7 +36,7 @@ protected:
     bool checkIfOnSameLine(const int *otherLoc) const ;
     pair<ActionRequest, int> determineNextMove(int currentOrientation, int targetOrientation);
     int calculateTargetOrientation(int targetCol, int targetRow);
-    pair<ActionRequest, int> findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist = 100);
+    pair<ActionRequest, int> findAdjSafe(int numOfCols, int numOfRows, objectType type, int closestBulletDist = 100);
     pair<int, int> getNeighborPointGivenOrient(orientation dir, int numOfCols, int numOfRows);
     pair<int, int> getDirectionOffset(orientation dir);
     orientation calculateNewOrientation(ActionRequest &tanksMove);
@@ -63,7 +63,7 @@ public:
     int getInBack() const; // Returns the inBackwards status
     void setInBackwards(int inBack); // Sets the inBackwards status
     virtual ActionRequest getAction() = 0; // Pure virtual function
-    bool isSafe(int col, int row, int numOfCols, int numOfRows, int movesAhead) const;
+    bool isSafe(int col, int row, int numOfCols, int numOfRows, int movesAhead, objectType type) const;
     vector<ActionRequest> getRotations(orientation start, orientation desired) const;
     bool canSeeOtherTank(const int otherLoc[2], int numOfCols, int numOfRows) const;
     bool hasBullets() const;

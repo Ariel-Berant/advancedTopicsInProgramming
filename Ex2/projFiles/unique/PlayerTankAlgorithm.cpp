@@ -48,7 +48,7 @@ int PlayerTankAlgorithm::getCurrTurn() const {
 }
 
 bool PlayerTankAlgorithm::isSafe(const int col, const int row,
-                  const int numOfCols, const int numOfRows, const int movesAhead) const{
+                  const int numOfCols, const int numOfRows, const int movesAhead, objectType type) const{
     matrixObject* unmovingObj = tankBattleInfo->getGameBoard()[col][row][0].get();
     matrixObject* bulletObj;
 
@@ -59,7 +59,7 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row,
 
     bulletObj = tankBattleInfo->getGameBoard()[col][row][1].get();
     if (bulletObj) {
-        if (bulletObj->getType() == P1T || bulletObj->getType() == P2T) {
+        if ((bulletObj->getType() == P1T && type == P2T) || (bulletObj->getType() == P2T && type == P1T)) {
             return false;
         }        
     }
@@ -87,7 +87,7 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row,
     };
     for (array<int, 3> loc: possibleLocs) {
         bulletObj = tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1].get();
-        if (bulletObj && bulletObj->getType() == B) {
+        if (tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1] != nullptr && (tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1]->getType() == B)) {
             bulletNotFound = false;
         }
     }
@@ -259,7 +259,7 @@ pair<ActionRequest, int> PlayerTankAlgorithm::determineNextMove(int currentOrien
   }
 
 
-  pair<ActionRequest, int> PlayerTankAlgorithm::findAdjSafe(int numOfCols, int numOfRows, int closestBulletDist){
+  pair<ActionRequest, int> PlayerTankAlgorithm::findAdjSafe(int numOfCols, int numOfRows, objectType type, int closestBulletDist){
     //search for a safest place among all the neighbors cells and return the fist move needed to get there 
     // int targetOrientation;
     for(int dir = 0 ;dir < 8 ; dir++){
@@ -267,8 +267,8 @@ pair<ActionRequest, int> PlayerTankAlgorithm::determineNextMove(int currentOrien
         // targetOrientation = calculateTargetOrientation(location[0], location[1], pointToCheck.first, pointToCheck.second);
         pair<ActionRequest, int> movesPair =  determineNextMove(orient, dir);
         int numOfMoves = movesPair.second;
-        if(isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves)
-                && isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves + 1)){
+        if(isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves, type)
+                && isSafe(pointToCheck.first, pointToCheck.second, numOfCols, numOfRows, numOfMoves + 1, type)){
             if(numOfMoves + 1 <= (closestBulletDist/2)){
                 return movesPair;
             }

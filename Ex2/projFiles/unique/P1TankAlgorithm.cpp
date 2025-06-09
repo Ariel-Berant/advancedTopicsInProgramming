@@ -41,10 +41,10 @@ ActionRequest Player1TankAlgorithm::play() {
     }
 
     // Check if current location is safe
-    if(!isSafe(location[0], location[1], numOfCols, numOfRows, 1) || !isSafe(location[0], location[1], numOfCols, numOfRows, 2)
-            || !isSafe(location[0], location[1], numOfCols, numOfRows, 3)){
+    if(!isSafe(location[0], location[1], numOfCols, numOfRows, 1, P1T) || !isSafe(location[0], location[1], numOfCols, numOfRows, 2, P1T)
+            || !isSafe(location[0], location[1], numOfCols, numOfRows, 3, P1T)){
         // If not safe, find a safe adjacent location
-        pair<ActionRequest, int> nextMove = findAdjSafe(numOfCols, numOfRows);
+        pair<ActionRequest, int> nextMove = findAdjSafe(numOfCols, numOfRows, P1T);
         if(nextMove.first != ActionRequest::DoNothing){
             return nextMove.first;
         }
@@ -144,7 +144,7 @@ vector<ActionRequest> Player1TankAlgorithm::playCalc(const int *tank2Loc,
             int nCol = (col + coords[0] + numOfCols) % numOfCols; // Wrap around cols
 
             if (!visited[nCol][nRow]
-            && isSafe(nCol, nRow,numOfCols, numOfRows, (int)path.size() + 1)) {
+            && isSafe(nCol, nRow,numOfCols, numOfRows, (int)path.size() + 1, P1T)) {
                 vector<array<int, 3>> newPath = path;
                 array<int, 3> newCoords = {nCol, nRow, coords[2]};
                 newPath.push_back(newCoords); // Add new direction to path
@@ -175,7 +175,7 @@ vector<ActionRequest> Player1TankAlgorithm::handleSurrounded(const int *tank2Loc
                 int nRow = (location[1] + coords[1] + numOfRows) % numOfRows; // Wrap around rows
                 int nCol = (location[0] + coords[0] +numOfCols) % numOfCols; // Wrap around cols
 
-                if (isSafe(nCol, nRow, numOfCols, numOfRows, 1)) {
+                if (isSafe(nCol, nRow, numOfCols, numOfRows, 1, P1T)) {
                     vector<ActionRequest> currRotations = getRotations(orient, (orientation)coords[2]);
                     for (ActionRequest move : currRotations) {
                         currMoves.push_back(move);
