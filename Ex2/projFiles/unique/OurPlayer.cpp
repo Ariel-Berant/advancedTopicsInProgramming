@@ -35,7 +35,7 @@ void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAl
             else if (objType == '*') {
                 playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currRow, currCol, B, UNKNOWN);
             }
-            else{
+            else if(objType == '%') {
                 objectType oType = player_index == 1 ? P1T : P2T;
                 playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currRow, currCol, oType, UNKNOWN);
                 playerTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1]));

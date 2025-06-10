@@ -6,3 +6,4 @@ Cols=5
 #####
 # 1 #
 #####
+Player 1 won with 1 tanks still alive
