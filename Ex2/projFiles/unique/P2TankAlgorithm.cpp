@@ -58,16 +58,16 @@ array<int,4> Player2TankAlgorithm::searchForBullets(int inCol, int inRow) const{
 
         int row = (i * numOfRows + location[1] + i * inRow) % numOfRows;
         int col = (i * numOfCols + location[0] + i * inCol) % numOfCols;
-
-        matrixObject* const obj = tankBattleInfo->getGameBoard()[col][row][1].get();
-        if(obj && obj->getType() == B){
-            bullet *b = dynamic_cast<bullet *>(obj);
-            if(b->getOrientation() == UNKNOWN){
-                b->setOrientation(getDirectionFromOffset(-inCol, -inRow));
+        auto& cell = tankBattleInfo->getGameBoard()[col][row][1];
+        auto bulletPtr = std::dynamic_pointer_cast<bullet>(cell);
+        if(bulletPtr && bulletPtr->getType() == B){
+            auto bulletPtr = std::dynamic_pointer_cast<bullet>(cell);
+            if(bulletPtr->getOrientation() == UNKNOWN){
+                bulletPtr->setOrientation(getDirectionFromOffset(-inCol, -inRow));
             }
-            if(b->getOrientation() == getDirectionFromOffset(-inCol, -inRow)){
-                b->setNewLocation(b->getLocation()[1], b->getLocation()[0]);
-                b->setNewLocation(b->getLocation()[1], b->getLocation()[0]);
+            if(bulletPtr->getOrientation() == getDirectionFromOffset(-inCol, -inRow)){
+                bulletPtr->setNewLocation(bulletPtr->getLocation()[1], bulletPtr->getLocation()[0]);
+                bulletPtr->setNewLocation(bulletPtr->getLocation()[1], bulletPtr->getLocation()[0]);
                 return {col, row, i, getDirectionFromOffset(inCol, inRow)};
             }
         }
@@ -148,6 +148,7 @@ ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols,
                 }
             }
         }
+
         return next.first;
     }
     return next.first;
@@ -173,6 +174,19 @@ pair<array<int,4>,int> Player2TankAlgorithm::searchForDangerObjects(){
     return {closestBulletDetails, numOfBulletsChasing}; // Return the closest bullet details and the number of bullets chasing
 }
 
+static std::string ActionRequestToString(ActionRequest action) {
+    switch (action) {
+        case ActionRequest::RotateLeft45: return "RotateLeft45";
+        case ActionRequest::RotateRight45: return "RotateRight45";
+        case ActionRequest::RotateLeft90: return "RotateLeft90";
+        case ActionRequest::RotateRight90: return "RotateRight90";
+        case ActionRequest::MoveForward: return "MoveForward";
+        case ActionRequest::MoveBackward: return "MoveBackward";
+        case ActionRequest::Shoot: return "Shoot";
+        case ActionRequest::DoNothing: return "DoNothing";
+        default: return "GetBattleInfo";
+    }
+}
 
 
 ActionRequest Player2TankAlgorithm::getAction(){
@@ -183,6 +197,7 @@ ActionRequest Player2TankAlgorithm::getAction(){
     const int numOfCols = tankBattleInfo->getGameBoard().size(); 
     const int numOfRows = tankBattleInfo->getGameBoard()[0].size();
     moveTankBullets(numOfCols, numOfRows);
+    const int closestEnemyLoc[2] = {tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow()}; 
 
     ActionRequest chosenMove = ActionRequest::DoNothing;
     if(shotsLeft < 0){ // if the tank still doesn't know with how many bullets it started the game
@@ -196,15 +211,29 @@ ActionRequest Player2TankAlgorithm::getAction(){
         chosenMove = calculateRun(closestBulletDetails, numOfCols, numOfRows, numOfBulletsChasing);
     }
     // if there is no danger
-    else if(tankBattleInfo->getTurnsUntillNextUpdate() + 1 == 0 || currTurn % 2 == 1){
+    else if(checkIfOnSameLine(closestEnemyLoc)){
+        chosenMove = determineNextMove(orient, calculateTargetOrientation(tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow())).first;
+    }
+    else if(tankBattleInfo->getTurnsUntillNextUpdate() + 1 == 0 || currTurn % 4 == 1){
         chosenMove = ActionRequest::GetBattleInfo; // If it's time to update the battle info, return the request
     }
     else{
         chosenMove =  calculateNoDangerAction(numOfCols, numOfRows);
     }
+    unique_ptr<int[]> newLoc = newLocation(numOfCols, numOfRows);
+    if (chosenMove == ActionRequest::MoveForward && tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][0] && tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][0]->getType() == W) {
+        // If the tank can't move forward because of a wall, shoot the wall
+        if(canShoot()){
+            return ActionRequest::Shoot;
+        }
+        else{
+            return ActionRequest::GetBattleInfo; // If the tank can't shoot, do nothing
+        }
+    }
     tankBattleInfo->setTurnsUntillNextUpdate();
     tankBattleInfo->setTurnsFromLastUpdate();
     updateTankData(chosenMove, numOfCols, numOfRows); // Default action if something goes wrong
     moveTankBullets(numOfCols, numOfRows); // Move the tank's bullets after updating the tank data
+    cout << "Tank at (" << location[0] << "," << location[1] << ") chose action: " << ActionRequestToString(chosenMove) << endl;
     return chosenMove;
 }

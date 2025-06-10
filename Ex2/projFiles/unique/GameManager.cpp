@@ -155,7 +155,7 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
             }
             switch (ch) {
             case '#':
-                addUnmovingObjectToMap('@', currCol, currRow);
+                addUnmovingObjectToMap('#', currCol, currRow);
                 break;
             case '1':
                 if(!addTankToMap(1, currCol, currRow, tankFactory)){
@@ -219,6 +219,7 @@ bool gameManager::initializeGame(const string &filename, TankAlgorithmFactory &t
     }
     if(numOfP1TanksLeft == 0 || numOfP2TanksLeft == 0){
         printGameResultToLog();
+        gameOver = true;
     }
     numOfP1Tanks = numOfP1TanksLeft; // Store the initial number of tanks for player 1
     numOfP2Tanks = numOfP2TanksLeft; // Store the initial number of tanks for player 2
@@ -254,7 +255,7 @@ std::string orientationToString(orientation o) {
     }
 }
 
-std::string ActionRequestToString(ActionRequest action) {
+static std::string ActionRequestToString(ActionRequest action) {
     switch (action) {
         case ActionRequest::RotateLeft45: return "RotateLeft45";
         case ActionRequest::RotateRight45: return "RotateRight45";
@@ -540,6 +541,7 @@ void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
         if(!tankCanMove){
             printToLogVector[i] += " (ignored)";
         }
+
         switch (tanksMove){
             case ActionRequest::RotateLeft45:
             case ActionRequest::RotateRight45:
@@ -627,7 +629,7 @@ void gameManager::dealWithDamagedUnmovingObject(int i, const int objectNewCol, c
         // if a tank stepped on a mine - they both destroyed
         (*gameBoard)[objectNewCol][objectNewRow][0] = nullptr; // remove the mine from the board
         int tanksPlayer = currMovingObjects[i]->getType() == P1T ? 1 : 2;
-
+        numOfMinesDestroyed++;
         if (currMovingObjects[i]->getIsAlive()){
             writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " stepped on a mine at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                         to_string(tanks[i]->getLocation()[1])) + ").\n", LOG_FILE);
@@ -635,7 +637,6 @@ void gameManager::dealWithDamagedUnmovingObject(int i, const int objectNewCol, c
         }
         else{
             writeToFile("The mine at (" + to_string(objectNewCol) + "," + to_string(objectNewCol) + ") has been explode.\n",LOG_FILE);
-            numOfMinesDestroyed++;
         }
     }
     else if (currMovingObjects[i]->getType() == B && (*gameBoard)[objectNewCol][objectNewRow][0]->getType() == W){
@@ -749,7 +750,7 @@ void gameManager::printToOurLogGameResult(){
     if( numOfP1TanksLeft == 0 && numOfP2TanksLeft == 0){
         writeToFile("Game result: A tie because both players have zero tanks.\n", LOG_FILE);
     }
-    else if(numOfP1TanksLeft == 0 || numOfP2TanksLeft != 0){
+    else if(numOfP1TanksLeft == 0 || numOfP2TanksLeft == 0){
         int winnerPlayerNum = numOfP2TanksLeft != 0 ? 2 : 1;
         /* int tanksLeftToWinner = numOfP2TanksLeft != 0 ? numOfP2TanksLeft : numOfP1TanksLeft; */
         writeToFile("Game result: Player " + to_string(winnerPlayerNum) + " won.\n", LOG_FILE);
@@ -769,7 +770,7 @@ void gameManager::printGameResultToLog(){
     if( numOfP1TanksLeft == 0 && numOfP2TanksLeft == 0){
         writeToFile("Tie, both players have zero tanks", gameMapFileName);
     }
-    else if(numOfP1TanksLeft == 0 || numOfP2TanksLeft != 0){
+    else if(numOfP1TanksLeft == 0 || numOfP2TanksLeft == 0){
         int winnerPlayerNum = numOfP2TanksLeft != 0 ? 2 : 1;
         int tanksLeftToWinner = numOfP2TanksLeft != 0 ? numOfP2TanksLeft : numOfP1TanksLeft;
         writeToFile("Player " + to_string(winnerPlayerNum) + " won with " + to_string(tanksLeftToWinner) + " tanks still alive\n", gameMapFileName);
@@ -788,7 +789,6 @@ void gameManager::run()
     writeToFile("Starting game\n", LOG_FILE);
     writeToFile("Player number 1 start with " + to_string(numOfP1TanksLeft) + " tanks.\n", LOG_FILE);
     writeToFile("Player number 2 start with " + to_string(numOfP2TanksLeft) + " tanks.\n", LOG_FILE);
-    bool gameOver = false;
 
     while (!gameOver && noBulletsCnt > 0 && turns < maxTurns){
         turns++;

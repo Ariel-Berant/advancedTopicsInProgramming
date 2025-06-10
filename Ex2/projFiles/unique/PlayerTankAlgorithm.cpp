@@ -304,23 +304,23 @@ void PlayerTankAlgorithm::setNumOfShotsLeft(int numOfShots) {
     shotsLeft = numOfShots;
 }
 
-void PlayerTankAlgorithm::updateBattleInfo(BattleInfo& info){
-    PlayerBattleInfo & battleInfoRef = dynamic_cast<PlayerBattleInfo&>(info);
-    for(auto currBullet = bulletsTankShot.begin(); currBullet != bulletsTankShot.end();){
-        pair<int,int> bulletOffset = getDirectionOffset((*currBullet)->getOrientation());
-        // because bullets move twice as tanks and because we already calculated a new location
-        //which the real bullet didnt reached yet, we need to find his real location
-        int bulletRealLocation[2] = {(*currBullet)->getLocation()[0] + bulletOffset.first, (*currBullet)->getLocation()[1] + bulletOffset.second};
-        auto& boardCell = battleInfoRef.getGameBoard()[bulletRealLocation[0]][bulletRealLocation[1]][1];
-        if(!boardCell || boardCell->getType() != B){
-            // if the location the bullet supposed to be is empty or has tank in it than the bullet had been destroyed
-            currBullet = bulletsTankShot.erase(currBullet);
-        }
-        else {
-            ++currBullet;
-        }
-    }
-}
+// void PlayerTankAlgorithm::updateBattleInfo(BattleInfo& info){
+//     PlayerBattleInfo & battleInfoRef = dynamic_cast<PlayerBattleInfo&>(info);
+//     for(auto currBullet = bulletsTankShot.begin(); currBullet != bulletsTankShot.end();){
+//         pair<int,int> bulletOffset = getDirectionOffset((*currBullet)->getOrientation());
+//         // because bullets move twice as tanks and because we already calculated a new location
+//         //which the real bullet didnt reached yet, we need to find his real location
+//         int bulletRealLocation[2] = {(*currBullet)->getLocation()[0] + bulletOffset.first, (*currBullet)->getLocation()[1] + bulletOffset.second};
+//         auto& boardCell = battleInfoRef.getGameBoard()[bulletRealLocation[0]][bulletRealLocation[1]][1];
+//         if(!boardCell || boardCell->getType() != B){
+//             // if the location the bullet supposed to be is empty or has tank in it than the bullet had been destroyed
+//             currBullet = bulletsTankShot.erase(currBullet);
+//         }
+//         else {
+//             ++currBullet;
+//         }
+//     }
+// }
 
 
 
@@ -404,12 +404,14 @@ void PlayerTankAlgorithm::shootMove(bool tankCanMove){
         useShot();
         unique_ptr<int[]> bulletLocation = newLocation(tankBattleInfo->getGameBoard().size(), tankBattleInfo->getGameBoard()[0].size());
         if(checkIfBulletHitObject(bulletLocation[0], bulletLocation[1])){
-            return; // If the bullet hit an object, do not add it to the bulletsTankShot vector
+            // If the bullet hit an object, do not add it to the bulletsTankShot vector
         }
-        // Create a new bullet and add it to the bulletsTankShot vector
-        bulletsTankShot.push_back(make_unique<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B)));
-        // Place the bullet on the game board
-        tankBattleInfo->getGameBoard()[bulletLocation[0]][bulletLocation[1]][1] = make_unique<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B));
+        else{
+            // Create a new bullet and add it to the bulletsTankShot vector
+            bulletsTankShot.push_back(make_unique<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B)));
+            // Place the bullet on the game board
+            tankBattleInfo->getGameBoard()[bulletLocation[0]][bulletLocation[1]][1] = make_unique<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B));
+        }
     }
 }
 

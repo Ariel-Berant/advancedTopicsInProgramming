@@ -26,11 +26,12 @@ ActionRequest Player1TankAlgorithm::play() {
     // First check for immediate danger\moves - if the other tank is in the same line, or if threatened. Otherwise, play normally
     currTurn++;
     if (currTurn == 1){
+
         return ActionRequest::GetBattleInfo; // First turn, just get battle info
     }
 
-    const int numOfCols = tankBattleInfo->getGameBoard().size(); 
     const int numOfRows = tankBattleInfo->getGameBoard()[0].size();
+    const int numOfCols = tankBattleInfo->getGameBoard().size(); 
     tankBattleInfo->setTurnsFromLastUpdate();
     ActionRequest currAction;
     const int closestEnemyLoc[2] = {tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow()}; 

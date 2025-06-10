@@ -28,7 +28,7 @@ void OurPlayer::buildPlayerGameBoard(SatelliteView& satellite_view, PlayerTankAl
             }
             else if (objType == '2') {
                 playerGameBoard[currCol][currRow][1] = make_shared<movingObject>(currRow, currCol, P2T, UNKNOWN);
-                player_index == 1  ?  playerTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1])) 
+                player_index == 2  ?  playerTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1])) 
                                     : enemysTanks.emplace_back(dynamic_pointer_cast<movingObject>(playerGameBoard[currCol][currRow][1]));
 
             }
@@ -83,7 +83,7 @@ void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& sat
 
         if (worked)
         {
-            cerr << "Ah fuck." << endl;
+            cerr << "Ah fuck creating enemysTanks." << endl;
             return; // Exit if the game board has not been updated for the current turn
         }
         
@@ -91,7 +91,7 @@ void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& sat
         
         if (worked)
         {
-            cerr << "Ah fuck." << endl;
+            cerr << "Ah fuck creating playerTanks." << endl;
             return; // Exit if the game board has not been updated for the current turn
         }
     }

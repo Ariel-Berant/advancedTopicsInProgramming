@@ -87,6 +87,7 @@ private:
     int numOfP1Tanks;
     int numOfP2Tanks;
     int numOfBulletsLeft;
+    bool gameOver = false;
     vector<string> printToLogVector; // Vector to store messages to print to the log file
     unique_ptr<vector<vector<array<shared_ptr<matrixObject>, 3>>>> gameBoard;
     vector<shared_ptr<bullet>> bullets; // Vector to store bullets in the air
