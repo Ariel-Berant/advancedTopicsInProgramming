@@ -80,7 +80,7 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row,
         {(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,  	row,                                                  		   			    L},
         {(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,  	(numOfRows + ((row - 2 * movesAhead - 1) % numOfRows)) % numOfRows,      	UL},
         {(numOfCols + ((col - 2 * movesAhead - 1) % numOfCols)) % numOfCols,  	(numOfRows + ((row + 2 * movesAhead - 1) % numOfRows)) % numOfRows,    	    DL},
-        {(numOfCols + ((col + 2 * movesAhead - 1) % numOfCols)) % numOfCols,  	(numOfRows + row - 2 * movesAhead - 1) % numOfRows,          	            UR},
+        {(numOfCols + ((col + 2 * movesAhead - 1) % numOfCols)) % numOfCols,  	(numOfRows + (row - 2 * movesAhead - 1) % numOfRows) % numOfRows,          	            UR},
         {(numOfCols + col + 2 * movesAhead - 1) % numOfCols,       			    (numOfRows + ((row + 2 * movesAhead - 1) % numOfRows)) % numOfRows,      	DR},
         {(numOfCols + col + 2 * movesAhead - 1) % numOfCols,       			    row,                                                     	                R},
         {col,                                                      			    (numOfRows + row + 2 * movesAhead - 1) % numOfRows,          	            D}

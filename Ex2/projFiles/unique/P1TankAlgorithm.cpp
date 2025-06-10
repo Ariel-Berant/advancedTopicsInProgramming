@@ -143,8 +143,9 @@ vector<ActionRequest> Player1TankAlgorithm::playCalc(const int *tank2Loc,
             int nRow = (row + coords[1] + numOfRows) % numOfRows; // Wrap around rows
             int nCol = (col + coords[0] + numOfCols) % numOfCols; // Wrap around cols
 
-            if (!visited[nCol][nRow]
-            && isSafe(nCol, nRow,numOfCols, numOfRows, (int)path.size() + 1, P1T)) {
+            if ((!visited[nCol][nRow]
+            && isSafe(nCol, nRow,numOfCols, numOfRows, (int)path.size() + 1, P1T))
+            || (nCol == tank2Loc[0] && nRow == tank2Loc[1])) {
                 vector<array<int, 3>> newPath = path;
                 array<int, 3> newCoords = {nCol, nRow, coords[2]};
                 newPath.push_back(newCoords); // Add new direction to path

@@ -47,6 +47,7 @@ cmake-build-debug
 ./html
 ./xml
 ./inputTests/*
+*.txt
 Doxyfile
 
 # game file
