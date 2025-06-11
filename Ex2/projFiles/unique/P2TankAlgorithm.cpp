@@ -99,7 +99,7 @@ ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols,
     int targetOrientation = calculateTargetOrientation(closestEnemyLoc[0], closestEnemyLoc[1]);
     pair<ActionRequest, int> next = determineNextMove(orient, targetOrientation);
     if(checkIfOnSameLine(closestEnemyLoc)){
-        if(next.second == 0 && canShoot()){
+        if(canShoot()){
             // if the tank can shoot and its already facing the target tank- shoot
             if(friendlyFireRisk(numOfCols, numOfRows, closestEnemyLoc[0], closestEnemyLoc[1])){
                 return ActionRequest::GetBattleInfo; // if there is a risk of friendly fire, ask for battle info

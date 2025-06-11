@@ -4,7 +4,6 @@
 class PseudoTank : public movingObject
 {
 private:
-    int inBackwards = 0; 
     int shotsLeft;
     int turnsUntilNextShot = 0;
     int turnsInBackwards = 0;
@@ -13,7 +12,7 @@ private:
 public:
     std::unique_ptr<TankAlgorithm> tankAlg;
     PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal, int numOfShots, int tankIndex)
-        : movingObject(row, col, PseudoTankType, orientVal), inBackwards(false), shotsLeft(numOfShots), turnsUntilNextShot(0), turnsInBackwards(0), tankIndex(tankIndex) {};
+        : movingObject(row, col, PseudoTankType, orientVal), shotsLeft(numOfShots), turnsUntilNextShot(0), turnsInBackwards(0), tankIndex(tankIndex) {};
     ~PseudoTank() = default;
 
     int getTankIndex() const {
@@ -24,8 +23,8 @@ public:
     }
 
     // Getter and Setter for inBackwards
-    int getInBackwards() const { return inBackwards; }
-    void setInBackwards(int val) { inBackwards = val; }
+    int getInBackwards() const { return turnsInBackwards; }
+    void setInBackwards(int val) { turnsInBackwards = val; }
     int getInBack() const {return turnsInBackwards;}
 
 
