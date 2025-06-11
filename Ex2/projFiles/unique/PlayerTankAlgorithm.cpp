@@ -305,13 +305,13 @@ void PlayerTankAlgorithm::setNumOfShotsLeft(int numOfShots) {
 }
 
 void PlayerTankAlgorithm::updateBattleInfo(BattleInfo& info){
-    PlayerBattleInfo & battleInfoRef = dynamic_cast<PlayerBattleInfo&>(info);
+    tankBattleInfo = make_unique<PlayerBattleInfo>(dynamic_cast<PlayerBattleInfo&>(info));
     for(auto currBullet = bulletsTankShot.begin(); currBullet != bulletsTankShot.end();){
         pair<int,int> bulletOffset = getDirectionOffset((*currBullet)->getOrientation());
         // because bullets move twice as tanks and because we already calculated a new location
         //which the real bullet didnt reached yet, we need to find his real location
         int bulletRealLocation[2] = {(*currBullet)->getLocation()[0] + bulletOffset.first, (*currBullet)->getLocation()[1] + bulletOffset.second};
-        auto& boardCell = battleInfoRef.getGameBoard()[bulletRealLocation[0]][bulletRealLocation[1]][1];
+        auto& boardCell = tankBattleInfo->getGameBoard()[bulletRealLocation[0]][bulletRealLocation[1]][1];
         if(!boardCell || boardCell->getType() != B){
             // if the location the bullet supposed to be is empty or has tank in it than the bullet had been destroyed
             currBullet = bulletsTankShot.erase(currBullet);
@@ -501,13 +501,19 @@ void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows) {
     }
 }
 
-bool PlayerTankAlgorithm::friendlyFireRisk(int numOfCols, int numOfRows){
+bool PlayerTankAlgorithm::friendlyFireRisk(int numOfCols, int numOfRows, int targetCol, int targetRow) {
     // Check if the tank can shoot without hitting tanks from his own team (there are no friendly tanks between him and the target)
-    int targetCol = tankBattleInfo->getClosestEnemyTankCol();
-    int targetRow = tankBattleInfo->getClosestEnemyTankRow();
     if (targetCol == -1 || targetRow == -1) {
         return false; // No enemy tank found
     }
+
+    int otherLoc[2] = {targetCol, targetRow};
+
+    if (!checkIfOnSameLine(otherLoc))  // Check if the target is out of bounds
+    {
+        return false; // Target is not in the same row or column
+    }
+    
     int currCol = location[0];
     int currRow = location[1];
     pair<int, int> offsetToCheck = getDirectionOffset(getOrientation());

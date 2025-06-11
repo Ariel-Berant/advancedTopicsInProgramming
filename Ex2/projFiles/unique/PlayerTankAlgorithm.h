@@ -48,7 +48,7 @@ protected:
     bool canMakeMove(ActionRequest moveChosen, int numOfCols, int numOfRows);
     void moveTankBullets(int numOfCols, int numOfRows);
     bool checkIfBulletHitObject(int col, int row) const;
-    bool friendlyFireRisk(int numOfCols, int numOfRows); // Checks if the tank can shoot without hitting tanks from
+    bool friendlyFireRisk(int numOfCols, int numOfRows, int targetCol, int targetRow); // Checks if the tank can shoot without hitting tanks from
                                                                   // his own team (there are no tanks fire between him and the target), return false if it can shoot
 
     
