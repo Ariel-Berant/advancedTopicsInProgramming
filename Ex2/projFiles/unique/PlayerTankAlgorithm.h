@@ -68,7 +68,7 @@ public:
     bool canSeeOtherTank(const int otherLoc[2], int numOfCols, int numOfRows) const;
     bool hasBullets() const;
     int getNumOfShotsLeft() const;
-    virtual void updateBattleInfo(BattleInfo& info) = 0;
+    void updateBattleInfo(BattleInfo& info);
     int getCurrTurn() const;
     void setNumOfShotsLeft(int numOfShots);
 

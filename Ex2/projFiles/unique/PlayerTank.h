@@ -6,10 +6,10 @@
 
 
 class Player1TankAlgorithm : public PlayerTankAlgorithm {
+    ActionRequest playHelper(int numOfRows, int numOfCols, const int *closestEnemyLoc);
 public:
     Player1TankAlgorithm(int row, int col, orientation orient);
     ActionRequest getAction() override;
-    void updateBattleInfo(BattleInfo &info) override;
     void updateTurn() override;
     ActionRequest play();
     vector<ActionRequest> playCalc(const int tank2Loc[2], int numOfRows, int numOfCols);
@@ -22,10 +22,11 @@ private:
     ActionRequest calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing);
     ActionRequest calculateNoDangerAction(const int numOfCols, const int numOfRows);
     pair<array<int,4>,int> searchForDangerObjects();
+    ActionRequest searchAndDealWithDanger(int numOfCols, int numOfRows);
+    ActionRequest noDangerAction(int numOfCols, int numOfRows, const int closestEnemyLoc[2]);
     
 public:
     ActionRequest getAction() override;
-    void updateBattleInfo(BattleInfo &info) override;
     Player2TankAlgorithm(int x, int y, orientation orient);
     array<int,4> searchForBullets(int inCols, int inRows) const;
 };

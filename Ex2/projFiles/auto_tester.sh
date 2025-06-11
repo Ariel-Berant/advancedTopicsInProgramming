@@ -49,7 +49,7 @@ for input in $input_pattern; do
     fi
 done
 
-echo "\nSummary:"
+echo "Summary:"
 echo "Total tests: $total"
 echo "Failures: $failures"
 if [[ $failures -eq 0 ]]; then

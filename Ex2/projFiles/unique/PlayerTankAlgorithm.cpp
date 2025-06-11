@@ -50,16 +50,16 @@ int PlayerTankAlgorithm::getCurrTurn() const {
 bool PlayerTankAlgorithm::isSafe(const int col, const int row,
                   const int numOfCols, const int numOfRows, const int movesAhead, objectType type) const{
     matrixObject* unmovingObj = tankBattleInfo->getGameBoard()[col][row][0].get();
-    matrixObject* bulletObj;
+    matrixObject* movingObj;
 
     // Check for walls or mines
     if (unmovingObj && (unmovingObj->getType() == W || unmovingObj->getType() == M)) {
         return false;
     }
 
-    bulletObj = tankBattleInfo->getGameBoard()[col][row][1].get();
-    if (bulletObj) {
-        if ((bulletObj->getType() == P1T && type == P2T) || (bulletObj->getType() == P2T && type == P1T)) {
+    movingObj = tankBattleInfo->getGameBoard()[col][row][1].get();
+    if (movingObj) {
+        if ((movingObj->getType() == P1T && type == P1T) || (movingObj->getType() == P2T && type == P2T)) {
             return false;
         }        
     }
@@ -86,7 +86,7 @@ bool PlayerTankAlgorithm::isSafe(const int col, const int row,
         {col,                                                      			    (numOfRows + row + 2 * movesAhead - 1) % numOfRows,          	            D}
     };
     for (array<int, 3> loc: possibleLocs) {
-        bulletObj = tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1].get();
+        movingObj = tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1].get();
         if (tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1] != nullptr && (tankBattleInfo->getGameBoard()[loc[0]][loc[1]][1]->getType() == B)) {
             bulletNotFound = false;
         }
@@ -304,23 +304,23 @@ void PlayerTankAlgorithm::setNumOfShotsLeft(int numOfShots) {
     shotsLeft = numOfShots;
 }
 
-// void PlayerTankAlgorithm::updateBattleInfo(BattleInfo& info){
-//     PlayerBattleInfo & battleInfoRef = dynamic_cast<PlayerBattleInfo&>(info);
-//     for(auto currBullet = bulletsTankShot.begin(); currBullet != bulletsTankShot.end();){
-//         pair<int,int> bulletOffset = getDirectionOffset((*currBullet)->getOrientation());
-//         // because bullets move twice as tanks and because we already calculated a new location
-//         //which the real bullet didnt reached yet, we need to find his real location
-//         int bulletRealLocation[2] = {(*currBullet)->getLocation()[0] + bulletOffset.first, (*currBullet)->getLocation()[1] + bulletOffset.second};
-//         auto& boardCell = battleInfoRef.getGameBoard()[bulletRealLocation[0]][bulletRealLocation[1]][1];
-//         if(!boardCell || boardCell->getType() != B){
-//             // if the location the bullet supposed to be is empty or has tank in it than the bullet had been destroyed
-//             currBullet = bulletsTankShot.erase(currBullet);
-//         }
-//         else {
-//             ++currBullet;
-//         }
-//     }
-// }
+void PlayerTankAlgorithm::updateBattleInfo(BattleInfo& info){
+    PlayerBattleInfo & battleInfoRef = dynamic_cast<PlayerBattleInfo&>(info);
+    for(auto currBullet = bulletsTankShot.begin(); currBullet != bulletsTankShot.end();){
+        pair<int,int> bulletOffset = getDirectionOffset((*currBullet)->getOrientation());
+        // because bullets move twice as tanks and because we already calculated a new location
+        //which the real bullet didnt reached yet, we need to find his real location
+        int bulletRealLocation[2] = {(*currBullet)->getLocation()[0] + bulletOffset.first, (*currBullet)->getLocation()[1] + bulletOffset.second};
+        auto& boardCell = battleInfoRef.getGameBoard()[bulletRealLocation[0]][bulletRealLocation[1]][1];
+        if(!boardCell || boardCell->getType() != B){
+            // if the location the bullet supposed to be is empty or has tank in it than the bullet had been destroyed
+            currBullet = bulletsTankShot.erase(currBullet);
+        }
+        else {
+            ++currBullet;
+        }
+    }
+}
 
 
 
@@ -500,6 +500,7 @@ void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows) {
         }
     }
 }
+
 bool PlayerTankAlgorithm::friendlyFireRisk(int numOfCols, int numOfRows){
     // Check if the tank can shoot without hitting tanks from his own team (there are no friendly tanks between him and the target)
     int targetCol = tankBattleInfo->getClosestEnemyTankCol();
