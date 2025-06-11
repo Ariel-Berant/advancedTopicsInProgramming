@@ -190,7 +190,7 @@ ActionRequest Player2TankAlgorithm::noDangerAction(int numOfCols, int numOfRows,
         return  calculateNoDangerAction(numOfCols, numOfRows);
     }
 
-    return ActionRequest::DoNothing; // Default action if something goes wrong
+    return ActionRequest::GetBattleInfo; // Default action if something goes wrong
 }
 
 
@@ -221,7 +221,7 @@ ActionRequest Player2TankAlgorithm::getAction(){
     }
     bool running = false;
     ActionRequest chosenMove = searchAndDealWithDanger(numOfCols, numOfRows);
-    if(chosenMove == ActionRequest::DoNothing){
+    if(chosenMove != ActionRequest::DoNothing){
         // this will be the chosen move- safety first
         running = true;
     }
@@ -244,3 +244,10 @@ ActionRequest Player2TankAlgorithm::getAction(){
     moveTankBullets(numOfCols, numOfRows); // Move the tank's bullets after updating the tank data
     return chosenMove;
 }
+
+// Only backwards
+// Backwards, then some move(out of all possible moves)
+// Backwards into a wall
+// Backwards, then forwards, then backwards
+// Give all 1 bullet, surround
+// 

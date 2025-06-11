@@ -49,6 +49,7 @@ cmake-build-debug
 ./inputTests/*
 *.txt
 Doxyfile
+Debug*
 
 # game file
 tanks_game

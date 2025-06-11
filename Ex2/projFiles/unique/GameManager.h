@@ -4,7 +4,6 @@
 #include "MovingObject.h"
 #include "UnmovingObject.h"
 #include "Bullet.h"
-#include "Move.h"
 #include "Mine.h"
 #include "Wall.h"
 #include "Orientation.h"
