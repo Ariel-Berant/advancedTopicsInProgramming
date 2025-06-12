@@ -28,6 +28,12 @@ echo -e "6-Extra rows/cols\nMaxSteps=1000\nNumShells=10\nRows=2\nCols=3\n###extr
 # Test 7: Missing rows/cols (should pad with spaces)
 echo -e "7-Missing rows/cols\nMaxSteps=1000\nNumShells=10\nRows=4\nCols=6\n#1  #\n# 2 #" > test_map_7.txt
 
+# Test 8: Enclosed tanks in walls
+echo -e "8-Missing rows/cols\nMaxSteps= 1000\nNumShells =1\nRows=3\nCols = 6\n######\n#1##2#\n######" > test_map_8.txt
+
+# Test 9: Enclosed tanks in mines
+echo -e "9-Missing rows/cols\nMaxSteps= 1000\nNumShells =1\nRows=3\nCols = 6\n@@@@@@\n@1@@@@\n@@@@2@" > test_map_9.txt
+
 input_pattern="test_map_*.txt"
 failures=0
 total=0

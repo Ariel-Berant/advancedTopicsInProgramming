@@ -83,7 +83,6 @@ void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& sat
 
         if (worked)
         {
-            cerr << "Ah fuck creating enemysTanks." << endl;
             return; // Exit if the game board has not been updated for the current turn
         }
         
@@ -91,7 +90,6 @@ void OurPlayer::updateTankWithBattleInfo(TankAlgorithm& tank, SatelliteView& sat
         
         if (worked)
         {
-            cerr << "Ah fuck creating playerTanks." << endl;
             return; // Exit if the game board has not been updated for the current turn
         }
     }
