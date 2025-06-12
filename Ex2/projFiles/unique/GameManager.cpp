@@ -433,8 +433,12 @@ void gameManager::waitingforBackwordMove(ActionRequest tanksMove, int i){
             printToLogVector.emplace_back(ActionRequestToString(tanksMove) + " (ignored)");
         }
         else { // If the tank is in backwards mode and tries to do nothing, we just increase the inBackwards counter
-            tanks[i]->setInBackwards(tanks[i]->getInBack() + 1);
-             printToLogVector.emplace_back(ActionRequestToString(tanksMove));
+            writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
+                                      to_string(tanks[i]->getLocation()[1])) + ") is still waiting for a backwards move.\n", LOG_FILE);
+            printToLogVector.emplace_back(ActionRequestToString(tanksMove));
+        }
+        
+        tanks[i]->setInBackwards(tanks[i]->getInBack() + 1);
             if(tanks[i]->getInBack() == 3){
                 tankNewLocation = tanks[i]->newLocation(numOfCols, numOfRows, true);
                 tanks[i]->setNewLocation(tankNewLocation[1], tankNewLocation[0]);
@@ -445,7 +449,6 @@ void gameManager::waitingforBackwordMove(ActionRequest tanksMove, int i){
                 writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                                       to_string(tanks[i]->getLocation()[1])) + ") stayed in place waiting until he can move backwards.\n", LOG_FILE);
             }
-        }
     }
 }
 
@@ -501,6 +504,7 @@ void gameManager::shootMove(bool tankCanMove,/*  ActionRequest tanksMove,  */int
         currMovingObjects.emplace_back(b);
         bullets.emplace_back(b);
         tanks[i]->useShot();
+        numOfBulletsLeft--;
         writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                         to_string(tanks[i]->getLocation()[1])) + ") shot a bullet.\n", LOG_FILE);
         writeToFile("The new bullet starting location is (" + (to_string(b->getLocation()[0]) + "," + to_string(b->getLocation()[1])) + ").\n", LOG_FILE);
@@ -550,6 +554,7 @@ void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
                 tanks[i]->setOrientation(calculateNewOrientation(tanksMove, i));
                 writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                         to_string(tanks[i]->getLocation()[1])) + ") turned from " + orientationToString(ornt) + " to " + orientationToString(tanks[i]->getOrientation()) + ".\n", LOG_FILE);
+                tanks[i]->setInBackwards(0);
                 break;
             case ActionRequest::DoNothing:
                 writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
@@ -558,17 +563,20 @@ void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
                 break;
             case ActionRequest::MoveForward:
                 moveForwardMove(tankCanMove, /* tanksMove,  */i);
+                tanks[i]->setInBackwards(0);
                 break;
             case ActionRequest::MoveBackward:
                 moveBackwardMove(tankCanMove, /* tanksMove,  */i);
                 break;
             case ActionRequest::Shoot:
                 shootMove(tankCanMove, /* tanksMove,  */i);
+                tanks[i]->setInBackwards(0);
                 break;
             default:
                 break;
         }
         if(tanksMove == ActionRequest::GetBattleInfo){
+            tanks[i]->setInBackwards(0);
             OurSattelliteView satellite(*gameBoard, numOfCols , numOfRows, tanks[i]->getLocation()[0], tanks[i]->getLocation()[1]);
             writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                         to_string(tanks[i]->getLocation()[1])) + ") requested battle info.\n", LOG_FILE);
