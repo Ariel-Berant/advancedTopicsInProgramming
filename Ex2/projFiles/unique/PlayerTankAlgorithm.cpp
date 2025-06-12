@@ -502,7 +502,6 @@ void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows) {
             tankBattleInfo->getGameBoard()[newBulletLocation[0]][newBulletLocation[1]][1] = currBulletPtr;
             tankBattleInfo->getGameBoard()[oldCol][oldRow][1] = nullptr;
             (*currBullet)->setNewLocation(newBulletLocation[1], newBulletLocation[0]);
-            cout << " bullet new loc is " << newBulletLocation[0] << "," << newBulletLocation[1] <<endl;
         }
     }
 }
