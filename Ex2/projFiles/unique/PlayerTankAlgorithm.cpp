@@ -357,16 +357,12 @@ void PlayerTankAlgorithm::waitingforBackwordMove(ActionRequest tanksMove, int nu
         setInBackwards(0);
     }
     else {
-        if (tanksMove != ActionRequest::DoNothing){
-        }
-        else { // If the tank is in backwards mode and tries to do nothing, we just increase the inBackwards counter
-            setInBackwards(getInBack() + 1);
-            if(getInBack() == 3){
-                tankNewLocation = newLocation(numOfCols, numOfRows, true);
-                tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = std::move(tankBattleInfo->getGameBoard()[location[0]][location[1]][1]);
-                //tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
-                setNewLocation(tankNewLocation[0], tankNewLocation[1]);
-            }
+        setInBackwards(getInBack() + 1);
+        if(getInBack() == 3){
+            tankNewLocation = newLocation(numOfCols, numOfRows, true);
+            tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = tankBattleInfo->getGameBoard()[location[0]][location[1]][1];
+            tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
+            setNewLocation(tankNewLocation[1], tankNewLocation[0]);
         }
     }
 }
@@ -378,7 +374,7 @@ void PlayerTankAlgorithm::moveForwardMove(bool tankCanMove ,/* ActionRequest tan
         tankNewLocation = newLocation(numOfCols, numOfRows);
         tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = tankBattleInfo->getGameBoard()[location[0]][location[1]][1];
         tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
-        setNewLocation(tankNewLocation[0], tankNewLocation[1]);
+        setNewLocation(tankNewLocation[1], tankNewLocation[0]);
     }
 }
 
@@ -388,9 +384,9 @@ void PlayerTankAlgorithm::moveBackwardMove(bool tankCanMove ,/* ActionRequest ta
         if (getInBack() >= 3){ // if we have moved backwards last turn and want to move
             setInBackwards(getInBack() + 1);
             tankNewLocation = newLocation(numOfCols, numOfRows, true);
-            tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = std::move(tankBattleInfo->getGameBoard()[location[0]][location[1]][1]);
-            //tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
-            setNewLocation(tankNewLocation[0], tankNewLocation[1]);
+            tankBattleInfo->getGameBoard()[tankNewLocation[0]][tankNewLocation[1]][1] = tankBattleInfo->getGameBoard()[location[0]][location[1]][1];
+            tankBattleInfo->getGameBoard()[location[0]][location[1]][1] = nullptr;
+            setNewLocation(tankNewLocation[1], tankNewLocation[0]);
         }
         else{
             setInBackwards(1);
@@ -447,18 +443,21 @@ void PlayerTankAlgorithm::updateTankData(ActionRequest &tanksMove, int numOfCols
             case ActionRequest::RotateLeft90:
             case ActionRequest::RotateRight90:
                 setOrientation(calculateNewOrientation(tanksMove));
+                setInBackwards(0);
                 break;
             case ActionRequest::DoNothing:
                 setInBackwards(0);
                 break;
             case ActionRequest::MoveForward:
                 moveForwardMove(tankCanMove, /* tanksMove, */ numOfCols, numOfRows);
+                setInBackwards(0);
                 break;
             case ActionRequest::MoveBackward:
                 moveBackwardMove(tankCanMove, /* tanksMove, */ numOfCols, numOfRows);
                 break;
             case ActionRequest::Shoot:
                 shootMove(tankCanMove);
+                setInBackwards(0);
                 break;
             default:
                 break;
@@ -500,7 +499,7 @@ void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows) {
             // Place the bullet on the new cell, remove from old cell
             tankBattleInfo->getGameBoard()[newBulletLocation[0]][newBulletLocation[1]][1] = currBulletPtr;
             tankBattleInfo->getGameBoard()[oldCol][oldRow][1] = nullptr;
-            (*currBullet)->setNewLocation(newBulletLocation[0], newBulletLocation[1]);
+            (*currBullet)->setNewLocation(newBulletLocation[1], newBulletLocation[0]);
             cout << " bullet new loc is " << newBulletLocation[0] << "," << newBulletLocation[1] <<endl;
         }
     }
