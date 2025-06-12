@@ -408,7 +408,7 @@ void PlayerTankAlgorithm::shootMove(bool tankCanMove){
         }
         else{
             // Create a new bullet and add it to the bulletsTankShot vector
-            bulletsTankShot.push_back(make_shared<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B)));
+            bulletsTankShot.push_back(make_shared<bullet>(bullet(bulletLocation[1], bulletLocation[0], getOrientation(), B)));
             // Place the bullet on the game board
             tankBattleInfo->getGameBoard()[bulletLocation[0]][bulletLocation[1]][1] = make_shared<bullet>(bullet(bulletLocation[0], bulletLocation[1], getOrientation(), B));
         }
@@ -468,7 +468,12 @@ void PlayerTankAlgorithm::updateTankData(ActionRequest &tanksMove, int numOfCols
 bool PlayerTankAlgorithm::checkIfBulletHitObject(int col, int row) const {
     // Check if the bullet hit a wall
     if (tankBattleInfo->getGameBoard()[col][row][0] && tankBattleInfo->getGameBoard()[col][row][0]->getType() == W) {
-        tankBattleInfo->getGameBoard()[col][row][0] = nullptr; // Remove the wall from the game board
+        tankBattleInfo->getGameBoard()[col][row][0]->takeAHit(); // Remove the wall from the game board
+        if (!tankBattleInfo->getGameBoard()[col][row][0]->getIsAlive())
+        {
+            tankBattleInfo->getGameBoard()[col][row][0] = nullptr; // Remove the wall if it has been destroyed
+        }
+        
         return true; // Bullet hit a wall
     }
     // Check if the bullet hit a moving object (tank)
