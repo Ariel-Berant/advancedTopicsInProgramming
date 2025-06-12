@@ -405,8 +405,6 @@ void PlayerTankAlgorithm::shootMove(bool tankCanMove){
     if (tankCanMove){
         useShot();
         unique_ptr<int[]> bulletLocation = newLocation(tankBattleInfo->getGameBoard().size(), tankBattleInfo->getGameBoard()[0].size());
-        cout << " tank curr loc is " << location[0] << "," << location[1] <<endl;
-        cout << " bullet shot at " << bulletLocation[0] << "," << bulletLocation[1] <<endl;
         if(checkIfBulletHitObject(bulletLocation[0], bulletLocation[1])){
             // If the bullet hit an object, do not add it to the bulletsTankShot vector
         }
@@ -484,7 +482,6 @@ void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows) {
     // Iterate through the bullets and move them
     for (auto currBullet = bulletsTankShot.begin(); currBullet != bulletsTankShot.end(); ) {
         auto newBulletLocation = (*currBullet)->newLocation(numOfCols, numOfRows);
-        cout << " tank curr loc is " << location[0] << "," << location[1] <<endl;
         if (checkIfBulletHitObject(newBulletLocation[0], newBulletLocation[1])) {
             // Remove bullet from the old cell
             tankBattleInfo->getGameBoard()[(*currBullet)->getLocation()[0]][(*currBullet)->getLocation()[1]][1] = nullptr;
@@ -501,7 +498,6 @@ void PlayerTankAlgorithm::moveTankBullets(int numOfCols, int numOfRows) {
             tankBattleInfo->getGameBoard()[newBulletLocation[0]][newBulletLocation[1]][1] = currBulletPtr;
             tankBattleInfo->getGameBoard()[oldCol][oldRow][1] = nullptr;
             (*currBullet)->setNewLocation(newBulletLocation[0], newBulletLocation[1]);
-            cout << " bullet new loc is " << newBulletLocation[0] << "," << newBulletLocation[1] <<endl;
         }
     }
 }

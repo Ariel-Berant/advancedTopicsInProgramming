@@ -2,7 +2,7 @@
 #define PFACTORY_H
 
 #include "../common/PlayerFactory.h"
-#include "OurPlayer.h"
+#include "Players.h"
 
 class PFactory : public PlayerFactory{
 private:
