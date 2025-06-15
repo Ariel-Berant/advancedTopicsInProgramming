@@ -110,7 +110,7 @@ bool gameManager::addTankToMap(int playerNum, int currCol, int currRow, TankAlgo
         return false;
     }
     tanks.push_back(tank);
-
+    printToLogVector.emplace_back("");
     currMovingObjects.push_back(tank);
 
     (*gameBoard)[currCol][currRow][1] = tank;
@@ -424,18 +424,18 @@ void gameManager::waitingforBackwordMove(ActionRequest tanksMove, int i){
         writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at ()" + (to_string(tanks[i]->getLocation()[0]) + "," +
                                       to_string(tanks[i]->getLocation()[1])) + ") stayed in place.\n", LOG_FILE);
 
-         printToLogVector.emplace_back("MoveForward");
+         printToLogVector[i] = "MoveForward";
     }
     else {
         if (tanksMove != ActionRequest::DoNothing){
             writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                                       to_string(tanks[i]->getLocation()[1])) + ") tried to make a move while in backwards mode.\n", LOG_FILE);
-            printToLogVector.emplace_back(ActionRequestToString(tanksMove) + " (ignored)");
+            printToLogVector[i] = ActionRequestToString(tanksMove) + " (ignored)";
         }
         else { // If the tank is in backwards mode and tries to do nothing, we just increase the inBackwards counter
             writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
                                       to_string(tanks[i]->getLocation()[1])) + ") is still waiting for a backwards move.\n", LOG_FILE);
-            printToLogVector.emplace_back(ActionRequestToString(tanksMove));
+            printToLogVector[i] = ActionRequestToString(tanksMove);
         }
         
         tanks[i]->setInBackwards(tanks[i]->getInBack() + 1);
@@ -540,7 +540,7 @@ void gameManager::getTheIthTankMove(int i, ActionRequest &tanksMove){
         waitingforBackwordMove(tanksMove, i);
     }
     else{
-        printToLogVector.emplace_back(ActionRequestToString(tanksMove)); // we know the action 
+        printToLogVector[i] = ActionRequestToString(tanksMove); // we know the action 
         bool tankCanMove = canMakeMove(*tanks[i], tanksMove);
         if(!tankCanMove){
             printToLogVector[i] += " (ignored)";
@@ -593,7 +593,7 @@ void gameManager::getMovesFromTanks(){
     for (size_t i = 0; i < tanks.size(); i++){
         if(!tanks[i]->getIsAlive()) // If the tank is not alive, skip it
         {
-            printToLogVector.emplace_back("killed");
+            printToLogVector[i] = "killed";
             continue;
         }
         tanks[i]->decrementTurnsFromLastShot();
@@ -746,9 +746,9 @@ void gameManager::printLastTurnToLog()
         if( i < printToLogVector.size() - 1 ){
             writeToFile(", ", gameMapFileName);
         }
+        printToLogVector[i] = "";
     }
     writeToFile("\n", gameMapFileName);
-    printToLogVector.clear();
 }
 
 
@@ -764,7 +764,7 @@ void gameManager::printToOurLogGameResult(){
         writeToFile("Game result: Player " + to_string(winnerPlayerNum) + " won.\n", LOG_FILE);
     }
     else if(turns == maxTurns){
-        writeToFile("Game result: Tie, reached max steps =" + to_string(maxTurns) + ".\n", LOG_FILE);
+        writeToFile("Game result: Tie, reached max steps =" + to_string(maxTurns/2) + ".\n", LOG_FILE);
     }
     else if(numOfBulletsLeft == 0){
         writeToFile("Game result: Tie, both players have zero shells for " + to_string(MAX_STEPS_WITHOUT_SHELLS) + " steps\n", LOG_FILE);
@@ -784,7 +784,7 @@ void gameManager::printGameResultToLog(){
         writeToFile("Player " + to_string(winnerPlayerNum) + " won with " + to_string(tanksLeftToWinner) + " tanks still alive\n", gameMapFileName);
     }
     else if(turns == maxTurns){
-        writeToFile("Tie, reached max steps =" + to_string(maxTurns) + ", player 1 has " + to_string(numOfP1TanksLeft) + " tanks, player 2 has " + to_string(numOfP2TanksLeft) + " tanks\n", gameMapFileName);
+        writeToFile("Tie, reached max steps =" + to_string(maxTurns/2) + ", player 1 has " + to_string(numOfP1TanksLeft) + " tanks, player 2 has " + to_string(numOfP2TanksLeft) + " tanks\n", gameMapFileName);
     }
     else if(numOfBulletsLeft == 0){
         writeToFile("Tie, both players have zero shells for " + to_string(MAX_STEPS_WITHOUT_SHELLS) + " steps\n", gameMapFileName);
@@ -794,11 +794,11 @@ void gameManager::printGameResultToLog(){
 
 void gameManager::run()
 {
-    writeToFile("Starting game\n", LOG_FILE);
+    writeToFile("\nStarting game\n", LOG_FILE);
     writeToFile("Player number 1 start with " + to_string(numOfP1TanksLeft) + " tanks.\n", LOG_FILE);
     writeToFile("Player number 2 start with " + to_string(numOfP2TanksLeft) + " tanks.\n", LOG_FILE);
 
-    while (!gameOver && noBulletsCnt > 0 && turns < maxTurns){
+    while (!gameOver && noBulletsCnt > 0 && turns <= maxTurns){
         turns++;
         isOddTurn = !isOddTurn;
         writeToFile("\n", LOG_FILE);
@@ -842,7 +842,7 @@ void gameManager::readBoard(const string &filename){
 }
 
 gameManager::gameManager(TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory) :  tankAlgFactory(tankFactory), playersFactory(playerFactory), numOfRows(0), numOfCols(0),
-turns(0), noBulletsCnt(MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(std::vector<std::shared_ptr<PseudoTank>>())
+turns(0), noBulletsCnt(2 * MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(std::vector<std::shared_ptr<PseudoTank>>())
 {
 
 }
