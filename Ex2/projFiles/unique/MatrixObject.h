@@ -11,6 +11,7 @@
 #include <memory>
 #include <iostream>
 #include <algorithm>
+#include <algorithm>
 class matrixObject
 {
 protected:

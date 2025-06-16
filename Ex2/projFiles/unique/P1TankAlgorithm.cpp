@@ -82,19 +82,22 @@ ActionRequest Player1TankAlgorithm::play() {
     // If first move is noAction, couldn't find a path to the other tank.
     // So, try whatever is available in the same row or column, to get closer to the other tank.
     if(!moves.empty() && moves[0] == ActionRequest::GetBattleInfo){
-        // Try to be in the same row as the other tank
+        // Try to be in the same column as the other tank
         int locationToCheck[2] = {closestEnemyLoc[0] , location[1]};
         moves = playCalc(locationToCheck, numOfCols, numOfRows);
         if(moves.empty() || moves[0] == ActionRequest::GetBattleInfo){
-            // Try to be in the same column as the other tank
+            // Try to be in the same row as the other tank
             locationToCheck[0] = location[0];
             locationToCheck[1] = closestEnemyLoc[1];
             moves = playCalc(locationToCheck, numOfCols, numOfRows); 
         }
     }
+
     if (moves.empty()) {
+        // In case we need to recalculate moves
         moves.push_back(ActionRequest::GetBattleInfo);
     }
+
     currAction = moves[0];
     moves.erase(moves.begin());
     updateTankData(currAction, numOfCols, numOfRows); // Update tank data based on the action

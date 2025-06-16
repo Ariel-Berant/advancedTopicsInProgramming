@@ -128,7 +128,7 @@ ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols,
             int targetOrientation = calculateTargetOrientation(targetLocInCol[0], targetLocInCol[1]);
             next = determineNextMove(orient, targetOrientation);
 
-            if(isSafe(targetLocInCol[0] + 1, targetLocInCol[1], numOfCols, numOfRows, 1, P2T) && isSafe(targetLocInCol[0] + 1, targetLocInCol[1], numOfCols, numOfRows, 2, P2T)){
+            if(isSafe((targetLocInCol[0] + 1) % numOfCols, targetLocInCol[1], numOfCols, numOfRows, 1, P2T) && isSafe((targetLocInCol[0] + 1) % numOfCols, targetLocInCol[1], numOfCols, numOfRows, 2, P2T)){
                 return next.first; // if the tank can move forward to the target location, do it
             }
             else if(isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 1, P2T) && isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 2, P2T)){

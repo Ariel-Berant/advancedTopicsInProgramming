@@ -538,12 +538,17 @@ bool PlayerTankAlgorithm::friendlyFireRisk(int numOfCols, int numOfRows, int tar
 
 
 bool PlayerTankAlgorithm::checkIfOnSameLine(const int *otherLoc) const {
-    if(abs(location[0] - otherLoc[0]) == abs(location[1] - otherLoc[1])){ 
-        // check if both tanks are on the same diagonal - linear function, bias cancels out, and slope is 1
+    int rows = tankBattleInfo->getGameBoard()[0].size();
+    int cols = tankBattleInfo->getGameBoard().size();
+
+    int dr = std::abs(location[0] - otherLoc[0]);
+    int dc = std::abs(location[1] - otherLoc[1]);
+    
+    int min_dr = min(dr, rows - dr);
+    int min_dc = min(dc, cols - dc);
+
+    // Same row, column, or diagonal (considering wrapping)
+    if (min_dr == 0 || min_dc == 0 || min_dr == min_dc)
         return true;
-    }
-    if (location[0] == otherLoc[0] || location[1] == otherLoc[1]) { //check if both tanks are on the same row or column
-        return true;
-    }
     return false;
 }
