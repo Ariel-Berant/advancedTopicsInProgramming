@@ -1,0 +1,14 @@
+We've added a random batch tester.
+
+You can try it out by running batch_random_tester.sh
+This tester runs random_tester.sh, which generates a random sized map(MaxSteps and Bullet Count are constant and need to be changed manually).
+The tester does this 100 times, and saves the runs. At the end, the tester waits for user input, and based on it erases\keeps the files generated.
+
+To check out the tester, run the following commands:
+chmod +x ./random_tester.sh
+chmod +x ./batch_random_tester.sh
+./batch_random_tester.sh
+
+Note: This will take some time! Some boards can be pretty complex. You can decrease the amount of boards generated if you'd like, however.
+
+P.S: There's also an easter egg in the file!

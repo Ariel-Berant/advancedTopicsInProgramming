@@ -47,7 +47,7 @@ cmake-build-debug
 ./html
 ./xml
 ./inputTests/*
-*.txt
+test*
 Doxyfile
 Debug*
 

@@ -1,6 +1,6 @@
 # Compiler and flags
 CPP = g++
-CPP_FLAGS = -std=c++20 -Wall -Wextra -Werror -pedantic -g
+CPP_FLAGS = -std=c++20 -Wall -Wextra -Werror -pedantic #-g
 
 # Target executable
 TARGET = tanks_game
