@@ -847,24 +847,4 @@ turns(0), noBulletsCnt(2 * MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWal
 
 }
 
-
 gameManager::~gameManager() = default;
-
-/*
- * # - wall
- * ' ' - empty space
- * 1 - player1 tank
- * 2 - player2 tank
- * @ - mine
- *
- * No bullets at the start of the game
- */
-
-// ```
-//
-// ### Explanation:
-// 1. **Point and MovingObject Structures**: Represent points and moving object1 with start and end positions.
-// 2. **Line Intersection Check**: The `doLinesIntersect` function uses orientation and collinearity checks to determine if two line segments intersect.
-// 3. **Collision Checker**: The `checkCollisions` function iterates through all pairs of moving object1 and checks for intersections.
-//
-// You can use this function by passing a list of moving object1 with their planned movements.
