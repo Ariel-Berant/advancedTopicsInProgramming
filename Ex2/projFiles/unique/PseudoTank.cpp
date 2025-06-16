@@ -8,11 +8,12 @@ private:
     int turnsUntilNextShot = 0;
     int turnsInBackwards = 0;
     int tankIndex; // This will be the serial number of the tank in his team (1 or 2)
+    int isDead;
 
 public:
     std::unique_ptr<TankAlgorithm> tankAlg;
     PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal, int numOfShots, int tankIndex)
-        : movingObject(row, col, PseudoTankType, orientVal), shotsLeft(numOfShots), turnsUntilNextShot(0), turnsInBackwards(0), tankIndex(tankIndex) {};
+        : movingObject(row, col, PseudoTankType, orientVal), shotsLeft(numOfShots), turnsUntilNextShot(0), turnsInBackwards(0), tankIndex(tankIndex), isDead(false) {};
     ~PseudoTank() = default;
 
     int getTankIndex() const {
@@ -31,6 +32,13 @@ public:
     // Getter and Setter for shotsLeft
     int getShotsLeft() const { return shotsLeft; }
     void useShot() { --shotsLeft; turnsUntilNextShot = 4; }
+
+    bool getIsDead(){
+        return isDead;
+    }
+    void setIsDead(){
+        isDead = true;
+    }
  
     // Getter and Setter for turnsFromLastShot
     void decrementTurnsFromLastShot() { 

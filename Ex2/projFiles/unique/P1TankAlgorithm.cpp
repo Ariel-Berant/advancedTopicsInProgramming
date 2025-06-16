@@ -71,12 +71,10 @@ ActionRequest Player1TankAlgorithm::play() {
     }
 
     if (moves.empty()) {
-        if (tankBattleInfo->getTurnsFromLastUpdate() == 1)
-        {
+        if (tankBattleInfo->getTurnsFromLastUpdate() == 1){
             moves = playCalc(closestEnemyLoc, numOfCols, numOfRows);
         }
-        else
-        {
+        else{
             moves.push_back(ActionRequest::GetBattleInfo); // If emptied moves, add GetBattleInfo action
         }
     }
@@ -94,7 +92,9 @@ ActionRequest Player1TankAlgorithm::play() {
             moves = playCalc(locationToCheck, numOfCols, numOfRows); 
         }
     }
-    
+    if (moves.empty()) {
+        moves.push_back(ActionRequest::GetBattleInfo);
+    }
     currAction = moves[0];
     moves.erase(moves.begin());
     updateTankData(currAction, numOfCols, numOfRows); // Update tank data based on the action

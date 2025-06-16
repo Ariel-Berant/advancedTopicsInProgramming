@@ -604,8 +604,9 @@ void gameManager::getMovesFromTanks(){
 
 void gameManager::updateAboutNewDstroyedTanks(){
     for(size_t i = 0; i < tanks.size(); ++i){
-        if(!tanks[i]->getIsAlive() && printToLogVector[i] != "killed"){ //if the tank destroyed in this turn
+        if(!tanks[i]->getIsAlive() && tanks[i]->getIsDead() == false){ //if the tank destroyed in this turn
             printToLogVector[i] += " (killed)";
+            tanks[i]->setIsDead();
 
             int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
             tanksPlayer == 1 ? numOfP1TanksLeft-- : numOfP2TanksLeft--;
@@ -650,7 +651,7 @@ void gameManager::dealWithDamagedUnmovingObject(int i, const int objectNewCol, c
     else if (currMovingObjects[i]->getType() == B && (*gameBoard)[objectNewCol][objectNewRow][0]->getType() == W){
         // if a bullet hit a wall - the bullet is destroyed and the wall takes a hit
 
-        writeToFile("A bullet hit a wall at (" + to_string(objectNewRow) + "," + to_string(objectNewCol) +  ") .\n", LOG_FILE);
+        writeToFile("A bullet hit a wall at (" + to_string(objectNewCol) + "," + to_string(objectNewRow) +  ") .\n", LOG_FILE);
 
         currMovingObjects[i]->takeAHit();
         shared_ptr<matrixObject> damagedWall = (*gameBoard)[objectNewCol][objectNewRow][0];
@@ -739,8 +740,7 @@ void gameManager::printSummeryToOurLog(){
     writeToFile(to_string(numOfMinesDestroyed) + " out of " + to_string(numOfMines) + " mines were destroyed\n", LOG_FILE);
 }
 
-void gameManager::printLastTurnToLog()
-{
+void gameManager::printLastTurnToLog(){
     for(size_t i = 0 ; i < tanks.size() ; ++i){
         writeToFile(printToLogVector[i] , gameMapFileName);
         if( i < printToLogVector.size() - 1 ){
@@ -764,7 +764,7 @@ void gameManager::printToOurLogGameResult(){
         writeToFile("Game result: Player " + to_string(winnerPlayerNum) + " won.\n", LOG_FILE);
     }
     else if(turns == maxTurns){
-        writeToFile("Game result: Tie, reached max steps =" + to_string(maxTurns/2) + ".\n", LOG_FILE);
+        writeToFile("Game result: Tie, reached max steps = " + to_string(maxTurns/2) + ".\n", LOG_FILE);
     }
     else if(numOfBulletsLeft == 0){
         writeToFile("Game result: Tie, both players have zero shells for " + to_string(MAX_STEPS_WITHOUT_SHELLS) + " steps\n", LOG_FILE);
@@ -784,7 +784,7 @@ void gameManager::printGameResultToLog(){
         writeToFile("Player " + to_string(winnerPlayerNum) + " won with " + to_string(tanksLeftToWinner) + " tanks still alive\n", gameMapFileName);
     }
     else if(turns == maxTurns){
-        writeToFile("Tie, reached max steps =" + to_string(maxTurns/2) + ", player 1 has " + to_string(numOfP1TanksLeft) + " tanks, player 2 has " + to_string(numOfP2TanksLeft) + " tanks\n", gameMapFileName);
+        writeToFile("Tie, reached max steps = " + to_string(maxTurns/2) + ", player 1 has " + to_string(numOfP1TanksLeft) + " tanks, player 2 has " + to_string(numOfP2TanksLeft) + " tanks\n", gameMapFileName);
     }
     else if(numOfBulletsLeft == 0){
         writeToFile("Tie, both players have zero shells for " + to_string(MAX_STEPS_WITHOUT_SHELLS) + " steps\n", gameMapFileName);
@@ -798,7 +798,7 @@ void gameManager::run()
     writeToFile("Player number 1 start with " + to_string(numOfP1TanksLeft) + " tanks.\n", LOG_FILE);
     writeToFile("Player number 2 start with " + to_string(numOfP2TanksLeft) + " tanks.\n", LOG_FILE);
 
-    while (!gameOver && noBulletsCnt > 0 && turns <= maxTurns){
+    while (!gameOver && noBulletsCnt > 0 && turns < maxTurns){
         turns++;
         isOddTurn = !isOddTurn;
         writeToFile("\n", LOG_FILE);
@@ -812,7 +812,7 @@ void gameManager::run()
         }
         gameManager::checkCollisions();
         gameOver = makeAllMoves();
-        if(isOddTurn){
+        if(!isOddTurn){
             printLastTurnToLog();
         }
     }
