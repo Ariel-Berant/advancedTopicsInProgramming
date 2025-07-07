@@ -6,7 +6,7 @@ CPP_FLAGS = -std=c++20 -Wall -Wextra -Werror -pedantic #-g
 TARGET = tanks_game
 
 # Source and header files (auto-detect all in unique/ and common/)
-SRC_DIRS = unique common
+SRC_DIRS = UserCommon common GameManager
 SOURCES = $(wildcard $(addsuffix /*.cpp,$(SRC_DIRS)))
 HEADERS = $(wildcard $(addsuffix /*.h,$(SRC_DIRS)))
 OBJECTS = $(SOURCES:.cpp=.o)

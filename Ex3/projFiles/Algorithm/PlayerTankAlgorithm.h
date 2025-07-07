@@ -1,8 +1,8 @@
 #ifndef PLAYERTANKALGORITHM_H
 #define PLAYERTANKALGORITHM_H
 
-#include "MovingObject.h"
-#include "Bullet.h"
+#include "../UserCommon/MovingObject.h"
+#include "../UserCommon/Bullet.h"
 #include "../common/TankAlgorithm.h"
 #include "../common/ActionRequest.h"
 #include "PlayerBattleInfo.h"

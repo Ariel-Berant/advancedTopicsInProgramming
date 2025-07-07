@@ -1,6 +1,5 @@
 #include "PlayerBattleInfo.h"
 
-// ...existing code...
 PlayerBattleInfo::~PlayerBattleInfo() {
     // default destructor
 }

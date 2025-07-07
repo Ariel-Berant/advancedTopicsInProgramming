@@ -2,7 +2,7 @@
 #define PLAYERBATTLEINFO_H
 
 #include "../common/BattleInfo.h"
-#include "MatrixObject.h"
+#include "../UserCommon/MatrixObject.h"
 
 using namespace std;
 

@@ -3,8 +3,8 @@
 
 #include <cstddef>
 #include "../common/SattelliteView.h"
-#include "MatrixObject.h"
-#include "ObjectType.h"
+#include "../UserCommon/MatrixObject.h"
+#include "../UserCommon/ObjectType.h"
 #include "GameManager.h"
 
 class OurSattelliteView : public SatelliteView {
