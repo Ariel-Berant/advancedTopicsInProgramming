@@ -1,5 +1,7 @@
 #include "MatrixObject.h"
 
+using namespace UserCommon_0000;
+
 matrixObject::matrixObject() : location{0, 0}
 {
     // Default constructor initializes location to (0, 0)

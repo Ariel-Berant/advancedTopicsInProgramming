@@ -1,5 +1,7 @@
 #include "PlayerBattleInfo.h"
 
+using namespace Algorithm_0000;
+
 PlayerBattleInfo::~PlayerBattleInfo() {
     // default destructor
 }

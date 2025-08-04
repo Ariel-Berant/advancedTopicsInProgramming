@@ -5,9 +5,10 @@
 #include "PFactory.h"
 #include "TAFactory.h"
 
+namespace UserCommon_0000 {
 class tanksGame {
 
 };
 
-
+}
 #endif //TANKSGAME_H

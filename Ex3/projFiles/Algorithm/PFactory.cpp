@@ -1,5 +1,7 @@
 #include "PFactory.h"
 
+using namespace Algorithm_0000;
+
 class Player1;
 class Player2;
 

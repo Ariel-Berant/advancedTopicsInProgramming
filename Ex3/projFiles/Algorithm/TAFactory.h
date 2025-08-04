@@ -6,16 +6,19 @@
 #include "../UserCommon/Orientation.h"
 #include <iostream>
 
-class TAFactory : public TankAlgorithmFactory{
-private:
-    /* data */
-public:
-    TAFactory();
-    ~TAFactory() override;
+using namespace UserCommon_0000;
 
-    std::unique_ptr<TankAlgorithm> create(
-            int player_index, [[maybe_unused]] int tank_index) const override;
-    
-};
+namespace Algorithm_0000 {
+    class TAFactory : public TankAlgorithmFactory{
+    private:
+        /* data */
+    public:
+        TAFactory();
+        ~TAFactory() override;
 
-#endif// TAFactory.cpp
+        std::unique_ptr<TankAlgorithm> create(
+                int player_index, [[maybe_unused]] int tank_index) const override;
+        
+    };
+}
+#endif // TAFactory.h

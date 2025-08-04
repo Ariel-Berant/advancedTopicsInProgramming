@@ -1,5 +1,6 @@
 #include "OurSattelliteView.h"
 
+using namespace GameManager_0000;
 
 OurSattelliteView::OurSattelliteView(const vector<vector<array<shared_ptr<matrixObject>, 3>>> gBoard, int numOfCols, int numOfRows, size_t tankX, size_t tankY):
  gameBoard(gBoard), numOfRows(numOfRows), numOfCols(numOfCols), tankX(tankX), tankY(tankY){

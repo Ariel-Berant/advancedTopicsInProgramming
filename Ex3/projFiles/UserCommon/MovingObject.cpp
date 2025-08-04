@@ -1,5 +1,7 @@
 #include "MovingObject.h"
 
+using namespace UserCommon_0000;
+
 movingObject::movingObject(int row, int col, objectType oType, orientation orient) : matrixObject(row, col, oType), orient(orient), oldLocation{col, row} {
     // Constructor implementation
 }

@@ -1,5 +1,7 @@
 #include "PlayerTank.h"
 
+using namespace Algorithm_0000;
+
 Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {
     static vector<vector<array<shared_ptr<matrixObject>, 2>>> dummyBoard;
     tankBattleInfo = make_unique<PlayerBattleInfo>(-1, -1, -1, dummyBoard, 0);

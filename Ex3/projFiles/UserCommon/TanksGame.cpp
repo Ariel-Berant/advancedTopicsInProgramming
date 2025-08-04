@@ -1,5 +1,7 @@
 #include "TanksGame.h"
 
+using namespace UserCommon_0000;
+
 int main(int argc, char const *argv[])
 {
     if (argc != 2)

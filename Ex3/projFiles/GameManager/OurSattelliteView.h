@@ -7,6 +7,7 @@
 #include "../UserCommon/ObjectType.h"
 #include "GameManager.h"
 
+namespace GameManager_0000 {
 class OurSattelliteView : public SatelliteView {
 private:
     vector<vector<array<shared_ptr<matrixObject>, 3>>> gameBoard;
@@ -23,4 +24,5 @@ public:
     char getObjectAt(size_t x, size_t y)const override;
 };
 
+}
 #endif //OURSATTELLITEVIEW_H

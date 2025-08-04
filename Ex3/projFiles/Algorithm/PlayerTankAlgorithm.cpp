@@ -1,5 +1,7 @@
 #include "PlayerTankAlgorithm.h"
 
+using namespace Algorithm_0000;
+
 PlayerTankAlgorithm::PlayerTankAlgorithm(int row, int col, orientation orient, objectType oType) : movingObject(row, col,oType , orient), shotsLeft(-1), inBackwards(0), turnsUntilNextShot(0), calcMoveRound(0), currTurn(0){
     // Constructor implementation
     // The member initializer list initializes the base class movingObject with x, y, and orientation.

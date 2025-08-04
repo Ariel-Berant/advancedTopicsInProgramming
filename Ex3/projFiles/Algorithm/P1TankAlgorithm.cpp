@@ -1,5 +1,7 @@
 #include "PlayerTank.h"
 
+using namespace Algorithm_0000;
+
 void Player1TankAlgorithm::updateTurn() {
     if(turnsUntilNextShot > 0){
         turnsUntilNextShot--;

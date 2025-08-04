@@ -1,5 +1,7 @@
 #include "UnmovingObject.h"
 
+using namespace UserCommon_0000;
+
 unmovingObject::unmovingObject(int row, int col, objectType oType) : matrixObject(row, col, oType) {
     // Constructor implementation
     // The member initializer list initializes the base class matrixObject with x and y values.

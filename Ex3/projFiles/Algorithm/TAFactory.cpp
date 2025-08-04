@@ -1,5 +1,7 @@
 #include "TAFactory.h"
 
+using namespace Algorithm_0000;
+
 TAFactory::TAFactory() {
     // Constructor implementation
 }

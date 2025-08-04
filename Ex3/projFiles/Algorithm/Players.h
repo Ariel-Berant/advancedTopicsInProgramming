@@ -1,5 +1,9 @@
 #include "OurPlayer.h"
 
+using namespace UserCommon_0000;
+
+namespace Algorithm_0000 {
+
 class Player1 : public OurPlayer {
 public:
     Player1(int player_index, size_t x, size_t y, size_t max_steps, size_t num_shells)
@@ -17,3 +21,5 @@ public:
 
     ~Player2() = default; // Destructor implementation
 };
+
+}

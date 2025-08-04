@@ -1,6 +1,8 @@
 #include "MovingObject.h"
 #include "../common/TankAlgorithm.h"
 
+using namespace UserCommon_0000;
+
 class PseudoTank : public movingObject
 {
 private:

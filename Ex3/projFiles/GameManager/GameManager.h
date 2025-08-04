@@ -37,6 +37,8 @@
 
 using namespace std;
 
+namespace GameManager_0000 {
+
 // A function used for writing to files(e.g., error logs) without necessarily opening them beforehand.
 // The function return true if the file was opened successfully and the message was written to it.
 inline bool writeToFile(const string &message, const string &filename)
@@ -132,5 +134,7 @@ public:
     void readBoard(const string &filename);
     void run();
 };
+
+}
 
 #endif // GAME_MANAGER_H

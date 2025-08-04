@@ -1,5 +1,7 @@
 #include "Wall.h"
 
+using namespace UserCommon_0000;
+
 wall::wall(int row, int col, objectType oType) : unmovingObject(row, col, oType) {
     hitsLeft = 2;
     // Constructor implementation

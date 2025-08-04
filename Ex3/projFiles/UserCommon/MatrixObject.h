@@ -12,6 +12,8 @@
 #include <iostream>
 #include <algorithm>
 #include <algorithm>
+
+namespace UserCommon_0000 {
 class matrixObject
 {
 protected:
@@ -30,4 +32,7 @@ public:
     void takeAHit();
     objectType getType() const;
 };
+
+}
+
 #endif // MATRIXOBJECT_H

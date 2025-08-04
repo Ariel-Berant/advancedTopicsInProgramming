@@ -5,7 +5,10 @@
 const int MAX_STEPS_WITHOUT_SHELLS = 40;
 
 
-using namespace std;
+using std::string, std::vector, std::array, std::shared_ptr, std::make_shared, std::make_unique;
+
+
+using namespace GameManager_0000;
 
 bool gameManager::isValidFile(const string &filename) {
     filesystem::path filePath = filename;
