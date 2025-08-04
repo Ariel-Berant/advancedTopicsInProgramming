@@ -1,5 +1,5 @@
-#ifndef SATTELLITEVIEW_H
-#define SATTELLITEVIEW_H
+#ifndef SATELLITEVIEW_H
+#define SATELLITEVIEW_H
 
 #include <cstddef>
 
@@ -9,4 +9,4 @@ public:
     virtual char getObjectAt(size_t x, size_t y) const = 0;
 };
 
-#endif //ADVANCEDTOPICSINPROGRAMMING_SATTELLITEVIEW_H
+#endif //ADVANCEDTOPICSINPROGRAMMING_SATELLITEVIEW_H
