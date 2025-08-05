@@ -3,6 +3,7 @@
 
 #include "../UserCommon/MatrixObject.h"
 #include "../common/Player.h"
+#include "../common/PlayerRegistration.h"
 #include "PlayerTankAlgorithm.h"
 #include "PlayerTank.h"
 #include "PlayerBattleInfo.h"

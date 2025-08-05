@@ -4,6 +4,7 @@
 #include "../UserCommon/MovingObject.h"
 #include "../UserCommon/Bullet.h"
 #include "../common/TankAlgorithm.h"
+#include "../common/TankAlgorithmRegistration.h"
 #include "../common/ActionRequest.h"
 #include "PlayerBattleInfo.h"
 

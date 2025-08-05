@@ -14,12 +14,13 @@
 #include <algorithm>
 #include <filesystem>
 #include <string>
+#include "../common/GameManagerRegistration.h"
 #include "../common/ActionRequest.h"
 #include "../common/Player.h"
 #include "../common/TankAlgorithm.h"
-#include "../common/TankAlgorithmFactory.h"
 #include "../common/PlayerFactory.h"
 #include "../common/BattleInfo.h"
+#include "../common/AbstractGameManager.h"
 #include "OurSattelliteView.h"
 #include "PseudoTank.cpp"
 /*
@@ -35,7 +36,18 @@
  *
  */
 
-using namespace std;
+// Using specific std types instead of the entire namespace
+using std::vector;
+using std::array;
+using std::string;
+using std::unique_ptr;
+using std::shared_ptr;
+using std::ofstream;
+using std::ios;
+using std::cerr;
+using std::endl;
+
+using namespace UserCommon_0000;
 
 namespace GameManager_0000 {
 
@@ -66,7 +78,7 @@ inline bool writeToFile(const string &message, const string &filename)
     return true;
 }
 
-class gameManager
+class gameManager : public AbstractGameManager
 {
 private:
     TankAlgorithmFactory &tankAlgFactory;
@@ -132,7 +144,14 @@ public:
     gameManager(const gameManager &) = delete; // Disable copy constructor
     bool initializeGame(const string &filename, TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory);
     void readBoard(const string &filename);
-    void run();
+    GameResult run(
+        size_t map_width, size_t map_height,
+        const SatelliteView& map,
+        string map_name,
+        size_t max_steps, size_t num_shells,
+        Player& player1, string name1, Player& player2, string name2,
+        TankAlgorithmFactory player1_tank_algo_factory,
+        TankAlgorithmFactory player2_tank_algo_factory) override;
 };
 
 }

@@ -4,8 +4,9 @@
 #define LOG_FILE "game_log.txt"
 const int MAX_STEPS_WITHOUT_SHELLS = 40;
 
+REGISTER_GAME_MANAGER(gameManager);
 
-using std::string, std::vector, std::array, std::shared_ptr, std::make_shared, std::make_unique;
+using namespace std;
 
 
 using namespace GameManager_0000;
@@ -783,7 +784,7 @@ void gameManager::printGameResultToLog(){
     }
     else if(numOfP1TanksLeft == 0 || numOfP2TanksLeft == 0){
         int winnerPlayerNum = numOfP2TanksLeft != 0 ? 2 : 1;
-        int tanksLeftToWinner = numOfP2TanksLeft != 0 ? numOfP2TanksLeft : numOfP1TanksLeft;
+    int tanksLeftToWinner = numOfP2TanksLeft != 0 ? numOfP2TanksLeft : numOfP1TanksLeft;
         writeToFile("Player " + to_string(winnerPlayerNum) + " won with " + to_string(tanksLeftToWinner) + " tanks still alive\n", gameMapFileName);
     }
     else if(turns == maxTurns){
@@ -795,7 +796,14 @@ void gameManager::printGameResultToLog(){
 }
 
 
-void gameManager::run()
+GameResult gameManager::run(
+    size_t map_width, size_t map_height,
+    const SatelliteView& map,
+    string map_name,
+    size_t max_steps, size_t num_shells,
+    Player& player1, string name1, Player& player2, string name2,
+    TankAlgorithmFactory player1_tank_algo_factory,
+    TankAlgorithmFactory player2_tank_algo_factory)
 {
     writeToFile("\nStarting game\n", LOG_FILE);
     writeToFile("Player number 1 start with " + to_string(numOfP1TanksLeft) + " tanks.\n", LOG_FILE);

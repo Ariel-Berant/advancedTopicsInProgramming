@@ -1,5 +1,7 @@
 #include "PlayerTank.h"
 
+REGISTER_TANK_ALGORITHM(Player2TankAlgorithm);
+
 using namespace Algorithm_0000;
 
 Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {
