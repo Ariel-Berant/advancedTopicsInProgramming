@@ -21,8 +21,8 @@
 #include "../common/PlayerFactory.h"
 #include "../common/BattleInfo.h"
 #include "../common/AbstractGameManager.h"
-#include "OurSattelliteView.h"
-#include "PseudoTank.cpp"
+#include "../UserCommon/OurSattelliteView.h"
+#include "../UserCommon/PseudoTank.h"
 /*
  * Includes in matrixObject.h:
  *

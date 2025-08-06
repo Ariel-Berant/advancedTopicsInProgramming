@@ -5,9 +5,12 @@
 #include "../common/SattelliteView.h"
 #include "../UserCommon/MatrixObject.h"
 #include "../UserCommon/ObjectType.h"
-#include "GameManager.h"
 
-namespace GameManager_0000 {
+using std::shared_ptr;
+using std::vector;
+using std::array;
+
+namespace UserCommon_0000 {
 class OurSattelliteView : public SatelliteView {
 private:
     vector<vector<array<shared_ptr<matrixObject>, 3>>> gameBoard;
