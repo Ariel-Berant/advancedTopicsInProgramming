@@ -1,10 +1,7 @@
-#ifndef BATTLEINFO_H
-#define BATTLEINFO_H
+#pragma once
 
 
 class BattleInfo {
 public:
     virtual ~BattleInfo() {}
 };
-
-#endif //ADVANCEDTOPICSINPROGRAMMING_BATTLEINFO_H

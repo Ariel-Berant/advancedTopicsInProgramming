@@ -1,5 +1,4 @@
-#ifndef ACTIONREQUEST_H
-#define ACTIONREQUEST_H
+#pragma once
 
 
 enum class ActionRequest {
@@ -8,4 +7,3 @@ enum class ActionRequest {
     Shoot, GetBattleInfo, DoNothing
 };
 
-#endif //ADVANCEDTOPICSINPROGRAMMING_ACTIONREQUEST_H

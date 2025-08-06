@@ -1,5 +1,4 @@
-#ifndef TANKALGORITHM_H
-#define TANKALGORITHM_H
+#pragma once
 
 #include "ActionRequest.h"
 #include "BattleInfo.h"
@@ -16,5 +15,3 @@ public:
 using TankAlgorithmFactory =
     std::function<std::unique_ptr<TankAlgorithm>
         (int player_index, int tank_index)>;
-
-#endif //ADVANCEDTOPICSINPROGRAMMING_TANKALGORITHM_H
