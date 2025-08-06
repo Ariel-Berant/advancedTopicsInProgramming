@@ -134,40 +134,21 @@ void gameManager::addUnmovingObjectToMap(char UnmovingObjectType, int currCol, i
 
 
 
-bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFactory){
-    int currRow = 0, currCol = 0;
-    string line;
-    ifstream file1;
-    file1.open(filename);
-
-    if (!file1.is_open()){
-        cerr << "Error: Could not open the file '" << filename << "'." << std::endl;
-        return false;
-    }
-    for(int i = 0 ; i < 5 ; i++){
-        getline(file1, line); // Skip the first 5 lines
-    }
-    while (getline(file1, line)){
-        if (currRow == numOfRows){
-            writeToFile("Error: Too many rows in the map file.\n", INP_ERR_FILE);
-            break;
-        }
-        for (char ch : line) {
-            if (currCol == numOfCols){
-                writeToFile("Error: Too many columns in row " + to_string(currRow) + ".\n", INP_ERR_FILE);
-                continue;
-            }
+bool gameManager::createMap(const SatelliteView &map, TankAlgorithmFactory tankFactory1, TankAlgorithmFactory tankFactory2){
+    for (int currRow = 0; currRow < numOfRows; currRow++) {
+        for (int currCol = 0; currCol < numOfCols; currCol++) {
+            char ch = map.getObjectAt(currCol, currRow);
             switch (ch) {
             case '#':
                 addUnmovingObjectToMap('#', currCol, currRow);
                 break;
             case '1':
-                if(!addTankToMap(1, currCol, currRow, tankFactory)){
+                if(!addTankToMap(1, currCol, currRow, tankFactory1)){
                     return false;
                 }
                 break;
             case '2':
-                if(!addTankToMap(2, currCol, currRow, tankFactory)){
+                if(!addTankToMap(2, currCol, currRow, tankFactory2)){
                     return false;
                 }
                 break;
@@ -175,50 +156,32 @@ bool gameManager::createMap(const string &filename, TankAlgorithmFactory &tankFa
                 addUnmovingObjectToMap('@', currCol, currRow);
                 break;
             case ' ':
+            case '&':
                 break;
             default:
-                writeToFile("Error: unrecognized character, ASCII #'" + to_string(ch) + "' in the map file.\n", INP_ERR_FILE);
+                writeToFile("Error: unrecognized character, ASCII #'" + to_string(ch) + "' in the map file.\nPutting ' ' instead.\n", INP_ERR_FILE);
             }
-            currCol++;
         }
-        if (currCol < numOfCols){
-            writeToFile("Error: Not enough columns in row " + to_string(currRow) + ".\n", INP_ERR_FILE);
-        }
-        currRow++;
-        currCol = 0;
     }
-    if (currRow < numOfRows){
-        writeToFile("Error: Not enough rows in the map file.\n", INP_ERR_FILE);
-    }
-    file1.close();
-    
+
     return true;
 }
 
 
 // Function initialize the game data from a given pathname.
 // If some critical error occurs(criticalErr==true), function fails and returns false(i.e return !criticalErr).
-bool gameManager::initializeGame(const string &filename, TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory){
-    gameMapFileName = filename;
+bool gameManager::initializeGame(const SatelliteView &map, TankAlgorithmFactory tankFactory1, TankAlgorithmFactory tankFactory2){
     if (gameBoard){
         gameBoard = nullptr;
     }
     if (!tanks.empty()){
         tanks.clear();
     }
-    if (!isValidFile(filename)){
-        return false;
-    }
-    if (!getRowsAndColsFromFile(filename)){
-        return false;
-    }
 
-    player1 = playerFactory.create(1, numOfCols, numOfRows, maxTurns, maxBullets);
-    player2 = playerFactory.create(2, numOfCols, numOfRows, maxTurns, maxBullets);
     numOfP1TanksLeft = 0, numOfP2TanksLeft = 0;
     gameBoard = std::make_unique<vector<vector<array<shared_ptr<matrixObject>, 3>>>>(
         numOfCols, vector<array<shared_ptr<matrixObject>, 3>>(numOfRows, {nullptr, nullptr, nullptr}));
-    if(createMap(filename, tankFactory) == false){
+    if(createMap(map, tankFactory1, tankFactory2) == false){
         return false;
     }
     if(numOfP1TanksLeft == 0 || numOfP2TanksLeft == 0){
@@ -778,21 +741,34 @@ void gameManager::printToOurLogGameResult(){
 
 void gameManager::printGameResultToLog(){
     // printSummeryToLog();
+    
 
     if( numOfP1TanksLeft == 0 && numOfP2TanksLeft == 0){
+        gameResult.winner = 0;
+        gameResult.reason = GameResult::ALL_TANKS_DEAD;
         writeToFile("Tie, both players have zero tanks", gameMapFileName);
     }
     else if(numOfP1TanksLeft == 0 || numOfP2TanksLeft == 0){
         int winnerPlayerNum = numOfP2TanksLeft != 0 ? 2 : 1;
-    int tanksLeftToWinner = numOfP2TanksLeft != 0 ? numOfP2TanksLeft : numOfP1TanksLeft;
+        gameResult.winner = winnerPlayerNum;
+        gameResult.reason = GameResult::ALL_TANKS_DEAD;
+        int tanksLeftToWinner = numOfP2TanksLeft != 0 ? numOfP2TanksLeft : numOfP1TanksLeft;
         writeToFile("Player " + to_string(winnerPlayerNum) + " won with " + to_string(tanksLeftToWinner) + " tanks still alive\n", gameMapFileName);
     }
     else if(turns == maxTurns){
+        gameResult.winner = 0;
+        gameResult.reason = GameResult::MAX_STEPS;
         writeToFile("Tie, reached max steps = " + to_string(maxTurns/2) + ", player 1 has " + to_string(numOfP1TanksLeft) + " tanks, player 2 has " + to_string(numOfP2TanksLeft) + " tanks\n", gameMapFileName);
     }
     else if(numOfBulletsLeft == 0){
+        gameResult.winner = 0;
+        gameResult.reason = GameResult::ZERO_SHELLS;
         writeToFile("Tie, both players have zero shells for " + to_string(MAX_STEPS_WITHOUT_SHELLS) + " steps\n", gameMapFileName);
     }
+
+    gameResult.rounds = turns / 2;
+    gameResult.remaining_tanks = {size_t(numOfP1TanksLeft), size_t(numOfP2TanksLeft)};
+    gameResult.gameState = make_unique<OurSattelliteView>(*gameBoard, numOfCols, numOfRows, -100, -100);
 }
 
 
@@ -805,6 +781,16 @@ GameResult gameManager::run(
     TankAlgorithmFactory player1_tank_algo_factory,
     TankAlgorithmFactory player2_tank_algo_factory)
 {
+    this->player1 = shared_ptr<Player>(&player1);
+    this->player2 = shared_ptr<Player>(&player2);
+
+    this->numOfRows = map_height;
+    this->numOfCols = map_width;
+    this->gameMapFileName = map_name;
+    this->maxTurns = max_steps * 2; // each player has max_steps turns
+    this->numOfBulletsLeft = num_shells;
+    this->gameOver = false;
+
     writeToFile("\nStarting game\n", LOG_FILE);
     writeToFile("Player number 1 start with " + to_string(numOfP1TanksLeft) + " tanks.\n", LOG_FILE);
     writeToFile("Player number 2 start with " + to_string(numOfP2TanksLeft) + " tanks.\n", LOG_FILE);
@@ -830,9 +816,12 @@ GameResult gameManager::run(
     printGameResultToLog();
     printToOurLogGameResult();
     // destroyBoardAndObjects();
+
+    return std::move(gameResult);
 }
 
-void gameManager::readBoard(const string &filename){
+void gameManager::readBoard(const string &filename, const SatelliteView &map,
+    TankAlgorithmFactory tankAlgFactory1, TankAlgorithmFactory tankAlgFactory2){
     try
     {
         filesystem::remove(INP_ERR_FILE);
@@ -842,8 +831,8 @@ void gameManager::readBoard(const string &filename){
     {
         // Error in file deletion - not really critical, just continue
     }
-    
-    if (!initializeGame(filename, tankAlgFactory, playersFactory)){
+
+    if (!initializeGame(map, tankAlgFactory1, tankAlgFactory2)){
         cerr << "Error: Failed to create map from file, detailes in input_errors.txt." << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -852,7 +841,7 @@ void gameManager::readBoard(const string &filename){
     gameMapFileName.replace((gameMapFileName.length() - fileStem.length()), fileStem.length(), "output_" + fileStem + ".txt");
 }
 
-gameManager::gameManager(TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory) :  tankAlgFactory(tankFactory), playersFactory(playerFactory), numOfRows(0), numOfCols(0),
+gameManager::gameManager() : numOfRows(0), numOfCols(0),
 turns(0), noBulletsCnt(2 * MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(std::vector<std::shared_ptr<PseudoTank>>())
 {
 

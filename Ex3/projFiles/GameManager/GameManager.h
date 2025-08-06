@@ -81,8 +81,7 @@ inline bool writeToFile(const string &message, const string &filename)
 class gameManager : public AbstractGameManager
 {
 private:
-    TankAlgorithmFactory &tankAlgFactory;
-    PlayerFactory &playersFactory;
+    GameResult gameResult; 
     string gameMapFileName;
     int numOfRows;
     int numOfCols;
@@ -134,16 +133,16 @@ private:
     void getTheIthTankMove(int i, ActionRequest &tanksMove);
     void actualymakeMoves();
     void dealWithDamagedUnmovingObject(int i, const int objectNewCol, const int objectNewRow);
-    bool createMap(const string &filename, TankAlgorithmFactory &tankFactory);
+    bool createMap(const SatelliteView &map, TankAlgorithmFactory tankFactory1, TankAlgorithmFactory tankFactory2);
     orientation calculateNewOrientation(ActionRequest &tanksMove, int i);
 
 
 public:
-    gameManager(TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory);
+    gameManager();
     ~gameManager();
     gameManager(const gameManager &) = delete; // Disable copy constructor
-    bool initializeGame(const string &filename, TankAlgorithmFactory &tankFactory, PlayerFactory &playerFactory);
-    void readBoard(const string &filename);
+    bool initializeGame(const SatelliteView &map, TankAlgorithmFactory tankFactory1, TankAlgorithmFactory tankFactory2);
+    void readBoard(const string &filename, const SatelliteView &map, TankAlgorithmFactory tankAlgFactory1, TankAlgorithmFactory tankAlgFactory2);
     GameResult run(
         size_t map_width, size_t map_height,
         const SatelliteView& map,
