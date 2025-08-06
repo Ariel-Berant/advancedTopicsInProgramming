@@ -1,5 +1,4 @@
-#ifndef PLAYERTANKALGORITHM_H
-#define PLAYERTANKALGORITHM_H
+#pragma once
 
 #include "../UserCommon/MovingObject.h"
 #include "../UserCommon/Bullet.h"
@@ -75,4 +74,3 @@ namespace Algorithm_0000 {
     };
 
 }
-#endif // PLAYERTANKALGORITHM_H

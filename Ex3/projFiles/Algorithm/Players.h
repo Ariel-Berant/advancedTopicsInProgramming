@@ -1,3 +1,5 @@
+#pragma once
+
 #include "OurPlayer.h"
 
 using namespace UserCommon_0000;

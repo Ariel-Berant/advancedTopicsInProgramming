@@ -1,5 +1,5 @@
-#ifndef MOVINGOBJECT_H
-#define MOVINGOBJECT_H
+#pragma once
+
 #include "MatrixObject.h"
 #include "Orientation.h"
 
@@ -28,5 +28,3 @@ namespace UserCommon_0000 {
     };
 
 }
-
-#endif // MOVINGOBJECT_H

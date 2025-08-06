@@ -1,5 +1,4 @@
-#ifndef OURPLAYER_H
-#define OURPLAYER_H
+#pragma once
 
 #include "../UserCommon/MatrixObject.h"
 #include "../common/Player.h"
@@ -39,4 +38,3 @@ namespace Algorithm_0000 {
                 (TankAlgorithm& tank, SatelliteView& satellite_view) override;
         };
 }
-#endif// OurPlayer.h

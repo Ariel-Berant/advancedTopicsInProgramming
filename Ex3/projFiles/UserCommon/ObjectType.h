@@ -1,5 +1,4 @@
-#ifndef OBJECTTYPE_H
-#define OBJECTTYPE_H
+#pragma once
 
 namespace UserCommon_0000 {
 
@@ -14,4 +13,3 @@ namespace UserCommon_0000 {
 
     typedef enum objectType objectType;
 }
-#endif //OBJECTTYPE_H

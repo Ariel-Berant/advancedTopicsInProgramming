@@ -1,5 +1,4 @@
-#ifndef TANKSGAME_H
-#define TANKSGAME_H
+#pragma once
 
 #include "GameManager.h"
 #include "PFactory.h"
@@ -11,4 +10,3 @@ class tanksGame {
 };
 
 }
-#endif //TANKSGAME_H

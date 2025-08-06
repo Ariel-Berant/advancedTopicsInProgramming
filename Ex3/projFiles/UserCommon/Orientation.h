@@ -1,5 +1,4 @@
-#ifndef ORIENTATION_H
-#define ORIENTATION_H
+#pragma once
 
 namespace UserCommon_0000 {
 
@@ -17,5 +16,3 @@ namespace UserCommon_0000 {
 
     typedef enum orientation orientation;
 }
-#endif //ORIENTATION_H
-

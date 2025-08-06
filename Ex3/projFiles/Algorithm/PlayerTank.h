@@ -1,5 +1,4 @@
-#ifndef PLAYERTANK_H
-#define PLAYERTANK_H
+#pragma once
 
 #include "PlayerTankAlgorithm.h"
 #include <memory>
@@ -33,4 +32,3 @@ namespace Algorithm_0000 {
         array<int,4> searchForBullets(int inCols, int inRows) const;
     };
 }
-#endif //PLAYERTANK_H

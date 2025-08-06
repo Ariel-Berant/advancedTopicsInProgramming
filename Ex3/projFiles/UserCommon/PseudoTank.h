@@ -1,3 +1,5 @@
+#pragma once
+
 #include "MovingObject.h"
 #include "../common/TankAlgorithm.h"
 

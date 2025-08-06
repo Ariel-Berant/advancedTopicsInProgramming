@@ -1,5 +1,5 @@
-#ifndef GAME_MANAGER_H
-#define GAME_MANAGER_H
+#pragma once
+
 #include "../UserCommon/MatrixObject.h"
 #include "../UserCommon/MovingObject.h"
 #include "../UserCommon/UnmovingObject.h"
@@ -155,5 +155,3 @@ public:
 };
 
 }
-
-#endif // GAME_MANAGER_H

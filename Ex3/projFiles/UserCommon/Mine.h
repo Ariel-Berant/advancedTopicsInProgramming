@@ -1,5 +1,5 @@
-#ifndef MINE_h
-#define MINE_h
+#pragma once
+
 #include "UnmovingObject.h"
 
 namespace UserCommon_0000 {
@@ -12,5 +12,3 @@ namespace UserCommon_0000 {
     };
 
 }
-
-#endif // MINE_h

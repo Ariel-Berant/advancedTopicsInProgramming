@@ -1,5 +1,5 @@
-#ifndef WALL_H
-#define WALL_H
+#pragma once
+
 #include "UnmovingObject.h"
 
 namespace UserCommon_0000 {
@@ -13,5 +13,3 @@ namespace UserCommon_0000 {
     };
 
 }
-
-#endif // WALL_H

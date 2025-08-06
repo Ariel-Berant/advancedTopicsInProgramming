@@ -1,5 +1,5 @@
-#ifndef MATRIXOBJECT_H
-#define MATRIXOBJECT_H
+#pragma once
+
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include "ObjectType.h"
@@ -34,5 +34,3 @@ public:
 };
 
 }
-
-#endif // MATRIXOBJECT_H

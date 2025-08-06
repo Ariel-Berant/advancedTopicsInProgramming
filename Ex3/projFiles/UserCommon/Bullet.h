@@ -1,5 +1,5 @@
-#ifndef BULLET_H
-#define BULLET_H
+#pragma once
+
 #include "MovingObject.h"
 namespace UserCommon_0000{
     class bullet : public movingObject
@@ -10,4 +10,3 @@ namespace UserCommon_0000{
     };
 
 }
-#endif // BULLET_H

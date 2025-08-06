@@ -1,5 +1,4 @@
-#ifndef ALGORITHM_REGISTRAR_H
-#define ALGORITHM_REGISTRAR_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -101,5 +100,3 @@ namespace Simulator_0000 {
         void clear() { algorithms.clear(); }
     };
 }
-
-#endif // ALGORITHM_REGISTRAR_H

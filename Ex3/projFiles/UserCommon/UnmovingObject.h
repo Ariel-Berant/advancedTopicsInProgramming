@@ -1,5 +1,5 @@
-#ifndef UNMOVINGOBJECT_H
-#define UNMOVINGOBJECT_H
+#pragma once
+
 #include "MatrixObject.h"
 
 namespace UserCommon_0000 {
@@ -16,5 +16,3 @@ namespace UserCommon_0000 {
     };
 
 }
-
-#endif // UNMOVINGOBJECT_H

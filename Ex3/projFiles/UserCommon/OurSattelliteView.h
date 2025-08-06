@@ -1,5 +1,4 @@
-#ifndef OURSATTELLITEVIEW_H
-#define OURSATTELLITEVIEW_H
+#pragma once
 
 #include <cstddef>
 #include "../common/SattelliteView.h"
@@ -28,4 +27,3 @@ public:
 };
 
 }
-#endif //OURSATTELLITEVIEW_H

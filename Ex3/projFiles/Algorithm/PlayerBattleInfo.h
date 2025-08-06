@@ -1,5 +1,4 @@
-#ifndef PLAYERBATTLEINFO_H
-#define PLAYERBATTLEINFO_H
+#pragma once
 
 #include "../common/BattleInfo.h"
 #include "../UserCommon/MatrixObject.h"
@@ -40,4 +39,3 @@ namespace Algorithm_0000{
             array<int, 3> findClosestEnemy(PlayerTankAlgorithm& tank) const;
     };
 }
-#endif// PlayerBattleInfo.h
