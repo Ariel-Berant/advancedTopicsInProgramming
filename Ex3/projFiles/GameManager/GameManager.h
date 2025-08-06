@@ -81,6 +81,7 @@ inline bool writeToFile(const string &message, const string &filename)
 class gameManager : public AbstractGameManager
 {
 private:
+    bool verbose; 
     GameResult gameResult; 
     string gameMapFileName;
     int numOfRows;
@@ -138,7 +139,7 @@ private:
 
 
 public:
-    gameManager();
+    gameManager(bool verbose);
     ~gameManager();
     gameManager(const gameManager &) = delete; // Disable copy constructor
     bool initializeGame(const SatelliteView &map, TankAlgorithmFactory tankFactory1, TankAlgorithmFactory tankFactory2);

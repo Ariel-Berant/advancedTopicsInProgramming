@@ -742,28 +742,41 @@ void gameManager::printToOurLogGameResult(){
 void gameManager::printGameResultToLog(){
     // printSummeryToLog();
     
-
     if( numOfP1TanksLeft == 0 && numOfP2TanksLeft == 0){
         gameResult.winner = 0;
         gameResult.reason = GameResult::ALL_TANKS_DEAD;
-        writeToFile("Tie, both players have zero tanks", gameMapFileName);
+        if (verbose)
+        {
+            writeToFile("Tie, both players have zero tanks", gameMapFileName);
+        }
     }
     else if(numOfP1TanksLeft == 0 || numOfP2TanksLeft == 0){
         int winnerPlayerNum = numOfP2TanksLeft != 0 ? 2 : 1;
         gameResult.winner = winnerPlayerNum;
         gameResult.reason = GameResult::ALL_TANKS_DEAD;
         int tanksLeftToWinner = numOfP2TanksLeft != 0 ? numOfP2TanksLeft : numOfP1TanksLeft;
-        writeToFile("Player " + to_string(winnerPlayerNum) + " won with " + to_string(tanksLeftToWinner) + " tanks still alive\n", gameMapFileName);
+        if (verbose)
+        {
+            writeToFile("Player " + to_string(winnerPlayerNum) + " won with " + to_string(tanksLeftToWinner) + " tanks still alive\n", gameMapFileName);
+        }
+        
     }
     else if(turns == maxTurns){
         gameResult.winner = 0;
         gameResult.reason = GameResult::MAX_STEPS;
-        writeToFile("Tie, reached max steps = " + to_string(maxTurns/2) + ", player 1 has " + to_string(numOfP1TanksLeft) + " tanks, player 2 has " + to_string(numOfP2TanksLeft) + " tanks\n", gameMapFileName);
+        if (verbose)
+        {
+            writeToFile("Tie, reached max steps = " + to_string(maxTurns/2) + 
+            ", player 1 has " + to_string(numOfP1TanksLeft) + " tanks, player 2 has " + to_string(numOfP2TanksLeft) + " tanks\n", gameMapFileName);
+        }
+        
     }
     else if(numOfBulletsLeft == 0){
         gameResult.winner = 0;
         gameResult.reason = GameResult::ZERO_SHELLS;
-        writeToFile("Tie, both players have zero shells for " + to_string(MAX_STEPS_WITHOUT_SHELLS) + " steps\n", gameMapFileName);
+        if (verbose){
+            writeToFile("Tie, both players have zero shells for " + to_string(MAX_STEPS_WITHOUT_SHELLS) + " steps\n", gameMapFileName);
+        }
     }
 
     gameResult.rounds = turns / 2;
@@ -809,10 +822,11 @@ GameResult gameManager::run(
         }
         gameManager::checkCollisions();
         gameOver = makeAllMoves();
-        if(!isOddTurn){
+        if(!isOddTurn && verbose){
             printLastTurnToLog();
         }
     }
+
     printGameResultToLog();
     printToOurLogGameResult();
     // destroyBoardAndObjects();
@@ -841,7 +855,7 @@ void gameManager::readBoard(const string &filename, const SatelliteView &map,
     gameMapFileName.replace((gameMapFileName.length() - fileStem.length()), fileStem.length(), "output_" + fileStem + ".txt");
 }
 
-gameManager::gameManager() : numOfRows(0), numOfCols(0),
+gameManager::gameManager(bool verbose) : verbose(verbose), numOfRows(0), numOfCols(0),
 turns(0), noBulletsCnt(2 * MAX_STEPS_WITHOUT_SHELLS), isOddTurn(false), numOfWalls(0), numOfMines(0), numOfWallsDestroyed(0), numOfMinesDestroyed(0), gameBoard(nullptr), tanks(std::vector<std::shared_ptr<PseudoTank>>())
 {
 
