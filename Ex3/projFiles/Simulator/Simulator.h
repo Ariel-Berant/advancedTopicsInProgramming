@@ -1,12 +1,21 @@
 #pragma once
 
+#include <iostream>
+#include <filesystem>
+#include <fstream>
+#include <dlfcn.h>
 #include "AlgorithmRegistrar.h"
 #include "GameManagerRegistrar.h"
 #include "../UserCommon/OurSattelliteView.h"
+#include "../UserCommon/MatrixObject.h"
+#include "../UserCommon/UnmovingObject.h"
+#include "../UserCommon/ObjectType.h"
+#include "../UserCommon/MovingObject.h"
+#include "../UserCommon/Orientation.h"
 
 using namespace UserCommon_0000;
 
-using std::string, std::vector;
+using std::string, std::vector, std::unique_ptr, std::shared_ptr, std::array, std::pair, std::endl;
 namespace Simulator_0000
 {
     class Simulator
@@ -31,20 +40,28 @@ namespace Simulator_0000
 
         struct MapData
         {
-            size_t mapWidth;
-            size_t mapHeight;
-            OurSattelliteView map;
             string mapName;
-            size_t numShells;
             size_t maxTurns;
+            size_t numShells;
+            size_t mapHeight;
+            size_t mapWidth;
+            OurSattelliteView map;
         };
 
         vector<MapData> mapsData;
+        vector<string> algos;
+        vector<string> gameManagers;
 
         void loadConfigFromInput(int argc, char const *argv[]);
         bool validateInput(int argc, char const *argv[]);
         bool checkConfig();
+        void getNamesComaprative();
+        void getNamesCompetition();
+        void loadMapsData();
+        void loadAlgorithms();
+        void loadGameManagers();
         static Simulator simulator;
+        vector<vector<array<shared_ptr<matrixObject>, 3>>> createSatView(const std::string& filePath, int numOfCols, int numOfRows);
     public:
         static Simulator& getSimulator();
         void simulate(int argc, char const *argv[]);

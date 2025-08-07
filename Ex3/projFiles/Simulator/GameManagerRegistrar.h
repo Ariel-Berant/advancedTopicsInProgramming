@@ -53,7 +53,7 @@ namespace Simulator_0000
             bool hasName, hasGameManagerFactory;
         };
 
-        void validateRegistration() {
+        void validateLastRegistration() {
             const auto& last = gameManagers.back();
             bool hasName = (last.name() != "");
             bool hasGameManagerFactory = last.hasGameManagerFactory();

@@ -117,6 +117,327 @@ bool Simulator::validateInput(int argc, char const *argv[])
     return true;
 }
 
+bool checkIfDirectoryValid(const std::string& path) {
+    std::filesystem::path dirPath(path);
+    if (!std::filesystem::exists(dirPath)) {
+        std::cerr << "Directory does not exist: " << path << std::endl;
+        return false;
+    }
+    if (!std::filesystem::is_directory(dirPath)) {
+        std::cerr << "Path is not a directory: " << path << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool checkIfFileValid(const std::string& filePath) {
+    std::filesystem::path path(filePath);
+    if (!std::filesystem::exists(path)) {
+        std::cerr << "File does not exist: " << filePath << std::endl;
+        return false;
+    }
+    if (std::filesystem::path(filePath).extension() != ".so") {
+        std::cerr << "Invalid file extension (must be .so): " << filePath << std::endl;
+        return false;
+    }
+    return true;
+}
+
+
+
+void Simulator::getNamesComaprative() {
+    if (!checkIfDirectoryValid(config.gameManagerFolderPath)) 
+    {
+        std::cerr << "Invalid game manager folder path: " << config.gameManagerFolderPath << std::endl;
+        return;
+    }
+    
+    if (!checkIfFileValid(config.algorithm1Path) || !checkIfFileValid(config.algorithm2Path))
+    {
+        std::cerr << "Invalid algorithm file paths." << std::endl;
+        return;
+    }
+    
+    algos.push_back(config.algorithm1Path);
+    algos.push_back(config.algorithm2Path);
+
+    for (const auto& entry : std::filesystem::directory_iterator(config.gameManagerFolderPath)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".so") {
+            gameManagers.push_back(entry.path().string());
+        }
+    }
+
+    if (gameManagers.empty()) {
+        std::cerr << "No valid game manager files found in: " << config.gameManagerFolderPath << std::endl;
+    }
+}
+
+void Simulator::getNamesCompetition() {
+
+    if (!checkIfFileValid(config.gameManagerPath))
+    {
+        std::cerr << "Invalid game manager file path: " << config.gameManagerPath << std::endl;
+        return;
+    }
+
+    gameManagers.push_back(config.gameManagerPath);
+    
+    if (!checkIfDirectoryValid(config.algorithmsFolderPath))
+    {
+        std::cerr << "Invalid algorithms folder path: " << config.algorithmsFolderPath << std::endl;
+        return;
+    }
+
+    for (const auto& entry : std::filesystem::directory_iterator(config.algorithmsFolderPath)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".so") {
+            algos.push_back(entry.path().string());
+        }
+    }
+
+    if (algos.empty()) {
+        std::cerr << "No valid algorithm files found in: " << config.algorithmsFolderPath << std::endl;
+    }
+}
+
+void Simulator::loadMapsData() {
+    if (!checkIfDirectoryValid(config.mapsFolderPath)) 
+    {
+        std::cerr << "Invalid maps folder path: " << config.mapsFolderPath << std::endl;
+        return;
+    }
+
+    for (const auto& entry : std::filesystem::directory_iterator(config.mapsFolderPath)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".txt") {
+            pair<string, array<size_t, 4>> mapInfo = parseMapLine(entry.path().string());
+            if (mapInfo.second[0] == 0 || mapInfo.second[1] == 0 || mapInfo.second[2] == 0 || mapInfo.second[3] == 0) {
+                continue;
+            }
+
+            MapData mapData{
+                mapInfo.first,
+                mapInfo.second[0],
+                mapInfo.second[1],
+                mapInfo.second[2],
+                mapInfo.second[3],
+                (OurSattelliteView)
+                {
+                    createSatView(entry.path().string(), mapInfo.second[3], mapInfo.second[2]),
+                    mapInfo.second[3],
+                    mapInfo.second[2],
+                    -100, // tankX, initialized to 0
+                    -100  // tankY, initialized to 0
+                }
+            };
+            mapsData.push_back(mapData);
+        }
+    }
+
+
+
+    if (mapsData.empty()) {
+        std::cerr << "No valid map files found in: " << config.mapsFolderPath << std::endl;
+    }
+}
+
+pair<string, array<size_t, 4>> parseMapLine(const string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return {"", {}};
+    }
+
+    string mapName;
+    array<size_t, 4> dimensions = {0, 0, 0, 0}; // {maxTurns, numShells, mapHeight, mapWidth}
+    string line;
+    size_t currValue = -1;
+
+    for (size_t i = 0; i < 5; i++)
+    {
+        getline(file, line);
+        if (i == 0) 
+        {
+            if (line.empty()) {
+                std::cerr << "Error: The first line of the map file is empty." << std::endl;
+                return {"", {}};
+            }
+            mapName = line;
+        }
+        else
+        {
+            if (i==1)
+            {
+                currValue = parseRowInfo(line, "MaxSteps=", 1);
+            }
+            else if (i==2) 
+            {
+                currValue = parseRowInfo(line, "NumShells=", 2);
+            }
+            else if (i==3) 
+            {
+                currValue = parseRowInfo(line, "Rows=", 3);
+            }
+            else if (i==4) 
+            {
+                currValue = parseRowInfo(line, "Cols=", 4);
+            }
+
+            if (currValue <= 0) {
+                std::cerr << "Error: Invalid format or value in line " << i + 1 << " of the map file." << std::endl;
+                return {"", {}};
+            }
+            dimensions[i - 1] = currValue; // Store the value in the corresponding index
+        }
+    }
+
+    file.close();
+    return {mapName, dimensions};
+}
+
+
+size_t parseRowInfo(const string line, const string description, int rowNum) {
+    string fileRow = line;
+    // Remove all whitespace characters from the string
+    fileRow.erase(remove_if(fileRow.begin(), 
+                              fileRow.end(),
+                              [](unsigned char x) { return std::isspace(x); }),
+               fileRow.end());
+    if (fileRow.find(description) != 0) {
+        std::cerr << "Error: The row for \"" << description << "\" does not start with the expected description.\n" << std::endl;
+        return false;
+    }
+    fileRow.erase(0, description.length());
+    // Check if the remaining string is a valid integer
+    if (!all_of(fileRow.begin(), fileRow.end(), ::isdigit)) {
+        std::cerr << "Error: The row for \"" << description << "\" contains invalid characters.\nCorrect use is: "
+             << description << "<NUM>\n" << std::endl;
+        return false;
+    }
+    size_t value = stoul(fileRow);
+    if (rowNum == 1)
+    {  
+        return value * 2; // maxTurns
+    }
+    return value; // numShells, mapHeight, mapWidth
+}
+
+vector<vector<array<shared_ptr<matrixObject>, 3>>> Simulator::createSatView(const std::string& filePath, int numOfCols, int numOfRows) {
+    vector<vector<array<shared_ptr<matrixObject>, 3>>> gameBoard;
+    string line;
+    size_t currRow = 0, currCol = 0;
+
+    gameBoard.resize(numOfCols, vector<array<shared_ptr<matrixObject>, 3>>(numOfRows, {nullptr, nullptr, nullptr}));
+
+    std::ifstream file(filePath);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << filePath << std::endl;
+        return gameBoard;
+    }
+
+    while (getline(file, line)){
+        if (currRow == numOfRows){
+        std::cerr << "Error: Too many rows in the map file.\n" << std::endl;
+            break;
+        }
+        for (char ch : line) {
+            if (currCol == numOfCols){
+                std::cerr << "Error: Too many columns in row " << currRow << ".\n" << std::endl;
+                continue;
+            }
+            switch (ch) {
+            case '#':
+                addUnmovingObjectToMap(gameBoard, '#', currCol, currRow);
+                break;
+            case '1':
+                addTankToMap(gameBoard, 1, currCol, currRow);
+                break;
+            case '2':
+                addTankToMap(gameBoard, 2, currCol, currRow);
+                break;
+            case '@':
+                addUnmovingObjectToMap(gameBoard, '@', currCol, currRow);
+                break;
+            case ' ':
+                break;
+            default:
+                std::cerr << "Error: unrecognized character, ASCII #'" << ch << "' in the map file.\n" << std::endl;
+            }
+            currCol++;
+        }
+        if (currCol < numOfCols){
+            std::cerr << "Error: Not enough columns in row " << currRow << ".\n" << std::endl;
+        }
+        currRow++;
+        currCol = 0;
+    }
+    if (currRow < numOfRows){
+        std::cerr << "Error: Not enough rows in the map file.\n" << std::endl;
+    }
+    file.close();
+
+    return gameBoard;
+}
+
+void addTankToMap(vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, int playerNum, int currCol, int currRow) {
+    if (playerNum == 1) {
+        gameBoard[currCol][currRow][1] = make_unique<matrixObject>(currRow, currCol, P1T);
+    } else if (playerNum == 2) {
+        gameBoard[currCol][currRow][1] = make_unique<matrixObject>(currRow, currCol, P2T);
+    }
+}
+
+void addUnmovingObjectToMap(vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, char UnmovingObjectType, int currCol, int currRow){
+    if(UnmovingObjectType == '#'){
+        gameBoard[currCol][currRow][0] = make_unique<matrixObject>(currRow, currCol, W);
+    }
+    else if(UnmovingObjectType == '@'){
+        gameBoard[currCol][currRow][0] = make_unique<matrixObject>(currRow, currCol, M);
+    }
+}
+
+void Simulator::loadAlgorithms() {
+    auto& registrar = AlgorithmRegistrar::getAlgorithmRegistrar();
+    for(const auto& algo: algos) {
+        registrar.createAlgorithmFactoryEntry(algo);
+        // TODO - actual dlopen, also: check dlopen for failure
+        dlopen(algo.c_str(), RTLD_NOW | RTLD_GLOBAL);
+        try {
+            registrar.validateLastRegistration();
+        }
+        catch(AlgorithmRegistrar::BadRegistrationException& e) {
+            // TODO: report according to requirements
+            std::cout << "---------------------------------" << std::endl;
+            std::cout << "BadRegistrationException for: " << algo << std::endl;
+            std::cout << "Name as registered: " << e.name << std::endl;
+            std::cout << "Has tank algorithm factory? " << std::boolalpha << e.hasTankAlgorithmFactory << std::endl;
+            std::cout << "Has Player factory? " << std::boolalpha << e.hasPlayerFactory << std::endl;
+            std::cout << "---------------------------------" << std::endl;
+            registrar.removeLast();
+        }
+    }
+}
+
+void Simulator::loadGameManagers() {
+    auto& registrar = GameManagerRegistrar::getGameManagerRegistrar();
+    for(const auto& manager: gameManagers) {
+        registrar.createGameManagerFactoryEntry(manager);
+        // TODO - actual dlopen, also: check dlopen for failure
+        dlopen(manager.c_str(), RTLD_NOW | RTLD_GLOBAL);
+        try {
+            registrar.validateLastRegistration();
+        }
+        catch(GameManagerRegistrar::BadRegistrationException& e) {
+            // TODO: report according to requirements
+            std::cout << "---------------------------------" << std::endl;
+            std::cout << "BadRegistrationException for: " << manager << std::endl;
+            std::cout << "Name as registered: " << e.name << std::endl;
+            std::cout << "Has Game Manager factory? " << std::boolalpha << e.hasGameManagerFactory << std::endl;
+            std::cout << "---------------------------------" << std::endl;
+            registrar.removeLast();
+        }
+    }
+}
+
+
 int main(int argc, char const *argv[])
 {
         
