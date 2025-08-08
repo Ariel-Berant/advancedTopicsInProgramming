@@ -405,12 +405,12 @@ void Simulator::loadAlgorithms() {
         }
         catch(AlgorithmRegistrar::BadRegistrationException& e) {
             // TODO: report according to requirements
-            std::cout << "---------------------------------" << std::endl;
-            std::cout << "BadRegistrationException for: " << algo << std::endl;
-            std::cout << "Name as registered: " << e.name << std::endl;
-            std::cout << "Has tank algorithm factory? " << std::boolalpha << e.hasTankAlgorithmFactory << std::endl;
-            std::cout << "Has Player factory? " << std::boolalpha << e.hasPlayerFactory << std::endl;
-            std::cout << "---------------------------------" << std::endl;
+            std::cerr << "---------------------------------" << std::endl;
+            std::cerr << "BadRegistrationException for: " << algo << std::endl;
+            std::cerr << "Name as registered: " << e.name << std::endl;
+            std::cerr << "Has tank algorithm factory? " << std::boolalpha << e.hasTankAlgorithmFactory << std::endl;
+            std::cerr << "Has Player factory? " << std::boolalpha << e.hasPlayerFactory << std::endl;
+            std::cerr << "---------------------------------" << std::endl;
             registrar.removeLast();
         }
     }
@@ -427,16 +427,19 @@ void Simulator::loadGameManagers() {
         }
         catch(GameManagerRegistrar::BadRegistrationException& e) {
             // TODO: report according to requirements
-            std::cout << "---------------------------------" << std::endl;
-            std::cout << "BadRegistrationException for: " << manager << std::endl;
-            std::cout << "Name as registered: " << e.name << std::endl;
-            std::cout << "Has Game Manager factory? " << std::boolalpha << e.hasGameManagerFactory << std::endl;
-            std::cout << "---------------------------------" << std::endl;
+            std::cerr << "---------------------------------" << std::endl;
+            std::cerr << "BadRegistrationException for: " << manager << std::endl;
+            std::cerr << "Name as registered: " << e.name << std::endl;
+            std::cerr << "Has Game Manager factory? " << std::boolalpha << e.hasGameManagerFactory << std::endl;
+            std::cerr << "---------------------------------" << std::endl;
             registrar.removeLast();
         }
     }
 }
 
+void Simulator::competitionRun() {
+    
+}
 
 int main(int argc, char const *argv[])
 {

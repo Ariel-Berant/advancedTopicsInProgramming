@@ -10,6 +10,7 @@
 #include <future>
 
 // The ThreadPool class that manages worker threads and a task queue.
+// Created with the help of Gemini(thanks to Google)
 class ThreadPool {
 public:
     // The constructor creates and starts the worker threads.

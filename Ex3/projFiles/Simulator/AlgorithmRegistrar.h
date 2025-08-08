@@ -98,5 +98,12 @@ namespace Simulator_0000 {
         
         std::size_t count() const { return algorithms.size(); }
         void clear() { algorithms.clear(); }
+
+        auto getAtIndex(size_t index) const {
+            if(index >= algorithms.size()) {
+                throw std::out_of_range("Index out of range in AlgorithmRegistrar");
+            }
+            return algorithms[index];
+        }
     };
 }

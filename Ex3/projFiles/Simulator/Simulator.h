@@ -62,6 +62,10 @@ namespace Simulator_0000
         void loadGameManagers();
         static Simulator simulator;
         vector<vector<array<shared_ptr<matrixObject>, 3>>> createSatView(const std::string& filePath, int numOfCols, int numOfRows);
+
+        void comparativeRun();
+        void competitionRun();
+
     public:
         static Simulator& getSimulator();
         void simulate(int argc, char const *argv[]);

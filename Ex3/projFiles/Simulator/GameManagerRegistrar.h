@@ -84,5 +84,12 @@ namespace Simulator_0000
         void clear() {
             gameManagers.clear();
         }
+
+        auto getAtIndex(size_t index) const {
+            if(index >= gameManagers.size()) {
+                throw std::out_of_range("Index out of range in GameManagerRegistrar");
+            }
+            return gameManagers[index];
+        }
     };
 } 
