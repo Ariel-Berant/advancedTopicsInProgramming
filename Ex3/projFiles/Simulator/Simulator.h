@@ -12,6 +12,7 @@
 #include "../UserCommon/ObjectType.h"
 #include "../UserCommon/MovingObject.h"
 #include "../UserCommon/Orientation.h"
+#include "ThreadPool.h"
 
 using namespace UserCommon_0000;
 
@@ -48,9 +49,26 @@ namespace Simulator_0000
             OurSattelliteView map;
         };
 
-        vector<MapData> mapsData;
+        struct runObj
+        {
+            shared_ptr<Player> player1;
+            shared_ptr<Player> player2;
+            TankAlgorithmFactory tankFactory1;
+            TankAlgorithmFactory tankFactory2;
+            shared_ptr<AbstractGameManager> gameManager;
+            shared_ptr<MapData> mapData;
+            string gameManagerName;
+            string algo1Name;
+            string algo2Name;
+        };
+
+        vector<shared_ptr<MapData>> mapsData;
         vector<string> algos;
         vector<string> gameManagers;
+        vector<void*> handles;
+        vector<runObj> runObjects;
+        vector<pair<std::future<GameResult>, string>> results;
+        vector<pair<GameResult, vector<string>>> comparativeGrouped;
 
         void loadConfigFromInput(int argc, char const *argv[]);
         bool validateInput(int argc, char const *argv[]);
@@ -60,6 +78,9 @@ namespace Simulator_0000
         void loadMapsData();
         void loadAlgorithms();
         void loadGameManagers();
+        void loadRunObjects();
+        void sendRunObjectsToThreadPool(unique_ptr<ThreadPool> threadPool);
+        void sortResultsComparative();
         static Simulator simulator;
         vector<vector<array<shared_ptr<matrixObject>, 3>>> createSatView(const std::string& filePath, int numOfCols, int numOfRows);
 

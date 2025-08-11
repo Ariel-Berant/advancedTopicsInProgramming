@@ -46,6 +46,10 @@ namespace Simulator_0000 {
             bool hasTankAlgorithmFactory() const {
                 return tankAlgorithmFactory != nullptr;
             }
+
+            TankAlgorithmFactory getTankAlgorithmFactory() const {
+                return tankAlgorithmFactory;
+            }
         };
         
         std::vector<AlgorithmAndPlayerFactories> algorithms;

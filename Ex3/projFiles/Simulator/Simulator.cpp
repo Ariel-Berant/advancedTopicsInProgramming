@@ -8,6 +8,65 @@ Simulator& Simulator::getSimulator() {
     return simulator;
 }
 
+bool checkIfRemainingTanksSame(const GameResult& gameResults1, const GameResult& gameResults2) {
+    if (gameResults1.remaining_tanks.size() != gameResults2.remaining_tanks.size())
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < gameResults1.remaining_tanks.size(); ++i)
+    {
+        if (gameResults1.remaining_tanks[i] != gameResults2.remaining_tanks[i])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool checkIfSatelliteViewSame(const GameResult& gameResults1, const GameResult& gameResults2) {
+    int currX = 0, currY = 0;
+
+    while(gameResults1.gameState->getObjectAt(currX, currY) != '&')
+    {
+        while(gameResults1.gameState->getObjectAt(currX, currY) != '&')
+        {
+            if (gameResults1.gameState->getObjectAt(currX, currY) != gameResults2.gameState->getObjectAt(currX, currY))
+            {
+                return false;
+            }
+            currX++;
+        }
+
+        if (gameResults2.gameState->getObjectAt(currX, currY) != '&')
+        {
+            return false;
+        }
+        currY++;
+        currX = 0;
+    }
+
+    if (gameResults2.gameState->getObjectAt(currX, currY) != '&')
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool checkIfGameResultsSame(const GameResult& gameResults1, const GameResult& gameResults2) {
+    bool same = true;
+
+    if (gameResults1.winner != gameResults2.winner) same = false;
+    if (gameResults1.reason != gameResults2.reason) same = false;
+    if (checkIfRemainingTanksSame(gameResults1, gameResults2)) same = false;
+    if (gameResults1.rounds != gameResults2.rounds) same = false;
+    if (!checkIfSatelliteViewSame(gameResults1, gameResults2)) same = false;
+
+    return same;
+}
+
 void Simulator::loadConfigFromInput(int argc, const char *argv[]){
     for (size_t i = 1; i < argc; i++)
     {
@@ -228,11 +287,9 @@ void Simulator::loadMapsData() {
                     -100  // tankY, initialized to 0
                 }
             };
-            mapsData.push_back(mapData);
+            mapsData.push_back(std::make_shared<MapData>(mapData));
         }
     }
-
-
 
     if (mapsData.empty()) {
         std::cerr << "No valid map files found in: " << config.mapsFolderPath << std::endl;
@@ -398,8 +455,16 @@ void Simulator::loadAlgorithms() {
     auto& registrar = AlgorithmRegistrar::getAlgorithmRegistrar();
     for(const auto& algo: algos) {
         registrar.createAlgorithmFactoryEntry(algo);
-        // TODO - actual dlopen, also: check dlopen for failure
-        dlopen(algo.c_str(), RTLD_NOW | RTLD_GLOBAL);
+
+        void* handle = dlopen(algo.c_str(), RTLD_NOW | RTLD_GLOBAL);
+        if (!handle) {
+            const char* error = dlerror();
+            std::cerr << "Error loading algorithm: " << algo << std::endl;
+            std::cerr << "dlerror: " << (error ? error : "Unknown error") << std::endl;
+        }
+
+        handles.push_back(handle);
+        
         try {
             registrar.validateLastRegistration();
         }
@@ -420,8 +485,16 @@ void Simulator::loadGameManagers() {
     auto& registrar = GameManagerRegistrar::getGameManagerRegistrar();
     for(const auto& manager: gameManagers) {
         registrar.createGameManagerFactoryEntry(manager);
-        // TODO - actual dlopen, also: check dlopen for failure
-        dlopen(manager.c_str(), RTLD_NOW | RTLD_GLOBAL);
+
+        void* handle = dlopen(manager.c_str(), RTLD_NOW | RTLD_GLOBAL);
+        if (!handle) {
+            const char* error = dlerror();
+            std::cerr << "Error loading game manager: " << manager << std::endl;
+            std::cerr << "dlerror: " << (error ? error : "Unknown error") << std::endl;
+        }
+
+        handles.push_back(handle);
+
         try {
             registrar.validateLastRegistration();
         }
@@ -432,17 +505,89 @@ void Simulator::loadGameManagers() {
             std::cerr << "Name as registered: " << e.name << std::endl;
             std::cerr << "Has Game Manager factory? " << std::boolalpha << e.hasGameManagerFactory << std::endl;
             std::cerr << "---------------------------------" << std::endl;
-            registrar.removeLast();
+            registrar.removeLast();   
         }
     }
 }
 
-void Simulator::competitionRun() {
-    
+
+// Comparative run, so we know that the first algo is loaded 
+void Simulator::loadRunObjects(){
+    auto& algoRegistrar = AlgorithmRegistrar::getAlgorithmRegistrar();
+    auto& gameManagerRegistrar = GameManagerRegistrar::getGameManagerRegistrar();
+
+    for (size_t i = 0; i < gameManagerRegistrar.count(); i++)
+    {
+        runObj runObject{
+            .player1 = std::move(algoRegistrar.getAtIndex(0).createPlayer(1, 
+                                                                        mapsData[0]->mapWidth, 
+                                                                        mapsData[0]->mapHeight, 
+                                                                        mapsData[0]->maxTurns,
+                                                                         mapsData[0]->numShells)),
+            .player2 = std::move(algoRegistrar.getAtIndex(0).createPlayer(2, 
+                                                                        mapsData[0]->mapWidth, 
+                                                                        mapsData[0]->mapHeight, 
+                                                                        mapsData[0]->maxTurns,
+                                                                         mapsData[0]->numShells)),
+            .tankFactory1 = algoRegistrar.getAtIndex(0).getTankAlgorithmFactory(),
+            .tankFactory2 = algoRegistrar.getAtIndex(1).getTankAlgorithmFactory(),
+            .gameManager = std::move(gameManagerRegistrar.getAtIndex(i).createGameManager(config.verbose)),
+            .mapData = mapsData[0],
+            .gameManagerName = gameManagerRegistrar.getAtIndex(i).name(),
+            .algo1Name = algoRegistrar.getAtIndex(0).name(),
+            .algo2Name = algoRegistrar.getAtIndex(1).name()
+        };
+
+        runObjects.push_back(std::move(runObject));
+    }
+}
+
+void Simulator::sendRunObjectsToThreadPool(unique_ptr<ThreadPool> threadPool) {
+    for (auto& runObject : runObjects) {
+        results.emplace_back(threadPool->enqueue([runObject]() mutable {
+            runObject.gameManager->run(
+                runObject.mapData->mapWidth,
+                runObject.mapData->mapHeight,
+                runObject.mapData->map,
+                runObject.mapData->mapName,
+                runObject.mapData->maxTurns,
+                runObject.mapData->numShells,
+                *(runObject.player1),
+                runObject.algo1Name,
+                *(runObject.player2),
+                runObject.algo2Name,
+                runObject.tankFactory1,
+                runObject.tankFactory2
+            );
+        }), runObject.gameManagerName);
+    }
+}
+
+void Simulator::sortResultsComparative(){
+    for (size_t i = 0; i < results.size(); i++)
+    {
+        for (size_t j = 0; j < comparativeGrouped.size(); j++)
+        {
+            if (checkIfGameResultsSame(comparativeGrouped[j].first, results[i].first.get()))
+            {
+                comparativeGrouped[j].second.emplace_back(results[i].second);
+                break;
+            }
+        }
+
+        comparativeGrouped.emplace_back(results[i].first.get(), vector<string>{results[i].second});
+    }
+
+    sort(comparativeGrouped.begin(), comparativeGrouped.end(), [](const auto& a, const auto& b) {
+        return a.second.size() < b.second.size();
+    });
+}
+
+void Simulator::comparativeRun(){
+
 }
 
 int main(int argc, char const *argv[])
-{
-        
+{       
     return 0;
 }
