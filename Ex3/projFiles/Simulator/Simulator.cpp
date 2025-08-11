@@ -8,6 +8,17 @@ Simulator& Simulator::getSimulator() {
     return simulator;
 }
 
+string getTimeString() {
+    using namespace std::chrono;
+    auto now = system_clock::now();
+    duration<double> ts = now.time_since_epoch();
+    constexpr size_t NUM_DIGITS = 9;
+    size_t NUM_DIGITS_P = std::pow(10, NUM_DIGITS);    
+    std::ostringstream oss;
+    oss << std::setw(NUM_DIGITS) << std::setfill('0') << size_t(ts.count() * NUM_DIGITS_P) % NUM_DIGITS_P;
+    std::string s = oss.str();
+}
+
 bool checkIfRemainingTanksSame(const GameResult& gameResults1, const GameResult& gameResults2) {
     if (gameResults1.remaining_tanks.size() != gameResults2.remaining_tanks.size())
     {
@@ -26,7 +37,7 @@ bool checkIfRemainingTanksSame(const GameResult& gameResults1, const GameResult&
 }
 
 bool checkIfSatelliteViewSame(const GameResult& gameResults1, const GameResult& gameResults2) {
-    int currX = 0, currY = 0;
+    size_t currX = 0, currY = 0;
 
     while(gameResults1.gameState->getObjectAt(currX, currY) != '&')
     {
@@ -229,6 +240,8 @@ void Simulator::getNamesComaprative() {
     if (gameManagers.empty()) {
         std::cerr << "No valid game manager files found in: " << config.gameManagerFolderPath << std::endl;
     }
+
+    fileToPrintPath = std::filesystem::path(config.gameManagerFolderPath).parent_path() / ("comparative_results_" + getTimeString() + ".txt");
 }
 
 void Simulator::getNamesCompetition() {
@@ -542,7 +555,7 @@ void Simulator::loadRunObjects(){
     }
 }
 
-void Simulator::sendRunObjectsToThreadPool(unique_ptr<ThreadPool> threadPool) {
+void Simulator::sendRunObjectsToThreadPool(shared_ptr<ThreadPool> threadPool) {
     for (auto& runObject : runObjects) {
         results.emplace_back(threadPool->enqueue([runObject]() mutable {
             runObject.gameManager->run(
@@ -560,6 +573,31 @@ void Simulator::sendRunObjectsToThreadPool(unique_ptr<ThreadPool> threadPool) {
                 runObject.tankFactory2
             );
         }), runObject.gameManagerName);
+    }
+}
+
+void Simulator::runRegularRunObjects() {
+    for (auto& runObject : runObjects)
+    {
+        std::promise<GameResult> res; 
+        std::future<GameResult> futureRes = res.get_future();
+        res.set_value(
+            runObject.gameManager->run(
+                runObject.mapData->mapWidth,
+                runObject.mapData->mapHeight,
+                runObject.mapData->map,
+                runObject.mapData->mapName,
+                runObject.mapData->maxTurns,
+                runObject.mapData->numShells,
+                *(runObject.player1),
+                runObject.algo1Name,
+                *(runObject.player2),
+                runObject.algo2Name,
+                runObject.tankFactory1,
+                runObject.tankFactory2
+            ));
+        
+        results.emplace_back(pair<std::future<GameResult>, string>(std::move(futureRes), runObject.gameManagerName));
     }
 }
 
@@ -583,8 +621,91 @@ void Simulator::sortResultsComparative(){
     });
 }
 
-void Simulator::comparativeRun(){
+string vectorToString(const vector<string>& vec) {
+    string result;
+    for (const auto& str : vec) {
+        result += str + ", ";
+    }
+    if (!result.empty()) {
+        result.pop_back(); // Remove last space
+        result.pop_back(); // Remove last comma
+    }
+    return result;
+}
 
+string Simulator::parseGameResultReason(const GameResult& gr, int mapIndex) const{
+    if( gr.remaining_tanks[0] == 0 && gr.remaining_tanks[1] == 0){
+        return "Tie, both players have zero tanks";
+    }
+    else if(gr.remaining_tanks[0] == 0 || gr.remaining_tanks[1] == 0){
+        int winnerPlayerNum = gr.remaining_tanks[1] != 0 ? 2 : 1;
+        int tanksLeftToWinner = gr.remaining_tanks[1] != 0 ? gr.remaining_tanks[1] : gr.remaining_tanks[0];
+        return "Player " + std::to_string(winnerPlayerNum) + " won with " + std::to_string(tanksLeftToWinner) + " tanks still alive";
+
+    }
+    else if(gr.reason == GameResult::MAX_STEPS){
+        return "Tie, reached max steps = " + std::to_string(gr.rounds) + 
+            ", player 1 has " + std::to_string(gr.remaining_tanks[0]) + " tanks, player 2 has " + std::to_string(gr.remaining_tanks[1]) + " tanks";
+    }
+    else if(gr.reason == GameResult::ZERO_SHELLS){
+        return "Tie, both players have zero shells for " + std::to_string(mapsData[mapIndex]->maxTurns) + " steps";
+    }
+}
+
+string satelliteViewToString(const SatelliteView& satelliteView){
+    std::ostringstream oss;
+    size_t currX = 0, currY = 0;
+
+    while(satelliteView.getObjectAt(currX, currY) != '&')
+    {
+        while(satelliteView.getObjectAt(currX, currY) != '&')
+        {
+            oss << satelliteView.getObjectAt(currX, currY);
+            currX++;
+        }
+
+        oss << "\n";
+
+        currY++;
+        currX = 0;
+    }
+
+    return oss.str();
+}
+
+void Simulator::printResultsComparative(){
+    std::ofstream outFile(fileToPrintPath);
+    if (outFile.is_open())
+    {
+        outFile << "game_map=" << config.mapPath << std::endl;
+        outFile << "algorithm1=" << config.algorithm1Path << std::endl;
+        outFile << "algorithm2=" << config.algorithm2Path << std::endl;
+
+        for (const auto& group : comparativeGrouped)
+        {
+            outFile << vectorToString(group.second) << std::endl;
+            outFile << parseGameResultReason(group.first, 0) << std::endl;
+            outFile << group.first.rounds << std::endl;
+            outFile << satelliteViewToString(*(group.first.gameState.get())) << std::endl;
+            outFile << std::endl; // Add an empty line between groups
+        }
+    }
+    
+}
+
+void Simulator::comparativeRun(){
+    if (config.threadsNum > 1)
+    {
+        shared_ptr<ThreadPool> threadPool = std::make_shared<ThreadPool>(config.threadsNum);
+        sendRunObjectsToThreadPool(threadPool);
+    }
+    else
+    {
+        runRegularRunObjects();
+    }
+
+    sortResultsComparative();
+    printResultsComparative();
 }
 
 int main(int argc, char const *argv[])

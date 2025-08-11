@@ -62,6 +62,7 @@ namespace Simulator_0000
             string algo2Name;
         };
 
+        std::string fileToPrintPath;
         vector<shared_ptr<MapData>> mapsData;
         vector<string> algos;
         vector<string> gameManagers;
@@ -79,10 +80,13 @@ namespace Simulator_0000
         void loadAlgorithms();
         void loadGameManagers();
         void loadRunObjects();
-        void sendRunObjectsToThreadPool(unique_ptr<ThreadPool> threadPool);
+        void sendRunObjectsToThreadPool(shared_ptr<ThreadPool> threadPool);
+        void runRegularRunObjects();
         void sortResultsComparative();
+        void printResultsComparative();
         static Simulator simulator;
         vector<vector<array<shared_ptr<matrixObject>, 3>>> createSatView(const std::string& filePath, int numOfCols, int numOfRows);
+        string parseGameResultReason(const GameResult& gr, int mapIndex) const;
 
         void comparativeRun();
         void competitionRun();
@@ -93,6 +97,5 @@ namespace Simulator_0000
         Simulator();
         ~Simulator();
     };
-    
 
 }
