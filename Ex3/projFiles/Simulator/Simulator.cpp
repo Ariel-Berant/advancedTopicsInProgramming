@@ -8,6 +8,38 @@ Simulator& Simulator::getSimulator() {
     return simulator;
 }
 
+/* 
+Function created with the help of Gemini: 
+https://g.co/gemini/share/a85ba05001bc
+*/
+std::pair<size_t, size_t> parse_size_t_pair(const std::string& input_str) {
+    // Create a stringstream from the input string to easily parse it.
+    std::stringstream ss(input_str);
+
+    size_t first, second;
+
+    // Try to extract the two numbers. The '>>' operator automatically
+    // skips whitespace between the numbers.
+    ss >> first >> second;
+
+    // Check for parsing errors. The stream's "fail" bit is set if the
+    // extractions failed (e.g., if the string contained non-numeric characters).
+    if (ss.fail()) {
+        throw std::invalid_argument("Invalid format: could not parse two numbers.");
+    }
+
+    // Check for any leftover characters (other than whitespace).
+    // If we can still extract something, it means the string has extra data.
+    std::string remaining_content;
+    ss >> remaining_content;
+    if (!remaining_content.empty()) {
+        throw std::invalid_argument("Invalid format: extra characters found after numbers.");
+    }
+
+    // Return the successfully parsed numbers as a pair.
+    return {first, second};
+}
+
 string getTimeString() {
     using namespace std::chrono;
     auto now = system_clock::now();
@@ -141,16 +173,15 @@ bool Simulator::checkConfig() {
         return false;
     }
 
-    if (config.runType == 1)
+    if (config.runType == 1) // competition
     {
-        // TODO: Ensure logic is correct for input validation
         if ((config.mapsFolderPath.empty() || config.gameManagerPath.empty() || config.algorithmsFolderPath.empty())
             || (!config.algorithm2Path.empty() || !config.algorithm1Path.empty() || !config.mapPath.empty() || !config.gameManagerFolderPath.empty())) 
         {
             return false;
         }
     }
-    else if (config.runType == 2)
+    else if (config.runType == 2) // comparative
     {
         if ((!config.mapsFolderPath.empty() || !config.gameManagerPath.empty() || !config.algorithmsFolderPath.empty())
             || (config.algorithm2Path.empty() || config.algorithm1Path.empty() || config.mapPath.empty() || config.gameManagerFolderPath.empty()))
@@ -168,64 +199,73 @@ bool Simulator::checkConfig() {
 }
 
 
-bool Simulator::validateInput(int argc, char const *argv[])
+InputError Simulator::validateInput(int argc, char const *argv[])
 {
     if (argc < 5 || argc > 8)
     {
-        std::cerr << "Invalid number of arguments." << std::endl;
-        return false;
+        return InputError("Invalid number of arguments.");
     }
 
     loadConfigFromInput(argc, argv);
 
     if (!checkConfig())
     {
-        std::cerr << "Invalid configuration." << std::endl;
-        return false;
+        return InputError("Invalid configuration.");
     }
 
-    return true;
+    return InputError();
 }
 
-bool checkIfDirectoryValid(const std::string& path) {
+InputError checkIfDirectoryValid(const std::string& path) {
     std::filesystem::path dirPath(path);
     if (!std::filesystem::exists(dirPath)) {
-        std::cerr << "Directory does not exist: " << path << std::endl;
-        return false;
+        std::ostringstream oss;
+        oss << "Directory does not exist: " << path;
+        return InputError(oss.str());
     }
     if (!std::filesystem::is_directory(dirPath)) {
-        std::cerr << "Path is not a directory: " << path << std::endl;
-        return false;
+        std::ostringstream oss;
+        oss << "Path is not a directory: " << path;
+        return InputError(oss.str());
     }
-    return true;
+    return InputError();
 }
 
-bool checkIfFileValid(const std::string& filePath) {
+InputError checkIfFileValid(const std::string& filePath) {
     std::filesystem::path path(filePath);
     if (!std::filesystem::exists(path)) {
-        std::cerr << "File does not exist: " << filePath << std::endl;
-        return false;
+        std::ostringstream oss;
+        oss << "File does not exist: " << filePath;
+        return InputError(oss.str());
     }
     if (std::filesystem::path(filePath).extension() != ".so") {
-        std::cerr << "Invalid file extension (must be .so): " << filePath << std::endl;
-        return false;
+        std::ostringstream oss;
+        oss << "Invalid file extension (must be .so): " << filePath;
+        return InputError(oss.str());
     }
-    return true;
+    return InputError();
 }
 
 
 
-void Simulator::getNamesComaprative() {
-    if (!checkIfDirectoryValid(config.gameManagerFolderPath)) 
+InputError Simulator::getNamesComaprative() {
+    InputError ie = checkIfDirectoryValid(config.mapsFolderPath);
+    if (ie.errorOccured) 
     {
-        std::cerr << "Invalid game manager folder path: " << config.gameManagerFolderPath << std::endl;
-        return;
+        std::cerr << ie.message << std::endl;
+        return ie;
     }
-    
-    if (!checkIfFileValid(config.algorithm1Path) || !checkIfFileValid(config.algorithm2Path))
-    {
-        std::cerr << "Invalid algorithm file paths." << std::endl;
-        return;
+
+    ie = checkIfFileValid(config.algorithm1Path);
+    if (ie.errorOccured) {
+        std::cerr << ie.message;
+        return ie;
+    }
+
+    ie = checkIfFileValid(config.algorithm2Path);
+    if (ie.errorOccured) {
+        std::cerr << ie.message;
+        return ie;
     }
     
     algos.push_back(config.algorithm1Path);
@@ -239,25 +279,28 @@ void Simulator::getNamesComaprative() {
 
     if (gameManagers.empty()) {
         std::cerr << "No valid game manager files found in: " << config.gameManagerFolderPath << std::endl;
+        return;
     }
 
     fileToPrintPath = std::filesystem::path(config.gameManagerFolderPath).parent_path() / ("comparative_results_" + getTimeString() + ".txt");
 }
 
-void Simulator::getNamesCompetition() {
+InputError Simulator::getNamesCompetition() {
 
-    if (!checkIfFileValid(config.gameManagerPath))
+    if (checkIfFileValid(config.gameManagerPath).errorOccured)
     {
-        std::cerr << "Invalid game manager file path: " << config.gameManagerPath << std::endl;
-        return;
+        std::ostringstream oss;
+        oss << "Invalid game manager file path: " << config.gameManagerPath;
+        return InputError(oss.str());
     }
 
     gameManagers.push_back(config.gameManagerPath);
-    
-    if (!checkIfDirectoryValid(config.algorithmsFolderPath))
+
+    if (checkIfDirectoryValid(config.algorithmsFolderPath).errorOccured)
     {
-        std::cerr << "Invalid algorithms folder path: " << config.algorithmsFolderPath << std::endl;
-        return;
+        std::ostringstream oss;
+        oss << "Invalid algorithms folder path: " << config.algorithmsFolderPath;
+        return InputError(oss.str());
     }
 
     for (const auto& entry : std::filesystem::directory_iterator(config.algorithmsFolderPath)) {
@@ -268,14 +311,18 @@ void Simulator::getNamesCompetition() {
 
     if (algos.empty()) {
         std::cerr << "No valid algorithm files found in: " << config.algorithmsFolderPath << std::endl;
+        return;
     }
+
+    fileToPrintPath = std::filesystem::path(config.algorithmsFolderPath).parent_path() / ("competition_" + getTimeString() + ".txt");
 }
 
-void Simulator::loadMapsData() {
-    if (!checkIfDirectoryValid(config.mapsFolderPath)) 
+InputError Simulator::loadMapsData() {
+    if (checkIfDirectoryValid(config.mapsFolderPath).errorOccured) 
     {
-        std::cerr << "Invalid maps folder path: " << config.mapsFolderPath << std::endl;
-        return;
+        std::ostringstream oss;
+        oss << "Invalid maps folder path: " << config.mapsFolderPath;
+        return InputError(oss.str());
     }
 
     for (const auto& entry : std::filesystem::directory_iterator(config.mapsFolderPath)) {
@@ -305,8 +352,12 @@ void Simulator::loadMapsData() {
     }
 
     if (mapsData.empty()) {
-        std::cerr << "No valid map files found in: " << config.mapsFolderPath << std::endl;
+        std::ostringstream oss;
+        oss << "No valid map files found in: " << config.mapsFolderPath;
+        return InputError(oss.str());
     }
+
+    return InputError();
 }
 
 pair<string, array<size_t, 4>> parseMapLine(const string& filename) {
@@ -482,7 +533,6 @@ void Simulator::loadAlgorithms() {
             registrar.validateLastRegistration();
         }
         catch(AlgorithmRegistrar::BadRegistrationException& e) {
-            // TODO: report according to requirements
             std::cerr << "---------------------------------" << std::endl;
             std::cerr << "BadRegistrationException for: " << algo << std::endl;
             std::cerr << "Name as registered: " << e.name << std::endl;
@@ -512,7 +562,6 @@ void Simulator::loadGameManagers() {
             registrar.validateLastRegistration();
         }
         catch(GameManagerRegistrar::BadRegistrationException& e) {
-            // TODO: report according to requirements
             std::cerr << "---------------------------------" << std::endl;
             std::cerr << "BadRegistrationException for: " << manager << std::endl;
             std::cerr << "Name as registered: " << e.name << std::endl;
@@ -524,8 +573,7 @@ void Simulator::loadGameManagers() {
 }
 
 
-// Comparative run, so we know that the first algo is loaded 
-void Simulator::loadRunObjects(){
+void Simulator::loadRunObjectsComparative(){
     auto& algoRegistrar = AlgorithmRegistrar::getAlgorithmRegistrar();
     auto& gameManagerRegistrar = GameManagerRegistrar::getGameManagerRegistrar();
 
@@ -537,7 +585,7 @@ void Simulator::loadRunObjects(){
                                                                         mapsData[0]->mapHeight, 
                                                                         mapsData[0]->maxTurns,
                                                                          mapsData[0]->numShells)),
-            .player2 = std::move(algoRegistrar.getAtIndex(0).createPlayer(2, 
+            .player2 = std::move(algoRegistrar.getAtIndex(1).createPlayer(2, 
                                                                         mapsData[0]->mapWidth, 
                                                                         mapsData[0]->mapHeight, 
                                                                         mapsData[0]->maxTurns,
@@ -552,6 +600,41 @@ void Simulator::loadRunObjects(){
         };
 
         runObjects.push_back(std::move(runObject));
+    }
+}
+
+// Competition, so gameManager is the first
+void Simulator::loadRunObjectsCompetition(){
+    auto& algoRegistrar = AlgorithmRegistrar::getAlgorithmRegistrar();
+    auto& gameManagerRegistrar = GameManagerRegistrar::getGameManagerRegistrar();
+
+    for (size_t k = 0; k < mapsData.size(); k++)
+    {
+        for (size_t i = 0; i < gameManagerRegistrar.count(); i++)
+        {
+            int versus = (i + 1 + (k % (gameManagerRegistrar.count() - 1))) % gameManagerRegistrar.count();
+            runObj runObject{
+                .player1 = std::move(algoRegistrar.getAtIndex(i).createPlayer(1, 
+                                                                            mapsData[k]->mapWidth, 
+                                                                            mapsData[k]->mapHeight, 
+                                                                            mapsData[k]->maxTurns,
+                                                                            mapsData[k]->numShells)),
+                .player2 = std::move(algoRegistrar.getAtIndex(versus).createPlayer(2, 
+                                                                            mapsData[k]->mapWidth, 
+                                                                            mapsData[k]->mapHeight, 
+                                                                            mapsData[k]->maxTurns,
+                                                                            mapsData[k]->numShells)),
+                .tankFactory1 = algoRegistrar.getAtIndex(i).getTankAlgorithmFactory(),
+                .tankFactory2 = algoRegistrar.getAtIndex(versus).getTankAlgorithmFactory(),
+                .gameManager = std::move(gameManagerRegistrar.getAtIndex(0).createGameManager(config.verbose)),
+                .mapData = mapsData[k],
+                .gameManagerName = std::to_string(i) + " " + std::to_string(versus),
+                .algo1Name = algoRegistrar.getAtIndex(i).name(),
+                .algo2Name = algoRegistrar.getAtIndex(versus).name()
+            };
+
+            runObjects.push_back(std::move(runObject));
+        }
     }
 }
 
@@ -616,8 +699,39 @@ void Simulator::sortResultsComparative(){
         comparativeGrouped.emplace_back(results[i].first.get(), vector<string>{results[i].second});
     }
 
+    // Sorts by descending order - greatest size(amount of algorithms with this result) first
     sort(comparativeGrouped.begin(), comparativeGrouped.end(), [](const auto& a, const auto& b) {
-        return a.second.size() < b.second.size();
+        return a.second.size() > b.second.size();
+    });
+}
+
+void Simulator::sortResultsCompetition(){
+    competitionGrouped.clear();
+    pair<size_t, size_t> algInds;
+    AlgorithmRegistrar& registrar = AlgorithmRegistrar::getAlgorithmRegistrar();
+    for (size_t i = 0; i < registrar.count(); i++)
+    {
+        competitionGrouped.emplace_back(registrar.getAtIndex(i).name(), 0);
+    }
+    
+    for (size_t i = 0; i < results.size(); i++)
+    {
+        algInds = parse_size_t_pair(results[i].second);
+        if (results[i].first.get().winner == 0) {
+            competitionGrouped[algInds.first].second++;
+            competitionGrouped[algInds.second].second++;
+        }
+        else if (results[i].first.get().winner == 1) {
+            competitionGrouped[algInds.first].second += 3;
+        }
+        else if (results[i].first.get().winner == 2) {
+            competitionGrouped[algInds.second].second += 3;
+        }
+    }
+
+    // Sorts by descending order - greatest score first
+    sort(competitionGrouped.begin(), competitionGrouped.end(), [](const auto& a, const auto& b) {
+        return a.second > b.second;
     });
 }
 
@@ -673,6 +787,22 @@ string satelliteViewToString(const SatelliteView& satelliteView){
     return oss.str();
 }
 
+void Simulator::printResultsCompetition(){
+    std::ofstream outFile(fileToPrintPath);
+    if (outFile.is_open())
+    {
+        outFile << "game_map=" << config.mapsFolderPath << std::endl;
+        outFile << "algorithm1=" << config.gameManagerPath << std::endl;
+        outFile << "algorithm2=" << config.algorithm2Path << std::endl;
+        outFile << std::endl;
+
+        for (const auto& group : competitionGrouped)
+        {
+            outFile << group.first << " " << group.second << std::endl;
+        }
+    }
+}
+
 void Simulator::printResultsComparative(){
     std::ofstream outFile(fileToPrintPath);
     if (outFile.is_open())
@@ -680,6 +810,7 @@ void Simulator::printResultsComparative(){
         outFile << "game_map=" << config.mapPath << std::endl;
         outFile << "algorithm1=" << config.algorithm1Path << std::endl;
         outFile << "algorithm2=" << config.algorithm2Path << std::endl;
+        outFile << std::endl;
 
         for (const auto& group : comparativeGrouped)
         {
@@ -708,7 +839,109 @@ void Simulator::comparativeRun(){
     printResultsComparative();
 }
 
+void Simulator::competitionRun(){
+    if (config.threadsNum > 1)
+    {
+        shared_ptr<ThreadPool> threadPool = std::make_shared<ThreadPool>(config.threadsNum);
+        sendRunObjectsToThreadPool(threadPool);
+    }
+    else
+    {
+        runRegularRunObjects();
+    }
+
+    sortResultsCompetition();
+    printResultsCompetition();
+}
+
+bool Simulator::loadAndCheckAll(int argc, char const *argv[]) {
+    InputError ie = validateInput(argc, argv);
+    if (ie.errorOccured) {
+        std::cerr << ie.message << std::endl;
+        return false;
+    }
+
+    ie = loadMapsData();
+    if (ie.errorOccured)
+    {
+        std::cerr << ie.message << std::endl;
+        return false;
+    }
+
+    if (config.runType == 2) ie = getNamesComaprative();
+    if (config.runType == 1) ie = getNamesCompetition();
+    
+    if (ie.errorOccured)
+    {
+        std::cerr << ie.message << std::endl;
+        return false;
+    }
+
+    AlgorithmRegistrar::getAlgorithmRegistrar().clear();
+    GameManagerRegistrar::getGameManagerRegistrar().clear();
+    AlgorithmRegistrar& algoRegistrar = AlgorithmRegistrar::getAlgorithmRegistrar();
+    GameManagerRegistrar& gameManagerRegistrar = GameManagerRegistrar::getGameManagerRegistrar();
+
+    loadAlgorithms();
+    if (algoRegistrar.count() == 0)
+    {
+        std::cerr << "No algorithms loaded." << std::endl;
+        return false;
+    }
+
+    loadGameManagers();
+    if (gameManagerRegistrar.count() == 0)
+    {
+        std::cerr << "No game managers loaded." << std::endl;
+        return false;
+    }
+
+    if (config.runType == 2) loadRunObjectsComparative();
+    if (config.runType == 1) loadRunObjectsCompetition();
+}
+
+bool Simulator::unloadAll(){
+    for (size_t i = 0; i < handles.size(); i++)
+    {
+        if(dlclose(handles[i]) != 0)
+        {
+            std::cerr << "Failed to close handle: " << handles[i] << std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void Simulator::simulate(int argc, char const *argv[]) {
+    try
+    {
+        if (!loadAndCheckAll(argc, argv)) {
+            std::cerr << "Failed to load and check all critical components." << std::endl;
+            return;
+        }
+
+        if (config.runType == 1) {
+            competitionRun();
+        } else if (config.runType == 2) {
+            comparativeRun();
+        }
+
+        if (!unloadAll())
+        {
+            std::cerr << "Failed to unload all components." << std::endl;
+        }
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+}
+
 int main(int argc, char const *argv[])
-{       
+{
+    Simulator simulator;
+    simulator.simulate(argc, argv);
     return 0;
 }

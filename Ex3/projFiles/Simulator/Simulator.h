@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <dlfcn.h>
+#include <sstream>
 #include "AlgorithmRegistrar.h"
 #include "GameManagerRegistrar.h"
 #include "../UserCommon/OurSattelliteView.h"
@@ -19,6 +20,14 @@ using namespace UserCommon_0000;
 using std::string, std::vector, std::unique_ptr, std::shared_ptr, std::array, std::pair, std::endl;
 namespace Simulator_0000
 {
+    struct InputError
+        {
+            bool errorOccured;
+            string message;
+            InputError() : errorOccured(false), message("") {};
+            InputError(const string& msg) : errorOccured(true), message(msg) {};
+        };
+
     class Simulator
     {
     private:
@@ -36,6 +45,7 @@ namespace Simulator_0000
             int threadsNum = 1;
             bool hasUnsupportedArgs = false;
         };
+
 
         Config config;
 
@@ -70,23 +80,29 @@ namespace Simulator_0000
         vector<runObj> runObjects;
         vector<pair<std::future<GameResult>, string>> results;
         vector<pair<GameResult, vector<string>>> comparativeGrouped;
+        vector<pair<string, size_t>> competitionGrouped;
 
         void loadConfigFromInput(int argc, char const *argv[]);
-        bool validateInput(int argc, char const *argv[]);
+        InputError validateInput(int argc, char const *argv[]);
         bool checkConfig();
-        void getNamesComaprative();
-        void getNamesCompetition();
-        void loadMapsData();
+        InputError getNamesComaprative();
+        InputError getNamesCompetition();
+        InputError loadMapsData();
         void loadAlgorithms();
         void loadGameManagers();
-        void loadRunObjects();
+        void loadRunObjectsComparative();
+        void loadRunObjectsCompetition();
         void sendRunObjectsToThreadPool(shared_ptr<ThreadPool> threadPool);
         void runRegularRunObjects();
         void sortResultsComparative();
         void printResultsComparative();
+        void sortResultsCompetition();
+        void printResultsCompetition();
         static Simulator simulator;
         vector<vector<array<shared_ptr<matrixObject>, 3>>> createSatView(const std::string& filePath, int numOfCols, int numOfRows);
         string parseGameResultReason(const GameResult& gr, int mapIndex) const;
+        bool loadAndCheckAll(int argc, char const *argv[]);
+        bool unloadAll();
 
         void comparativeRun();
         void competitionRun();
@@ -94,7 +110,7 @@ namespace Simulator_0000
     public:
         static Simulator& getSimulator();
         void simulate(int argc, char const *argv[]);
-        Simulator();
+        Simulator() = default;
         ~Simulator();
     };
 
