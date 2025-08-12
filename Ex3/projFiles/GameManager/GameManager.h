@@ -78,7 +78,7 @@ inline bool writeToFile(const string &message, const string &filename)
     return true;
 }
 
-class gameManager : public AbstractGameManager
+class gameManager_0000 : public AbstractGameManager
 {
 private:
     bool verbose; 
@@ -139,9 +139,9 @@ private:
 
 
 public:
-    gameManager(bool verbose);
-    ~gameManager();
-    gameManager(const gameManager &) = delete; // Disable copy constructor
+    gameManager_0000(bool verbose);
+    ~gameManager_0000();
+    gameManager_0000(const gameManager_0000 &) = delete; // Disable copy constructor
     bool initializeGame(const SatelliteView &map, TankAlgorithmFactory tankFactory1, TankAlgorithmFactory tankFactory2);
     void readBoard(const string &filename, const SatelliteView &map, TankAlgorithmFactory tankAlgFactory1, TankAlgorithmFactory tankAlgFactory2);
     GameResult run(

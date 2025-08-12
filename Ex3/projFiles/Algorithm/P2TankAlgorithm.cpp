@@ -1,10 +1,10 @@
 #include "PlayerTank.h"
 
-REGISTER_TANK_ALGORITHM(Player2TankAlgorithm);
+REGISTER_TANK_ALGORITHM(Player2TankAlgorithm_0000);
 
 using namespace Algorithm_0000;
 
-Player2TankAlgorithm::Player2TankAlgorithm(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {
+Player2TankAlgorithm_0000::Player2TankAlgorithm_0000(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {
     static vector<vector<array<shared_ptr<matrixObject>, 2>>> dummyBoard;
     tankBattleInfo = make_unique<PlayerBattleInfo>(-1, -1, -1, dummyBoard, 0);
 }
@@ -51,7 +51,7 @@ int calculateFirstStepInRotate(int startOrient, int endOrient) {
 }
 
 // the return value is {x, y, distance, orientation}
-array<int,4> Player2TankAlgorithm::searchForBullets(int inCol, int inRow) const{
+array<int,4> Player2TankAlgorithm_0000::searchForBullets(int inCol, int inRow) const{
     int numOfCols = tankBattleInfo->getGameBoard().size();
     int numOfRows = tankBattleInfo->getGameBoard()[0].size();
 
@@ -76,7 +76,7 @@ array<int,4> Player2TankAlgorithm::searchForBullets(int inCol, int inRow) const{
     return {0,0,0,0};
 }
 
-ActionRequest Player2TankAlgorithm::calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing) {
+ActionRequest Player2TankAlgorithm_0000::calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing) {
     int numOfTurnsToRotate = calculateTurnsToRotate(orient, closestBulletDetails[3]);
     if(numOfTurnsToRotate + max(0, turnsUntilNextShot - numOfTurnsToRotate ) + 1 <= closestBulletDetails[2]/2 && numOfBulletsChasing <= 1) {
         // if the tank can shoot the bullet before it gets to him there is only one bullet chasing him
@@ -98,7 +98,7 @@ ActionRequest Player2TankAlgorithm::calculateRun(array<int,4> closestBulletDetai
     }
 }
 
-ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols, const int numOfRows){
+ActionRequest Player2TankAlgorithm_0000::calculateNoDangerAction(const int numOfCols, const int numOfRows){
     const int closestEnemyLoc[2] = {tankBattleInfo->getClosestEnemyTankCol(), tankBattleInfo->getClosestEnemyTankRow()}; 
     int targetOrientation = calculateTargetOrientation(closestEnemyLoc[0], closestEnemyLoc[1]);
     pair<ActionRequest, int> next = determineNextMove(orient, targetOrientation);
@@ -156,7 +156,7 @@ ActionRequest Player2TankAlgorithm::calculateNoDangerAction(const int numOfCols,
 }
 
 //the return value is {details of the closest danger -{x, y, distance, orientation} , numOfBulletsChasing}
-pair<array<int,4>,int> Player2TankAlgorithm::searchForDangerObjects(){
+pair<array<int,4>,int> Player2TankAlgorithm_0000::searchForDangerObjects(){
     int numOfBulletsChasing = 0;
     int closestBulletDist = 9;
     array<int,4> closestBulletDetails ={0};
@@ -175,7 +175,7 @@ pair<array<int,4>,int> Player2TankAlgorithm::searchForDangerObjects(){
     return {closestBulletDetails, numOfBulletsChasing}; // Return the closest bullet details and the number of bullets chasing
 }
 
-ActionRequest Player2TankAlgorithm::noDangerAction(int numOfCols, int numOfRows, const int closestEnemyLoc[2]){
+ActionRequest Player2TankAlgorithm_0000::noDangerAction(int numOfCols, int numOfRows, const int closestEnemyLoc[2]){
     unique_ptr<int[]> newLoc = newLocation(numOfCols, numOfRows);
     if(tankBattleInfo->getTurnsUntillNextUpdate() + 1 == 0 || currTurn % 4 == 1){
         return ActionRequest::GetBattleInfo; // If it's time to update the battle info, return the request
@@ -198,7 +198,7 @@ ActionRequest Player2TankAlgorithm::noDangerAction(int numOfCols, int numOfRows,
 }
 
 
-ActionRequest Player2TankAlgorithm::searchAndDealWithDanger(int numOfCols, int numOfRows){
+ActionRequest Player2TankAlgorithm_0000::searchAndDealWithDanger(int numOfCols, int numOfRows){
     pair<array<int,4>,int> dangerSeekResult = searchForDangerObjects();
     array<int,4> closestBulletDetails = dangerSeekResult.first;
     int closestBulletDist = closestBulletDetails[2];
@@ -210,7 +210,7 @@ ActionRequest Player2TankAlgorithm::searchAndDealWithDanger(int numOfCols, int n
 }
 
 
-ActionRequest Player2TankAlgorithm::getAction(){
+ActionRequest Player2TankAlgorithm_0000::getAction(){
     updateTurn();
     if(currTurn == 1){
         return ActionRequest::GetBattleInfo;

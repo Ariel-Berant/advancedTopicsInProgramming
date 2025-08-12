@@ -17,7 +17,7 @@ namespace Algorithm_0000 {
         vector<ActionRequest> handleSurrounded(const int *tank2Loc) const;
     };
 
-    class Player2TankAlgorithm : public PlayerTankAlgorithm{
+    class Player2TankAlgorithm_0000 : public PlayerTankAlgorithm{
     private:
         std::unique_ptr<PlayerBattleInfo> battleInfo;
         ActionRequest calculateRun(array<int,4> closestBulletDetails, int numOfCols, int numOfRows, int numOfBulletsChasing);
@@ -28,7 +28,7 @@ namespace Algorithm_0000 {
         
     public:
         ActionRequest getAction() override;
-        Player2TankAlgorithm(int x, int y, orientation orient);
+        Player2TankAlgorithm_0000(int x, int y, orientation orient);
         array<int,4> searchForBullets(int inCols, int inRows) const;
     };
 }

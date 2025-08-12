@@ -15,10 +15,10 @@ namespace Algorithm_0000 {
         ~Player1() = default; // Destructor implementation
     };
 
-    class Player2 : public OurPlayer {
+    class Player2_0000 : public OurPlayer {
     public:
-        Player2(int player_index, size_t x, size_t y, size_t max_steps, size_t num_shells);
-        ~Player2(); // Destructor implementation
+        Player2_0000(int player_index, size_t x, size_t y, size_t max_steps, size_t num_shells);
+        ~Player2_0000(); // Destructor implementation
     };
 
 }
