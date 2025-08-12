@@ -1,31 +1,24 @@
-# Compiler and flags
-CPP = g++
-CPP_FLAGS = -std=c++20 -Wall -Wextra -Werror -pedantic #-g
+# Default target to build all projects
+all: simulator algorithm game_manager
 
-# Target executable
-TARGET = tanks_game
+# Target to build the Simulator executable
+simulator:
+	$(MAKE) -C Simulator
 
-# Source and header files (auto-detect all in unique/ and common/)
-SRC_DIRS = UserCommon common GameManager
-SOURCES = $(wildcard $(addsuffix /*.cpp,$(SRC_DIRS)))
-HEADERS = $(wildcard $(addsuffix /*.h,$(SRC_DIRS)))
-OBJECTS = $(SOURCES:.cpp=.o)
+# Target to build the Algorithm shared library
+algorithm:
+	$(MAKE) -C Algorithm
 
-# Default target
-all: $(TARGET)
+# Target to build the GameManager shared library
+game_manager:
+	$(MAKE) -C GameManager
 
-# Link object files to create the executable
-$(TARGET): $(OBJECTS)
-	$(CPP) $(CPP_FLAGS) -o $(TARGET) $(OBJECTS)
-
-# Pattern rule for compiling .cpp to .o
-%.o: %.cpp $(HEADERS)
-	$(CPP) $(CPP_FLAGS) -c $< -o $@
-
-# Clean up build files
+# Target to clean all projects
 clean:
-	rm -f $(OBJECTS) $(TARGET)
-	rm -rf input_errors.txt
+	$(MAKE) -C Simulator clean
+	$(MAKE) -C Algorithm clean
+	$(MAKE) -C GameManager clean
+	rm -f GameManager/GameManager_0000.so Algorithm/Algorithm_0000.so Simulator/simulator_0000
 
 # Phony targets
-.PHONY: all clean
+.PHONY: all simulator algorithm game_manager clean
