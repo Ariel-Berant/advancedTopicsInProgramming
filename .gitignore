@@ -58,3 +58,4 @@ ids.txt
 *.lyx
 *.lyx~
 projectHLD.pdf
+simulator_*

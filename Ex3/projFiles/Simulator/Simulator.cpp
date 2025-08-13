@@ -232,16 +232,17 @@ InputError checkIfDirectoryValid(const std::string& path) {
     return InputError();
 }
 
-InputError checkIfFileValid(const std::string& filePath) {
+InputError checkIfFileValid(const std::string& filePath, string expectedExtension = ".so") {
     std::filesystem::path path(filePath);
     if (!std::filesystem::exists(path)) {
         std::ostringstream oss;
         oss << "File does not exist: " << filePath;
         return InputError(oss.str());
     }
-    if (std::filesystem::path(filePath).extension() != ".so") {
+    if (std::filesystem::is_regular_file(std::filesystem::path(filePath))
+        && std::filesystem::path(filePath).extension() != expectedExtension) {
         std::ostringstream oss;
-        oss << "Invalid file extension (must be .so): " << filePath;
+        oss << "Invalid file extension (must be " << expectedExtension << "): " << filePath;
         return InputError(oss.str());
     }
     return InputError();
@@ -324,37 +325,74 @@ InputError Simulator::getNamesCompetition() {
 }
 
 InputError Simulator::loadMapsData() {
-    if (checkIfDirectoryValid(config.mapsFolderPath).errorOccured) 
+
+    if (config.runType == 1)
     {
-        std::ostringstream oss;
-        oss << "Invalid maps folder path: " << config.mapsFolderPath;
-        return InputError(oss.str());
-    }
-
-    for (const auto& entry : std::filesystem::directory_iterator(config.mapsFolderPath)) {
-        if (entry.is_regular_file() && entry.path().extension() == ".txt") {
-            pair<string, array<size_t, 4>> mapInfo = parseMapLine(entry.path().string());
-            if (mapInfo.second[0] == 0 || mapInfo.second[1] == 0 || mapInfo.second[2] == 0 || mapInfo.second[3] == 0) {
-                continue;
-            }
-
-            MapData mapData{
-                mapInfo.first,
-                mapInfo.second[0],
-                mapInfo.second[1],
-                mapInfo.second[2],
-                mapInfo.second[3],
-                {
-                    createSatView(entry.path().string(), mapInfo.second[3], mapInfo.second[2]),
-                    mapInfo.second[3],
-                    mapInfo.second[2],
-                    size_t(-100),
-                    size_t(-100)
+        if (checkIfDirectoryValid(config.mapsFolderPath).errorOccured) 
+        {
+            std::ostringstream oss;
+            oss << "Invalid maps folder path: " << config.mapsFolderPath;
+            return InputError(oss.str());
+        }
+    
+        for (const auto& entry : std::filesystem::directory_iterator(config.mapsFolderPath)) {
+            if (entry.is_regular_file() && entry.path().extension() == ".txt") {
+                pair<string, array<size_t, 4>> mapInfo = parseMapLine(entry.path().string());
+                if (mapInfo.second[0] == 0 || mapInfo.second[1] == 0 || mapInfo.second[2] == 0 || mapInfo.second[3] == 0) {
+                    continue;
                 }
-            };
-            mapsData.push_back(std::make_shared<MapData>(std::move(mapData)));
+
+                MapData mapData{
+                    mapInfo.first,
+                    mapInfo.second[0],
+                    mapInfo.second[1],
+                    mapInfo.second[2],
+                    mapInfo.second[3],
+                    {
+                        createSatView(entry.path().string(), mapInfo.second[3], mapInfo.second[2]),
+                        mapInfo.second[3],
+                        mapInfo.second[2],
+                        size_t(-100),
+                        size_t(-100)
+                    }
+                };
+                mapsData.push_back(std::make_shared<MapData>(std::move(mapData)));
+            }
         }
     }
+    if (config.runType == 2)
+    {
+        if (checkIfFileValid(config.mapPath, ".txt").errorOccured)
+        {
+            std::ostringstream oss;
+            oss << "Invalid maps file path: " << config.mapPath;
+            return InputError(oss.str());
+        }
+        std::filesystem::path path(config.mapPath);
+        pair<string, array<size_t, 4>> mapInfo = parseMapLine(path.string());
+        if (mapInfo.second[0] == 0 || mapInfo.second[1] == 0 || mapInfo.second[2] == 0 || mapInfo.second[3] == 0) {
+           std::ostringstream oss;
+            oss << "Invalid map file - not enough data: " << config.mapPath;
+            return InputError(oss.str());
+        }
+
+        MapData mapData{
+            mapInfo.first,
+            mapInfo.second[0],
+            mapInfo.second[1],
+            mapInfo.second[2],
+            mapInfo.second[3],
+            {
+                createSatView(path.string(), mapInfo.second[3], mapInfo.second[2]),
+                mapInfo.second[3],
+                mapInfo.second[2],
+                size_t(-100),
+                size_t(-100)
+            }
+        };
+        mapsData.push_back(std::make_shared<MapData>(std::move(mapData)));
+    }
+
 
     if (mapsData.empty()) {
         std::ostringstream oss;
@@ -428,14 +466,14 @@ size_t Simulator::parseRowInfo(const string line, const string description, int 
                               [](unsigned char x) { return std::isspace(x); }),
                fileRow.end());
     if (fileRow.find(description) != 0) {
-        std::cerr << "Error: The row for \"" << description << "\" does not start with the expected description.\n" << std::endl;
+        std::cerr << "Error: The row for \"" << description << "\" does not start with the expected description." << std::endl;
         return false;
     }
     fileRow.erase(0, description.length());
     // Check if the remaining string is a valid integer
     if (!all_of(fileRow.begin(), fileRow.end(), ::isdigit)) {
         std::cerr << "Error: The row for \"" << description << "\" contains invalid characters.\nCorrect use is: "
-             << description << "<NUM>\n" << std::endl;
+             << description << "<NUM>" << std::endl;
         return false;
     }
     size_t value = stoul(fileRow);
