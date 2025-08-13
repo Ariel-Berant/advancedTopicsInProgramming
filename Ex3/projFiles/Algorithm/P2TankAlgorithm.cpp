@@ -1,10 +1,17 @@
 #include "PlayerTank.h"
 
-REGISTER_TANK_ALGORITHM(Player2TankAlgorithm_0000);
-
 using namespace Algorithm_0000;
 
-Player2TankAlgorithm_0000::Player2TankAlgorithm_0000(int row, int col, orientation orient)  : PlayerTankAlgorithm(row, col, orient, P2T) {
+REGISTER_TANK_ALGORITHM(Player2TankAlgorithm_0000);
+
+Player2TankAlgorithm_0000::Player2TankAlgorithm_0000(int player_index, int tank_index)  : 
+    PlayerTankAlgorithm(0,
+                        0,
+                        player_index == 1 ? L : R,
+                        player_index == 1 ? P1T : P2T) {
+    tank_index = tank_index;
+    oType = player_index == 1 ? P1T : P2T;
+    otherPlayerTankType = player_index == 1 ? P2T : P1T;
     static vector<vector<array<shared_ptr<matrixObject>, 2>>> dummyBoard;
     tankBattleInfo = make_unique<PlayerBattleInfo>(-1, -1, -1, dummyBoard, 0);
 }
@@ -88,7 +95,7 @@ ActionRequest Player2TankAlgorithm_0000::calculateRun(array<int,4> closestBullet
         }
     }
     else{
-        ActionRequest nextMove = findAdjSafe(numOfCols, numOfRows, P2T, closestBulletDetails[2]).first;
+        ActionRequest nextMove = findAdjSafe(numOfCols, numOfRows, oType, closestBulletDetails[2]).first;
         if(nextMove == ActionRequest::DoNothing){
             return ActionRequest::DoNothing;
         }
@@ -120,7 +127,7 @@ ActionRequest Player2TankAlgorithm_0000::calculateNoDangerAction(const int numOf
 
     else{
         unique_ptr<int[]> newLoc = newLocation(numOfCols, numOfRows);
-        if(isSafe(newLoc[0], newLoc[1], numOfCols, numOfRows, 1, P2T) && next.first == ActionRequest::MoveForward){
+        if(isSafe(newLoc[0], newLoc[1], numOfCols, numOfRows, 1, oType) && next.first == ActionRequest::MoveForward){
             // we don't need to change the move it's stay next.first
         }
         else{
@@ -132,19 +139,19 @@ ActionRequest Player2TankAlgorithm_0000::calculateNoDangerAction(const int numOf
             int targetOrientation = calculateTargetOrientation(targetLocInCol[0], targetLocInCol[1]);
             next = determineNextMove(orient, targetOrientation);
 
-            if(isSafe((targetLocInCol[0] + 1) % numOfCols, targetLocInCol[1], numOfCols, numOfRows, 1, P2T) && isSafe((targetLocInCol[0] + 1) % numOfCols, targetLocInCol[1], numOfCols, numOfRows, 2, P2T)){
+            if(isSafe((targetLocInCol[0] + 1) % numOfCols, targetLocInCol[1], numOfCols, numOfRows, 1, oType) && isSafe((targetLocInCol[0] + 1) % numOfCols, targetLocInCol[1], numOfCols, numOfRows, 2, oType)){
                 return next.first; // if the tank can move forward to the target location, do it
             }
-            else if(isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 1, P2T) && isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 2, P2T)){
+            else if(isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 1, oType) && isSafe(targetLocInCol[0] - 1, targetLocInCol[1], numOfCols, numOfRows, 2, oType)){
                 next = determineNextMove(orient, calculateTargetOrientation(targetLocInRow[0], targetLocInRow[1]));
             }
             else{
                 int targetOrientation = calculateTargetOrientation(targetLocInRow[0], targetLocInRow[1]);
                 next = determineNextMove(orient, targetOrientation);
-                if(isSafe(targetLocInRow[0], targetLocInRow[1] + 1, numOfCols, numOfRows, 1, P2T) && isSafe(targetLocInRow[0], targetLocInRow[1] + 1, numOfCols, numOfRows, 2, P2T)){
+                if(isSafe(targetLocInRow[0], targetLocInRow[1] + 1, numOfCols, numOfRows, 1, oType) && isSafe(targetLocInRow[0], targetLocInRow[1] + 1, numOfCols, numOfRows, 2, oType)){
                     next = determineNextMove(orient, targetOrientation);
                 }
-                else if(isSafe(targetLocInRow[0], targetLocInRow[1] - 1, numOfCols, numOfRows, 1, P2T) && isSafe(targetLocInRow[0], targetLocInRow[1] - 1, numOfCols, numOfRows, 2, P2T)){
+                else if(isSafe(targetLocInRow[0], targetLocInRow[1] - 1, numOfCols, numOfRows, 1, oType) && isSafe(targetLocInRow[0], targetLocInRow[1] - 1, numOfCols, numOfRows, 2, oType)){
                     next = determineNextMove(orient, targetOrientation);
                 }
             }
@@ -180,8 +187,8 @@ ActionRequest Player2TankAlgorithm_0000::noDangerAction(int numOfCols, int numOf
     if(tankBattleInfo->getTurnsUntillNextUpdate() + 1 == 0 || currTurn % 4 == 1){
         return ActionRequest::GetBattleInfo; // If it's time to update the battle info, return the request
     }
-    else if(checkIfOnSameLine(closestEnemyLoc) ||(tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][1] && tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][1]->getType() == P1T) ){
-        if((tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][1] && tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][1]->getType() == P1T)){
+    else if(checkIfOnSameLine(closestEnemyLoc) ||(tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][1] && tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][1]->getType() == otherPlayerTankType) ){
+        if((tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][1] && tankBattleInfo->getGameBoard()[newLoc[0]][newLoc[1]][1]->getType() == otherPlayerTankType)){
             if (canShoot()){
                 return ActionRequest::Shoot; // If the tank can shoot, shoot
             }

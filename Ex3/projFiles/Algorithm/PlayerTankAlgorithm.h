@@ -26,6 +26,8 @@ namespace Algorithm_0000 {
         int turnsUntilNextShot;
         int calcMoveRound;// The number of moves the current operation should take
         int currTurn;
+        int tank_index;
+        objectType otherPlayerTankType;
         vector<ActionRequest> moves;
         unique_ptr<PlayerBattleInfo> tankBattleInfo;
         vector<shared_ptr<bullet>> bulletsTankShot; // Vector to store bullets the tank shot that currently in the air

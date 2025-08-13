@@ -2,8 +2,8 @@
 
 using namespace UserCommon_0000;
 
-PseudoTank::PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal, int numOfShots, int tankIndex)
-        : movingObject(row, col, PseudoTankType, orientVal), shotsLeft(numOfShots), turnsUntilNextShot(0), turnsInBackwards(0), tankIndex(tankIndex), isDead(false) {};
+PseudoTank::PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal, int numOfShots, int tankIndex, std::unique_ptr<TankAlgorithm> tankAlg)
+        : movingObject(row, col, PseudoTankType, orientVal), shotsLeft(numOfShots), turnsUntilNextShot(0), turnsInBackwards(0), tankIndex(tankIndex), isDead(false), tankAlg(std::move(tankAlg)) {};
 
 int PseudoTank::getTankIndex() const {
     return tankIndex;

@@ -18,7 +18,6 @@
 #include "../common/ActionRequest.h"
 #include "../common/Player.h"
 #include "../common/TankAlgorithm.h"
-#include "../common/PlayerFactory.h"
 #include "../common/BattleInfo.h"
 #include "../common/AbstractGameManager.h"
 #include "../UserCommon/OurSattelliteView.h"
@@ -101,6 +100,8 @@ private:
     int numOfP2Tanks;
     int numOfBulletsLeft;
     bool gameOver = false;
+    string p1Name;
+    string p2Name;
     vector<string> printToLogVector; // Vector to store messages to print to the log file
     unique_ptr<vector<vector<array<shared_ptr<matrixObject>, 3>>>> gameBoard;
     vector<shared_ptr<bullet>> bullets; // Vector to store bullets in the air

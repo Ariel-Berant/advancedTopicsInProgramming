@@ -28,7 +28,7 @@ namespace Algorithm_0000 {
         
     public:
         ActionRequest getAction() override;
-        Player2TankAlgorithm_0000(int x, int y, orientation orient);
+        Player2TankAlgorithm_0000(int player_index, int tank_index);
         array<int,4> searchForBullets(int inCols, int inRows) const;
     };
 }

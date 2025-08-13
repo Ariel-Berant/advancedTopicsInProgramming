@@ -4,12 +4,12 @@
 #define LOG_FILE "game_log.txt"
 const int MAX_STEPS_WITHOUT_SHELLS = 40;
 
-REGISTER_GAME_MANAGER(gameManager_0000);
-
 using namespace std;
 
 
 using namespace GameManager_0000;
+
+REGISTER_GAME_MANAGER(gameManager_0000);
 
 bool gameManager_0000::isValidFile(const string &filename) {
     filesystem::path filePath = filename;
@@ -107,8 +107,7 @@ bool gameManager_0000::addTankToMap(int playerNum, int currCol, int currRow, Tan
     orientation ornt = playerNum == 1 ? L : R;
     objectType type = playerNum == 1 ? P1T : P2T;
     int newTankIndex = playerNum == 1 ? ++numOfP1TanksLeft : ++numOfP2TanksLeft;
-    shared_ptr<PseudoTank> tank = make_shared<PseudoTank>(currRow, currCol, type, ornt, maxBullets, newTankIndex);
-    tank->tankAlg = std::move(tankFactory.create(playerNum, newTankIndex));
+    shared_ptr<PseudoTank> tank = make_shared<PseudoTank>(currRow, currCol, type, ornt, maxBullets, newTankIndex, std::move(tankFactory(playerNum, newTankIndex)));
     if(!tank->tankAlg){
         writeToFile("Error: Failed to create tank algorithm.\n", INP_ERR_FILE);
         return false;
@@ -308,41 +307,41 @@ bool checkIfTank(const movingObject &object1){
     return false;
 }
 
-void gameManager_0000::printCollisionsToLog(const movingObject &object1, const movingObject &object2) const{
+/* void gameManager_0000::printCollisionsToLog(const movingObject &object1, const movingObject &object2) const{
     if(checkIfTank(object1) && checkIfTank(object2) && (object1.getIsAlive() || object2.getIsAlive())){
-        // if at least one of the tanks has been destroyed by a collision between them, and we didn't notified about it
+        if at least one of the tanks has been destroyed by a collision between them, and we didn't notified about it
         int object1Player = object1.getType() == P1T ? 1 : 2;
         int object2Player = object2.getType() == P1T ? 1 : 2;
         int object1TankNum = dynamic_cast<const PseudoTank*>(&object1)->getTankIndex();
         int object2TankNum = dynamic_cast<const PseudoTank*>(&object2)->getTankIndex();
-        // writeToFile("Tank number " + to_string(object1TankNum) + " of player number " + to_string(object1Player) + " collided with tank number "
-        //  + to_string(object2TankNum) + " of player number " + to_string(object2Player) + " at (" + to_string(object1.getOldLocation()[0]) + "," + to_string(object1.getOldLocation()[1]) + ").\n", LOG_FILE);
+        writeToFile("Tank number " + to_string(object1TankNum) + " of player number " + to_string(object1Player) + " collided with tank number "
+         + to_string(object2TankNum) + " of player number " + to_string(object2Player) + " at (" + to_string(object1.getOldLocation()[0]) + "," + to_string(object1.getOldLocation()[1]) + ").\n", LOG_FILE);
     }
     if (object1.getIsAlive() && object2.getIsAlive()){// we need to notify that the two objects been destroyed
         if (checkIfTank(object1) && object2.getType() == B){
             int tankPlayer = object1.getType() == P1T ? 1 : 2;
             int objectTankNum = dynamic_cast<const PseudoTank*>(&object1)->getTankIndex();
-            // writeToFile("Tank number " + to_string(objectTankNum) + " of player number " + to_string(tankPlayer) 
-            //     + " got hit by a bullet at (" + to_string(object1.getOldLocation()[0]) + "," + to_string(object1.getOldLocation()[1]) + ").\n", LOG_FILE);
+            writeToFile("Tank number " + to_string(objectTankNum) + " of player number " + to_string(tankPlayer) 
+                + " got hit by a bullet at (" + to_string(object1.getOldLocation()[0]) + "," + to_string(object1.getOldLocation()[1]) + ").\n", LOG_FILE);
         }
         else if(object1.getType() == B && checkIfTank(object2)){
             int tankPlayer = object2.getType() == P1T ? 1 : 2;
             int objectTankNum = dynamic_cast<const PseudoTank*>(&object2)->getTankIndex();
-            // writeToFile("Tank number " + to_string(objectTankNum) + " of player number " + to_string(tankPlayer) 
-            //     + " got hit by a bullet at " + to_string(object1.getOldLocation()[0]) + "," + to_string(object1.getOldLocation()[1]) + ".\n", LOG_FILE);
+            writeToFile("Tank number " + to_string(objectTankNum) + " of player number " + to_string(tankPlayer) 
+                + " got hit by a bullet at " + to_string(object1.getOldLocation()[0]) + "," + to_string(object1.getOldLocation()[1]) + ".\n", LOG_FILE);
         }
         else if (object1.getType() == B && object2.getType() == B){
-            // writeToFile("The bullet at (" + (to_string(object1.getOldLocation()[0]) + "," + (to_string(object1.getOldLocation()[1])) + ") collided with the bullet at (" +
-            //              to_string(object2.getOldLocation()[0])) + "," + (to_string(object2.getOldLocation()[1])) + ") destroying each other.\n", LOG_FILE);
+            writeToFile("The bullet at (" + (to_string(object1.getOldLocation()[0]) + "," + (to_string(object1.getOldLocation()[1])) + ") collided with the bullet at (" +
+                         to_string(object2.getOldLocation()[0])) + "," + (to_string(object2.getOldLocation()[1])) + ") destroying each other.\n", LOG_FILE);
         }
     }
     else if (!object1.getIsAlive() && !object2.getIsAlive()){
-        //we already notified that the two objects been destroyed thus we don't need to notify again
+        // we already notified that the two objects been destroyed thus we don't need to notify again
     }
     else if ((object1.getIsAlive() && object1.getType() == B) || (object2.getIsAlive() && object2.getType() == B)){// we need to notify that an object been destroyed
-            // writeToFile("A bullet has been destroyed by collision at (" + to_string(object1.getOldLocation()[0]) + "," + to_string(object1.getOldLocation()[1]) + ").\n", LOG_FILE);
+            writeToFile("A bullet has been destroyed by collision at (" + to_string(object1.getOldLocation()[0]) + "," + to_string(object1.getOldLocation()[1]) + ").\n", LOG_FILE);
     }
-}
+} */
 
 // This function was written with the help of chat gpt
 // Function to check for collisions between moving object1
@@ -384,8 +383,8 @@ bool gameManager_0000::checkCollisions(){
  
 void gameManager_0000::waitingforBackwordMove(ActionRequest tanksMove, int i){
     unique_ptr<int[]> tankNewLocation = nullptr;
-    int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
-    int tankNum = tanks[i]->getTankIndex();
+    // int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
+    // int tankNum = tanks[i]->getTankIndex();
     if(tanksMove == ActionRequest::MoveForward) {
         tanks[i]->setInBackwards(0);
         // writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " at ()" + (to_string(tanks[i]->getLocation()[0]) + "," +
@@ -420,8 +419,8 @@ void gameManager_0000::waitingforBackwordMove(ActionRequest tanksMove, int i){
 }
 
 void gameManager_0000::moveForwardMove(bool tankCanMove ,/*ActionRequest tanksMove,*/ int i){
-    int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
-    int tankNum = tanks[i]->getTankIndex();
+    // int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
+    // int tankNum = tanks[i]->getTankIndex();
     unique_ptr<int[]> tankNewLocation = nullptr;
     tanks[i]->setInBackwards(0);
     if (tankCanMove){
@@ -437,8 +436,8 @@ void gameManager_0000::moveForwardMove(bool tankCanMove ,/*ActionRequest tanksMo
 }
 
 void gameManager_0000::moveBackwardMove(bool tankCanMove ,/* ActionRequest tanksMove,  */int i){
-    int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
-    int tankNum = tanks[i]->getTankIndex();
+    // int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
+    // int tankNum = tanks[i]->getTankIndex();
     unique_ptr<int[]> tankNewLocation = nullptr;
     if (tankCanMove){
         if (tanks[i]->getInBack() >= 3){ // if we have moved backwards last turn and want to move
@@ -462,8 +461,8 @@ void gameManager_0000::moveBackwardMove(bool tankCanMove ,/* ActionRequest tanks
 }
 
 void gameManager_0000::shootMove(bool tankCanMove,/*  ActionRequest tanksMove,  */int i){
-    int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
-    int tankNum = tanks[i]->getTankIndex();
+    // int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
+    // int tankNum = tanks[i]->getTankIndex();
     unique_ptr<int[]> newBulletLocation = nullptr;
     if (tankCanMove){
         newBulletLocation = tanks[i]->newLocation(numOfCols, numOfRows);               // Get bullet location
@@ -501,8 +500,8 @@ orientation gameManager_0000::calculateNewOrientation(ActionRequest &tanksMove, 
 
 void gameManager_0000::getTheIthTankMove(int i, ActionRequest &tanksMove){
     int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2;
-    int tankNum = tanks[i]->getTankIndex();
-    orientation ornt = tanks[i]->getOrientation();
+    // int tankNum = tanks[i]->getTankIndex();
+    // orientation ornt = tanks[i]->getOrientation();
     if (tanks[i]->getInBack() > 0 && tanks[i]->getInBack() < 3){
         waitingforBackwordMove(tanksMove, i);
     }
@@ -601,10 +600,10 @@ void gameManager_0000::actualymakeMoves(){
 void gameManager_0000::dealWithDamagedUnmovingObject(int i, const int objectNewCol, const int objectNewRow){
     /* int tanksPlayer = tanks[i]->getType() == P1T ? 1 : 2; */
     if (checkIfTank(*currMovingObjects[i]) && (*gameBoard)[objectNewCol][objectNewRow][0]->getType() == M){
-        int tankNum = tanks[i]->getTankIndex();
+        // int tankNum = tanks[i]->getTankIndex();
         // if a tank stepped on a mine - they both destroyed
         (*gameBoard)[objectNewCol][objectNewRow][0] = nullptr; // remove the mine from the board
-        int tanksPlayer = currMovingObjects[i]->getType() == P1T ? 1 : 2;
+        // int tanksPlayer = currMovingObjects[i]->getType() == P1T ? 1 : 2;
         numOfMinesDestroyed++;
         if (currMovingObjects[i]->getIsAlive()){
             // writeToFile("Tank number " + to_string(tankNum) + " of player number " + to_string(tanksPlayer) + " stepped on a mine at (" + (to_string(tanks[i]->getLocation()[0]) + "," +
@@ -795,6 +794,8 @@ GameResult gameManager_0000::run(
 {
     this->player1 = shared_ptr<Player>(&player1);
     this->player2 = shared_ptr<Player>(&player2);
+    this->p1Name = name1;
+    this->p2Name = name2;
 
     this->numOfRows = map_height;
     this->numOfCols = map_width;
@@ -802,6 +803,8 @@ GameResult gameManager_0000::run(
     this->maxTurns = max_steps * 2; // each player has max_steps turns
     this->numOfBulletsLeft = num_shells;
     this->gameOver = false;
+
+    readBoard(map_name, map, player1_tank_algo_factory, player2_tank_algo_factory);
 
     // writeToFile("\nStarting game\n", LOG_FILE);
     // writeToFile("Player number 1 start with " + to_string(numOfP1TanksLeft) + " tanks.\n", LOG_FILE);

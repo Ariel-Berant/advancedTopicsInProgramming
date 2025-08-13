@@ -6,7 +6,7 @@
 #include <cassert>
 
 #include "../common/AbstractGameManager.h"
-#include "GameManagerRegistration.h"
+#include "../common/GameManagerRegistration.h"
 
 namespace Simulator_0000
 {

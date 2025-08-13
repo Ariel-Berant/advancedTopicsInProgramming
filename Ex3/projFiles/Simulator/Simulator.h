@@ -5,6 +5,7 @@
 #include <fstream>
 #include <dlfcn.h>
 #include <sstream>
+#include <utility>
 #include "AlgorithmRegistrar.h"
 #include "GameManagerRegistrar.h"
 #include "../UserCommon/OurSattelliteView.h"
@@ -57,6 +58,18 @@ namespace Simulator_0000
             size_t mapHeight;
             size_t mapWidth;
             OurSattelliteView map;
+
+            MapData(string mapName, size_t maxTurns, size_t numShells, size_t mapHeight, size_t mapWidth, OurSattelliteView map)
+                : mapName(std::move(mapName)), maxTurns(maxTurns), numShells(numShells), mapHeight(mapHeight), mapWidth(mapWidth), map(std::move(map))
+            {}
+
+            MapData(MapData&& other) : map(std::move(other.map)){
+                mapName = std::move(other.mapName);
+                maxTurns = other.maxTurns;
+                numShells = other.numShells;
+                mapHeight = other.mapHeight;
+                mapWidth = other.mapWidth;
+            }
         };
 
         struct runObj
@@ -78,7 +91,7 @@ namespace Simulator_0000
         vector<string> gameManagers;
         vector<void*> handles;
         vector<runObj> runObjects;
-        vector<pair<std::future<GameResult>, string>> results;
+        vector<std::future<std::pair<GameResult, string>>> results;
         vector<pair<GameResult, vector<string>>> comparativeGrouped;
         vector<pair<string, size_t>> competitionGrouped;
 
@@ -92,17 +105,21 @@ namespace Simulator_0000
         void loadGameManagers();
         void loadRunObjectsComparative();
         void loadRunObjectsCompetition();
-        void sendRunObjectsToThreadPool(shared_ptr<ThreadPool> threadPool);
+        void sendRunObjectsToThreadPool(ThreadPool& threadPool);
         void runRegularRunObjects();
         void sortResultsComparative();
         void printResultsComparative();
         void sortResultsCompetition();
         void printResultsCompetition();
         static Simulator simulator;
-        vector<vector<array<shared_ptr<matrixObject>, 3>>> createSatView(const std::string& filePath, int numOfCols, int numOfRows);
+        vector<vector<array<shared_ptr<matrixObject>, 3>>> createSatView(const std::string& filePath, size_t numOfCols, size_t numOfRows);
         string parseGameResultReason(const GameResult& gr, int mapIndex) const;
         bool loadAndCheckAll(int argc, char const *argv[]);
         bool unloadAll();
+        pair<string, array<size_t, 4>> parseMapLine(const string& filename);
+        size_t parseRowInfo(const string line, const string description, int rowNum);
+        void addUnmovingObjectToMap(vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, char UnmovingObjectType, size_t currCol, size_t currRow);
+        void addTankToMap(vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, size_t playerNum, size_t currCol, size_t currRow);
 
         void comparativeRun();
         void competitionRun();
@@ -111,7 +128,7 @@ namespace Simulator_0000
         static Simulator& getSimulator();
         void simulate(int argc, char const *argv[]);
         Simulator() = default;
-        ~Simulator();
+        ~Simulator() = default;
     };
 
 }

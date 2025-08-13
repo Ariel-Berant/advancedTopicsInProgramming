@@ -2,6 +2,8 @@
 
 #include "ActionRequest.h"
 #include "BattleInfo.h"
+#include <functional>
+#include <memory>
 
 
 

@@ -16,7 +16,7 @@ private:
 
 public:
     std::unique_ptr<TankAlgorithm> tankAlg;
-    PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal, int numOfShots, int tankIndex);
+    PseudoTank(int row, int col, objectType PseudoTankType, orientation orientVal, int numOfShots, int tankIndex, std::unique_ptr<TankAlgorithm> tankAlg);
     ~PseudoTank() = default;
 
     int getTankIndex() const;

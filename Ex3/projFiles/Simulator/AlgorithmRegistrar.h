@@ -6,8 +6,8 @@
 #include <cassert>
 #include "../common/TankAlgorithm.h"
 #include "../common/Player.h"
-#include "PlayerRegistration.h"
-#include "TankAlgorithmRegistration.h"
+#include "../common/PlayerRegistration.h"
+#include "../common/TankAlgorithmRegistration.h"
 
 namespace Simulator_0000 {
     class AlgorithmRegistrar {

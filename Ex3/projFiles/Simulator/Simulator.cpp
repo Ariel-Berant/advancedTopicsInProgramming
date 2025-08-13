@@ -49,6 +49,7 @@ string getTimeString() {
     std::ostringstream oss;
     oss << std::setw(NUM_DIGITS) << std::setfill('0') << size_t(ts.count() * NUM_DIGITS_P) % NUM_DIGITS_P;
     std::string s = oss.str();
+    return s;
 }
 
 bool checkIfRemainingTanksSame(const GameResult& gameResults1, const GameResult& gameResults2) {
@@ -111,7 +112,7 @@ bool checkIfGameResultsSame(const GameResult& gameResults1, const GameResult& ga
 }
 
 void Simulator::loadConfigFromInput(int argc, const char *argv[]){
-    for (size_t i = 1; i < argc; i++)
+    for (size_t i = 1; i < size_t(argc); i++)
     {
         string arg = argv[i];
         if (arg == "-comparative" || arg == "-competition")
@@ -278,11 +279,13 @@ InputError Simulator::getNamesComaprative() {
     }
 
     if (gameManagers.empty()) {
-        std::cerr << "No valid game manager files found in: " << config.gameManagerFolderPath << std::endl;
-        return;
+        std::ostringstream oss;
+        oss << "No valid game manager files found in: " << config.gameManagerFolderPath;
+        return InputError(oss.str());
     }
 
     fileToPrintPath = std::filesystem::path(config.gameManagerFolderPath).parent_path() / ("comparative_results_" + getTimeString() + ".txt");
+    return InputError();
 }
 
 InputError Simulator::getNamesCompetition() {
@@ -310,11 +313,14 @@ InputError Simulator::getNamesCompetition() {
     }
 
     if (algos.empty()) {
-        std::cerr << "No valid algorithm files found in: " << config.algorithmsFolderPath << std::endl;
-        return;
+        std::ostringstream oss;
+        oss << "No valid algorithm files found in: " << config.algorithmsFolderPath;
+        return InputError(oss.str());
     }
 
     fileToPrintPath = std::filesystem::path(config.algorithmsFolderPath).parent_path() / ("competition_" + getTimeString() + ".txt");
+
+    return InputError();
 }
 
 InputError Simulator::loadMapsData() {
@@ -338,16 +344,15 @@ InputError Simulator::loadMapsData() {
                 mapInfo.second[1],
                 mapInfo.second[2],
                 mapInfo.second[3],
-                (OurSattelliteView)
                 {
                     createSatView(entry.path().string(), mapInfo.second[3], mapInfo.second[2]),
                     mapInfo.second[3],
                     mapInfo.second[2],
-                    -100, // tankX, initialized to 0
-                    -100  // tankY, initialized to 0
+                    size_t(-100),
+                    size_t(-100)
                 }
             };
-            mapsData.push_back(std::make_shared<MapData>(mapData));
+            mapsData.push_back(std::make_shared<MapData>(std::move(mapData)));
         }
     }
 
@@ -360,7 +365,7 @@ InputError Simulator::loadMapsData() {
     return InputError();
 }
 
-pair<string, array<size_t, 4>> parseMapLine(const string& filename) {
+pair<string, array<size_t, 4>> Simulator::parseMapLine(const string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Failed to open file: " << filename << std::endl;
@@ -415,7 +420,7 @@ pair<string, array<size_t, 4>> parseMapLine(const string& filename) {
 }
 
 
-size_t parseRowInfo(const string line, const string description, int rowNum) {
+size_t Simulator::parseRowInfo(const string line, const string description, int rowNum) {
     string fileRow = line;
     // Remove all whitespace characters from the string
     fileRow.erase(remove_if(fileRow.begin(), 
@@ -441,7 +446,7 @@ size_t parseRowInfo(const string line, const string description, int rowNum) {
     return value; // numShells, mapHeight, mapWidth
 }
 
-vector<vector<array<shared_ptr<matrixObject>, 3>>> Simulator::createSatView(const std::string& filePath, int numOfCols, int numOfRows) {
+vector<vector<array<shared_ptr<matrixObject>, 3>>> Simulator::createSatView(const std::string& filePath, size_t numOfCols, size_t numOfRows) {
     vector<vector<array<shared_ptr<matrixObject>, 3>>> gameBoard;
     string line;
     size_t currRow = 0, currCol = 0;
@@ -498,7 +503,7 @@ vector<vector<array<shared_ptr<matrixObject>, 3>>> Simulator::createSatView(cons
     return gameBoard;
 }
 
-void addTankToMap(vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, int playerNum, int currCol, int currRow) {
+void Simulator::addTankToMap(vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, size_t playerNum, size_t currCol, size_t currRow) {
     if (playerNum == 1) {
         gameBoard[currCol][currRow][1] = make_unique<matrixObject>(currRow, currCol, P1T);
     } else if (playerNum == 2) {
@@ -506,7 +511,7 @@ void addTankToMap(vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard,
     }
 }
 
-void addUnmovingObjectToMap(vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, char UnmovingObjectType, int currCol, int currRow){
+void Simulator::addUnmovingObjectToMap(vector<vector<array<shared_ptr<matrixObject>, 3>>>& gameBoard, char UnmovingObjectType, size_t currCol, size_t currRow){
     if(UnmovingObjectType == '#'){
         gameBoard[currCol][currRow][0] = make_unique<matrixObject>(currRow, currCol, W);
     }
@@ -638,10 +643,11 @@ void Simulator::loadRunObjectsCompetition(){
     }
 }
 
-void Simulator::sendRunObjectsToThreadPool(shared_ptr<ThreadPool> threadPool) {
+void Simulator::sendRunObjectsToThreadPool(ThreadPool& threadPool) {
     for (auto& runObject : runObjects) {
-        results.emplace_back(threadPool->enqueue([runObject]() mutable {
-            runObject.gameManager->run(
+        results.emplace_back(threadPool.enqueue([runObject]() mutable {
+            pair<GameResult, string> result;
+            result.first = runObject.gameManager->run(
                 runObject.mapData->mapWidth,
                 runObject.mapData->mapHeight,
                 runObject.mapData->map,
@@ -655,16 +661,18 @@ void Simulator::sendRunObjectsToThreadPool(shared_ptr<ThreadPool> threadPool) {
                 runObject.tankFactory1,
                 runObject.tankFactory2
             );
-        }), runObject.gameManagerName);
+            result.second = runObject.gameManagerName;
+            return result;
+        }));
     }
 }
 
 void Simulator::runRegularRunObjects() {
     for (auto& runObject : runObjects)
     {
-        std::promise<GameResult> res; 
-        std::future<GameResult> futureRes = res.get_future();
-        res.set_value(
+        std::promise<pair<GameResult, string>> res; 
+        std::future<pair<GameResult, string>> futureRes = res.get_future();
+        res.set_value(std::make_pair(
             runObject.gameManager->run(
                 runObject.mapData->mapWidth,
                 runObject.mapData->mapHeight,
@@ -678,9 +686,8 @@ void Simulator::runRegularRunObjects() {
                 runObject.algo2Name,
                 runObject.tankFactory1,
                 runObject.tankFactory2
-            ));
-        
-        results.emplace_back(pair<std::future<GameResult>, string>(std::move(futureRes), runObject.gameManagerName));
+            ), runObject.gameManagerName));
+        results.emplace_back(std::move(futureRes));
     }
 }
 
@@ -689,14 +696,14 @@ void Simulator::sortResultsComparative(){
     {
         for (size_t j = 0; j < comparativeGrouped.size(); j++)
         {
-            if (checkIfGameResultsSame(comparativeGrouped[j].first, results[i].first.get()))
+            if (checkIfGameResultsSame(comparativeGrouped[j].first, results[i].get().first))
             {
-                comparativeGrouped[j].second.emplace_back(results[i].second);
+                comparativeGrouped[j].second.emplace_back(results[i].get().second);
                 break;
             }
         }
 
-        comparativeGrouped.emplace_back(results[i].first.get(), vector<string>{results[i].second});
+        comparativeGrouped.emplace_back(results[i].get().first, vector<string>{results[i].get().second});
     }
 
     // Sorts by descending order - greatest size(amount of algorithms with this result) first
@@ -716,15 +723,15 @@ void Simulator::sortResultsCompetition(){
     
     for (size_t i = 0; i < results.size(); i++)
     {
-        algInds = parse_size_t_pair(results[i].second);
-        if (results[i].first.get().winner == 0) {
+        algInds = parse_size_t_pair(results[i].get().second);
+        if (results[i].get().first.winner == 0) {
             competitionGrouped[algInds.first].second++;
             competitionGrouped[algInds.second].second++;
         }
-        else if (results[i].first.get().winner == 1) {
+        else if (results[i].get().first.winner == 1) {
             competitionGrouped[algInds.first].second += 3;
         }
-        else if (results[i].first.get().winner == 2) {
+        else if (results[i].get().first.winner == 2) {
             competitionGrouped[algInds.second].second += 3;
         }
     }
@@ -764,6 +771,8 @@ string Simulator::parseGameResultReason(const GameResult& gr, int mapIndex) cons
     else if(gr.reason == GameResult::ZERO_SHELLS){
         return "Tie, both players have zero shells for " + std::to_string(mapsData[mapIndex]->maxTurns) + " steps";
     }
+
+    return "Unknown";
 }
 
 string satelliteViewToString(const SatelliteView& satelliteView){
@@ -827,7 +836,7 @@ void Simulator::printResultsComparative(){
 void Simulator::comparativeRun(){
     if (config.threadsNum > 1)
     {
-        shared_ptr<ThreadPool> threadPool = std::make_shared<ThreadPool>(config.threadsNum);
+        ThreadPool threadPool = ThreadPool(config.threadsNum);
         sendRunObjectsToThreadPool(threadPool);
     }
     else
@@ -842,7 +851,7 @@ void Simulator::comparativeRun(){
 void Simulator::competitionRun(){
     if (config.threadsNum > 1)
     {
-        shared_ptr<ThreadPool> threadPool = std::make_shared<ThreadPool>(config.threadsNum);
+        ThreadPool threadPool = ThreadPool(config.threadsNum);
         sendRunObjectsToThreadPool(threadPool);
     }
     else
@@ -898,6 +907,8 @@ bool Simulator::loadAndCheckAll(int argc, char const *argv[]) {
 
     if (config.runType == 2) loadRunObjectsComparative();
     if (config.runType == 1) loadRunObjectsCompetition();
+
+    return true;
 }
 
 bool Simulator::unloadAll(){

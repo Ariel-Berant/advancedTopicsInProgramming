@@ -7,7 +7,10 @@ LIBS = -ldl -pthread
 TARGET = simulator_0000
 
 # Source files
-SOURCES = $(wildcard *.cpp)
+# Include sources from the current directory AND the UserCommon directory
+SIMULATOR_SOURCES = $(wildcard *.cpp)
+USER_COMMON_SOURCES = $(wildcard ../UserCommon/*.cpp)
+SOURCES = $(SIMULATOR_SOURCES) $(USER_COMMON_SOURCES)
 
 # Object files
 OBJECTS = $(SOURCES:.cpp=.o)
