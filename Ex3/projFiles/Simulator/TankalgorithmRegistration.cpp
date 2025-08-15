@@ -1,5 +1,6 @@
 #include "../common/TankAlgorithmRegistration.h"
 #include "AlgorithmRegistrar.h"
+#include "../common/TankAlgorithm.h"
 
 using namespace Simulator_0000;
 

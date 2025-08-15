@@ -1,16 +1,18 @@
 # Compiler and flags
 CPP = g++
-CPP_FLAGS = -std=c++20 -Wall -Wextra -Werror -pedantic -I../
-LIBS = -ldl -pthread
+CPP_FLAGS = -std=c++20 -Wall -Wextra -fPIC -Werror -pedantic -g -I../
+LIBS = -ldl -pthread -rdynamic
 
 # Target executable
 TARGET = simulator_0000
 
 # Source files
-# Include sources from the current directory AND the UserCommon directory
 SIMULATOR_SOURCES = $(wildcard *.cpp)
 USER_COMMON_SOURCES = $(wildcard ../UserCommon/*.cpp)
 SOURCES = $(SIMULATOR_SOURCES) $(USER_COMMON_SOURCES)
+
+# Header files for dependency tracking
+HEADERS = $(wildcard *.h) $(wildcard ../UserCommon/*.h) $(wildcard ../common/*.h)
 
 # Object files
 OBJECTS = $(SOURCES:.cpp=.o)
@@ -22,8 +24,8 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(CPP) -o $(TARGET) $(OBJECTS) $(LIBS)
 
-# Compile source files into object files
-%.o: %.cpp
+# Compile source files into object files, now with header dependencies
+%.o: %.cpp $(HEADERS)
 	$(CPP) $(CPP_FLAGS) -c $< -o $@
 
 # Clean up build files

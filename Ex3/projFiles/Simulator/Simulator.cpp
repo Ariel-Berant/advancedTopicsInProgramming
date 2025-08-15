@@ -160,7 +160,15 @@ void Simulator::loadConfigFromInput(int argc, const char *argv[]){
         }
         else if (arg.rfind("num_threads=", 0) == 0)
         {
-            config.threadsNum = std::stoi(arg.substr(12));
+            try
+            {
+                config.threadsNum = std::stoi(arg.substr(12));
+            }
+            catch(const std::exception& e)
+            {
+                config.hasUnsupportedArgs = true;
+            }
+            
         }
         else{
             config.hasUnsupportedArgs = true;
@@ -250,23 +258,20 @@ InputError checkIfFileValid(const std::string& filePath, string expectedExtensio
 
 
 
-InputError Simulator::getNamesComaprative() {
-    InputError ie = checkIfDirectoryValid(config.mapsFolderPath);
+InputError Simulator::getNamesComparative() {
+    InputError ie = checkIfFileValid(config.mapPath, ".txt");
     if (ie.errorOccured) 
     {
-        std::cerr << ie.message << std::endl;
         return ie;
     }
 
     ie = checkIfFileValid(config.algorithm1Path);
     if (ie.errorOccured) {
-        std::cerr << ie.message;
         return ie;
     }
 
     ie = checkIfFileValid(config.algorithm2Path);
     if (ie.errorOccured) {
-        std::cerr << ie.message;
         return ie;
     }
     
@@ -496,6 +501,14 @@ vector<vector<array<shared_ptr<matrixObject>, 3>>> Simulator::createSatView(cons
         std::cerr << "Failed to open file: " << filePath << std::endl;
         return gameBoard;
     }
+
+    // Skip the first 5 lines of the file - map metadata
+    for (size_t i = 0; i < 5; i++)
+    {
+        getline(file, line);
+    }
+    
+    
 
     while (getline(file, line)){
         if (currRow == numOfRows){
@@ -732,16 +745,21 @@ void Simulator::runRegularRunObjects() {
 void Simulator::sortResultsComparative(){
     for (size_t i = 0; i < results.size(); i++)
     {
+        bool found = false;
+        pair<GameResult, string> resultPair = results[i].get();
         for (size_t j = 0; j < comparativeGrouped.size(); j++)
         {
-            if (checkIfGameResultsSame(comparativeGrouped[j].first, results[i].get().first))
+            if (checkIfGameResultsSame(comparativeGrouped[j].first, resultPair.first))
             {
-                comparativeGrouped[j].second.emplace_back(results[i].get().second);
+                comparativeGrouped[j].second.emplace_back(resultPair.second);
+                found = true;
                 break;
             }
         }
 
-        comparativeGrouped.emplace_back(results[i].get().first, vector<string>{results[i].get().second});
+        if (!found) {
+            comparativeGrouped.push_back({std::move(resultPair.first), vector<string>{resultPair.second}});
+        }
     }
 
     // Sorts by descending order - greatest size(amount of algorithms with this result) first
@@ -852,6 +870,8 @@ void Simulator::printResultsCompetition(){
 
 void Simulator::printResultsComparative(){
     std::ofstream outFile(fileToPrintPath);
+    std::cout << "Comparative Results" << std::endl;
+    std::cout << fileToPrintPath << std::endl;
     if (outFile.is_open())
     {
         outFile << "game_map=" << config.mapPath << std::endl;
@@ -901,6 +921,21 @@ void Simulator::competitionRun(){
     printResultsCompetition();
 }
 
+void Simulator::printInput(){
+    std::cout << "Input Configuration:" << std::endl;
+    std::cout << "Run Type: " << config.runType << std::endl;
+    std::cout << "Verbose: " << (config.verbose ? "true" : "false") << std::endl;
+    std::cout << "Map Path: " << config.mapPath << std::endl;
+    std::cout << "Maps Folder Path: " << config.mapsFolderPath << std::endl;
+    std::cout << "Game Manager Path: " << config.gameManagerPath << std::endl;
+    std::cout << "Game Manager Folder Path: " << config.gameManagerFolderPath << std::endl;
+    std::cout << "Algorithm 1 Path: " << config.algorithm1Path << std::endl;
+    std::cout << "Algorithm 2 Path: " << config.algorithm2Path << std::endl;
+    std::cout << "Algorithms Folder Path: " << config.algorithmsFolderPath << std::endl;
+    std::cout << "Threads Number: " << config.threadsNum << std::endl;
+    std::cout << "Has Unsupported Args: " << (config.hasUnsupportedArgs ? "true" : "false") << std::endl;
+}
+
 bool Simulator::loadAndCheckAll(int argc, char const *argv[]) {
     InputError ie = validateInput(argc, argv);
     if (ie.errorOccured) {
@@ -915,7 +950,7 @@ bool Simulator::loadAndCheckAll(int argc, char const *argv[]) {
         return false;
     }
 
-    if (config.runType == 2) ie = getNamesComaprative();
+    if (config.runType == 2) ie = getNamesComparative();
     if (config.runType == 1) ie = getNamesCompetition();
     
     if (ie.errorOccured)
@@ -984,6 +1019,8 @@ void Simulator::simulate(int argc, char const *argv[]) {
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
+        
+        printInput();
     }
     
 }

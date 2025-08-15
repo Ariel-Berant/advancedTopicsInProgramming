@@ -117,7 +117,7 @@ private:
     bool getRowsAndColsFromFile(const string &filename);
     void printSummeryToOurLog();
     bool isValidFile(const string &filename);
-    void printCollisionsToLog(const movingObject &object1, const movingObject &object2) const;
+    // void printCollisionsToLog(const movingObject &object1, const movingObject &object2) const;
     void moveBullets();
     bool parseGameInfo(const string line, const string description, int rowNum);
     void updateAboutNewDstroyedTanks();

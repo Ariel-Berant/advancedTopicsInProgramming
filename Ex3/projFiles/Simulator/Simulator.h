@@ -14,6 +14,9 @@
 #include "../UserCommon/ObjectType.h"
 #include "../UserCommon/MovingObject.h"
 #include "../UserCommon/Orientation.h"
+#include "../common/AbstractGameManager.h"
+#include "../common/TankAlgorithm.h"
+#include "../common/Player.h"
 #include "ThreadPool.h"
 
 using namespace UserCommon_0000;
@@ -95,10 +98,11 @@ namespace Simulator_0000
         vector<pair<GameResult, vector<string>>> comparativeGrouped;
         vector<pair<string, size_t>> competitionGrouped;
 
+        void printInput();
         void loadConfigFromInput(int argc, char const *argv[]);
         InputError validateInput(int argc, char const *argv[]);
         bool checkConfig();
-        InputError getNamesComaprative();
+        InputError getNamesComparative();
         InputError getNamesCompetition();
         InputError loadMapsData();
         void loadAlgorithms();

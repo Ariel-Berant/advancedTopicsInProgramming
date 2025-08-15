@@ -369,7 +369,7 @@ bool gameManager_0000::checkCollisions(){
                 // If they don't touch only at the start points and are collinear, they collide
                 // and we need to check if they don't finish at the same point
                 if (collinear || endAtSamePoint){
-                    printCollisionsToLog(*currMovingObjects[i], *currMovingObjects[j]);
+                    // printCollisionsToLog(*currMovingObjects[i], *currMovingObjects[j]);
                     currMovingObjects[i]->takeAHit();
                     currMovingObjects[j]->takeAHit();
                 }
