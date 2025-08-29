@@ -801,7 +801,7 @@ GameResult gameManager_0000::run(
     this->numOfCols = map_width;
     this->gameMapFileName = map_name;
     this->maxTurns = max_steps * 2; // each player has max_steps turns
-    this->numOfBulletsLeft = num_shells;
+    this->maxBullets = num_shells;
     this->gameOver = false;
 
     readBoard(map_name, map, player1_tank_algo_factory, player2_tank_algo_factory);

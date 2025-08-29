@@ -4,10 +4,6 @@ using namespace Simulator_0000;
 
 Simulator Simulator::simulator;
 
-Simulator& Simulator::getSimulator() {
-    return simulator;
-}
-
 /* 
 Function created with the help of Gemini: 
 https://g.co/gemini/share/a85ba05001bc
@@ -104,7 +100,7 @@ bool checkIfGameResultsSame(const GameResult& gameResults1, const GameResult& ga
 
     if (gameResults1.winner != gameResults2.winner) same = false;
     if (gameResults1.reason != gameResults2.reason) same = false;
-    if (checkIfRemainingTanksSame(gameResults1, gameResults2)) same = false;
+    if (!checkIfRemainingTanksSame(gameResults1, gameResults2)) same = false;
     if (gameResults1.rounds != gameResults2.rounds) same = false;
     if (!checkIfSatelliteViewSame(gameResults1, gameResults2)) same = false;
 
@@ -517,6 +513,11 @@ vector<vector<array<shared_ptr<matrixObject>, 3>>> Simulator::createSatView(cons
         }
         for (char ch : line) {
             if (currCol == numOfCols){
+                if (ch == '\r')
+                {
+                    continue;
+                }
+                
                 std::cerr << "Error: Too many columns in row " << currRow << ".\n" << std::endl;
                 continue;
             }
@@ -545,7 +546,7 @@ vector<vector<array<shared_ptr<matrixObject>, 3>>> Simulator::createSatView(cons
         }
         currRow++;
         currCol = 0;
-    }
+    } 
     if (currRow < numOfRows){
         std::cerr << "Error: Not enough rows in the map file.\n" << std::endl;
     }
@@ -582,9 +583,11 @@ void Simulator::loadAlgorithms() {
             std::cerr << "Error loading algorithm: " << algo << std::endl;
             std::cerr << "dlerror: " << (error ? error : "Unknown error") << std::endl;
         }
+        else
+        {
+            handles.push_back(handle);
+        }
 
-        handles.push_back(handle);
-        
         try {
             registrar.validateLastRegistration();
         }
@@ -636,23 +639,23 @@ void Simulator::loadRunObjectsComparative(){
     for (size_t i = 0; i < gameManagerRegistrar.count(); i++)
     {
         runObj runObject{
-            .player1 = std::move(algoRegistrar.getAtIndex(0).createPlayer(1, 
+            algoRegistrar.getAtIndex(0).createPlayer(1, 
                                                                         mapsData[0]->mapWidth, 
                                                                         mapsData[0]->mapHeight, 
                                                                         mapsData[0]->maxTurns,
-                                                                         mapsData[0]->numShells)),
-            .player2 = std::move(algoRegistrar.getAtIndex(1).createPlayer(2, 
+                                                                         mapsData[0]->numShells),
+            algoRegistrar.getAtIndex(1).createPlayer(2, 
                                                                         mapsData[0]->mapWidth, 
                                                                         mapsData[0]->mapHeight, 
                                                                         mapsData[0]->maxTurns,
-                                                                         mapsData[0]->numShells)),
-            .tankFactory1 = algoRegistrar.getAtIndex(0).getTankAlgorithmFactory(),
-            .tankFactory2 = algoRegistrar.getAtIndex(1).getTankAlgorithmFactory(),
-            .gameManager = std::move(gameManagerRegistrar.getAtIndex(i).createGameManager(config.verbose)),
-            .mapData = mapsData[0],
-            .gameManagerName = gameManagerRegistrar.getAtIndex(i).name(),
-            .algo1Name = algoRegistrar.getAtIndex(0).name(),
-            .algo2Name = algoRegistrar.getAtIndex(1).name()
+                                                                         mapsData[0]->numShells),
+            algoRegistrar.getAtIndex(0).getTankAlgorithmFactory(),
+            algoRegistrar.getAtIndex(1).getTankAlgorithmFactory(),
+            std::move(gameManagerRegistrar.getAtIndex(i).createGameManager(config.verbose)),
+            mapsData[0],
+            gameManagerRegistrar.getAtIndex(i).name(),
+            algoRegistrar.getAtIndex(0).name(),
+            algoRegistrar.getAtIndex(1).name()
         };
 
         runObjects.push_back(std::move(runObject));
@@ -666,27 +669,27 @@ void Simulator::loadRunObjectsCompetition(){
 
     for (size_t k = 0; k < mapsData.size(); k++)
     {
-        for (size_t i = 0; i < gameManagerRegistrar.count(); i++)
+        for (size_t i = 0; i < algoRegistrar.count(); i++)
         {
-            int versus = (i + 1 + (k % (gameManagerRegistrar.count() - 1))) % gameManagerRegistrar.count();
+            int versus = (i + 1 + (k % (algoRegistrar.count() - 1))) % algoRegistrar.count();
             runObj runObject{
-                .player1 = std::move(algoRegistrar.getAtIndex(i).createPlayer(1, 
+                algoRegistrar.getAtIndex(i).createPlayer(1, 
                                                                             mapsData[k]->mapWidth, 
                                                                             mapsData[k]->mapHeight, 
                                                                             mapsData[k]->maxTurns,
-                                                                            mapsData[k]->numShells)),
-                .player2 = std::move(algoRegistrar.getAtIndex(versus).createPlayer(2, 
+                                                                            mapsData[k]->numShells),
+                algoRegistrar.getAtIndex(versus).createPlayer(2, 
                                                                             mapsData[k]->mapWidth, 
                                                                             mapsData[k]->mapHeight, 
                                                                             mapsData[k]->maxTurns,
-                                                                            mapsData[k]->numShells)),
-                .tankFactory1 = algoRegistrar.getAtIndex(i).getTankAlgorithmFactory(),
-                .tankFactory2 = algoRegistrar.getAtIndex(versus).getTankAlgorithmFactory(),
-                .gameManager = std::move(gameManagerRegistrar.getAtIndex(0).createGameManager(config.verbose)),
-                .mapData = mapsData[k],
-                .gameManagerName = std::to_string(i) + " " + std::to_string(versus),
-                .algo1Name = algoRegistrar.getAtIndex(i).name(),
-                .algo2Name = algoRegistrar.getAtIndex(versus).name()
+                                                                            mapsData[k]->numShells),
+                algoRegistrar.getAtIndex(i).getTankAlgorithmFactory(),
+                algoRegistrar.getAtIndex(versus).getTankAlgorithmFactory(),
+                std::move(gameManagerRegistrar.getAtIndex(0).createGameManager(config.verbose)),
+                mapsData[k],
+                std::to_string(i) + " " + std::to_string(versus),
+                algoRegistrar.getAtIndex(i).name(),
+                algoRegistrar.getAtIndex(versus).name()
             };
 
             runObjects.push_back(std::move(runObject));
@@ -779,15 +782,16 @@ void Simulator::sortResultsCompetition(){
     
     for (size_t i = 0; i < results.size(); i++)
     {
-        algInds = parse_size_t_pair(results[i].get().second);
-        if (results[i].get().first.winner == 0) {
+        pair<GameResult, string> resultPair = results[i].get();
+        algInds = parse_size_t_pair(resultPair.second);
+        if (resultPair.first.winner == 0) {
             competitionGrouped[algInds.first].second++;
             competitionGrouped[algInds.second].second++;
         }
-        else if (results[i].get().first.winner == 1) {
+        else if (resultPair.first.winner == 1) {
             competitionGrouped[algInds.first].second += 3;
         }
-        else if (results[i].get().first.winner == 2) {
+        else if (resultPair.first.winner == 2) {
             competitionGrouped[algInds.second].second += 3;
         }
     }
@@ -856,9 +860,8 @@ void Simulator::printResultsCompetition(){
     std::ofstream outFile(fileToPrintPath);
     if (outFile.is_open())
     {
-        outFile << "game_map=" << config.mapsFolderPath << std::endl;
-        outFile << "algorithm1=" << config.gameManagerPath << std::endl;
-        outFile << "algorithm2=" << config.algorithm2Path << std::endl;
+        outFile << "game_maps_folder=" << config.mapsFolderPath << std::endl;
+        outFile << "game_manager=" << config.gameManagerPath << std::endl;
         outFile << std::endl;
 
         for (const auto& group : competitionGrouped)
@@ -994,6 +997,15 @@ bool Simulator::unloadAll(){
         }
     }
 
+    mapsData.clear();
+    algos.clear();
+    gameManagers.clear();
+    handles.clear();
+    runObjects.clear();
+    results.clear();
+    comparativeGrouped.clear();
+    competitionGrouped.clear();
+
     return true;
 }
 
@@ -1029,5 +1041,15 @@ int main(int argc, char const *argv[])
 {
     Simulator simulator;
     simulator.simulate(argc, argv);
+    std::cout << "got here!" << std::endl;
+    try
+    {
+        simulator.~Simulator();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
     return 0;
 }
