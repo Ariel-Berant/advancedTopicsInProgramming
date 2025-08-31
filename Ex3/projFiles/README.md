@@ -19,13 +19,9 @@ Input files notation:
 * Wall: '#'
 * Empty space: ' '
 
-Input file format:
-rowsNumber columnsNumber
-matrix notation
-
 ### Outputs
 
-Output files are generated as "output_" + input_file_name + ".txt" as required. The directory in which they are generated is the same directory as the input file's directory(if the given input file can be accessed, that is).
+Output files are generated as "output_" + input_file_name + ".txt" if -verbose flag is in input, as required. The directory in which they are generated is the same directory as the input file's directory(if the given input file can be accessed, that is).
 
 Errors in the input file are all put into one file named "input_errors.txt" as required.
 
@@ -38,15 +34,11 @@ If any errors occured, they will either:
 
 ## Compiling the project
 
-To compile the code, simply run ```make``` in the terminal whilst in the desired directory. This will create the tanks_game file, which you can then run on various inputs.
+To compile the code, simply run ```make``` in the terminal whilst in the desired directory. This will create the .so file\simulator executable, which you can then give as input to a simulator executable\run on various inputs.
 
-To clean binaries and output files generated in the local directory, run ```make clean```.
+To clean executable\.so file generated in the local directory, run ```make clean```.
 
 ## General Notes
-
-### Bonus
-
-See bonus.txt for extra logging details.
 
 ### File handling
 
@@ -54,6 +46,6 @@ The program tries to delete pre-existing output\input errors files by default. T
 
 Note that if undeleted, the errors will be appended to the pre-existing files.
 
-### Project compilation & makefile
+### Bugs not fixed in time
 
-For our purposes, we used the -fsanitize=address and the -g flags for debugging and memory leaks checking. If you wish for that functionality, remove the comments in the makefile.
+The GameManager for our project(for some unknown reason) creates a segfault and returns an incomplete map(missing the tanks, maybe all moving objects, idk).
