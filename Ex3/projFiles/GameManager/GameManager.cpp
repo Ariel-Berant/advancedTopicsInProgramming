@@ -824,7 +824,7 @@ GameResult gameManager_0000::run(
         }
         gameManager_0000::checkCollisions();
         gameOver = makeAllMoves();
-        if(!isOddTurn && verbose){
+        if((!isOddTurn || gameOver) && verbose){
             printLastTurnToLog();
         }
     }

@@ -86,13 +86,6 @@ namespace Simulator_0000
             string gameManagerName;
             string algo1Name;
             string algo2Name;
-
-            runObj(shared_ptr<Player> p1, shared_ptr<Player> p2, TankAlgorithmFactory t1, TankAlgorithmFactory t2, shared_ptr<AbstractGameManager> gm, shared_ptr<MapData> md, string gmName, string a1Name, string a2Name)
-                : player1(std::move(p1)), player2(std::move(p2)), tankFactory1(std::move(t1)), tankFactory2(std::move(t2)), gameManager(std::move(gm)), mapData(std::move(md)), gameManagerName(std::move(gmName)), algo1Name(std::move(a1Name)), algo2Name(std::move(a2Name))
-            {};
-
-            ~runObj(){
-            };
         };
 
         std::string fileToPrintPath;

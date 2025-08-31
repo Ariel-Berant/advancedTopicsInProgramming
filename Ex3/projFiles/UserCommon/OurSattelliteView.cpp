@@ -7,7 +7,47 @@ OurSattelliteView::OurSattelliteView(const vector<vector<array<shared_ptr<matrix
     // Initialize the game board with the provided shared pointer
     // The game board is a 2D vector of arrays, where each array contains three shared pointers to matrixObject.
     // The first element represents the wall, the second element represents the tank, and the third element represents the bullet
+    // Create a board with the same dimensions as gBoard, with all nullptr values
+    gameBoard = vector<vector<array<shared_ptr<matrixObject>, 3>>>(
+        gBoard.size(),
+        vector<array<shared_ptr<matrixObject>, 3>>(
+            gBoard[0].size(),
+            {nullptr, nullptr, nullptr}  // Initialize all 3 elements to nullptr
+        )
+    );
 
+    for (size_t i = 0; i < gBoard.size(); i++)
+    {
+        for (size_t j = 0; j < gBoard[i].size(); j++)
+        {
+            if (gBoard[i][j][1] != nullptr)
+            {
+                if (gBoard[i][j][1]->getType() == P1T)
+                {
+                    gameBoard[i][j][1] = std::make_unique<matrixObject>(0,0,P1T);
+                }
+                else if (gBoard[i][j][1]->getType() == P2T)
+                {
+                    gameBoard[i][j][1] = std::make_unique<matrixObject>(0,0,P2T);
+                }
+                else // Bullet
+                {
+                    gameBoard[i][j][1] = std::make_unique<matrixObject>(0,0,B);
+                }
+            }
+            if (gBoard[i][j][0] != nullptr)
+            {
+                if (gBoard[i][j][0]->getType() == W)
+                {
+                    gameBoard[i][j][0] = std::make_unique<matrixObject>(0,0,W);
+                }
+                else if (gBoard[i][j][0]->getType() == M)
+                {
+                    gameBoard[i][j][0] = std::make_unique<matrixObject>(0,0,M);
+                }
+            }
+        }
+    }
     
 }
 
